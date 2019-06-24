@@ -1,0 +1,25 @@
+Package: fbAntares
+Type: Package
+Title: What the Package Does (one line, title case)
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Julien", "BRETTEVILLE", , "julien.bretteville@datastorm.fr", role = c("aut", "ctb")),
+    person("Titouan", "ROBERT", , "titouan.robert@datastorm.fr", role = c("aut", "ctb")),
+    person("Baptiste", "SEGUINOT", , "baptiste.seguinot@rte-france.com", role = c("aut", "cre")),
+    person("Marion", "LI", , "marion.li@rte-france.com", role = c("aut", "ctb")),
+    person("RTE", role = "cph")
+    )
+Description: What the package does (one paragraph).
+URL: https://github.com/rte-antares-rpackage/fbAntares
+License: GPL (>= 2) | file LICENSE 
+Encoding: UTF-8
+LazyData: TRUE
+Depends: 
+  data.table
+Imports:
+  quadprog,
+  linprog
+RoxygenNote: 6.1.1
+Suggests: 
+  testthat,
+

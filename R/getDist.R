@@ -51,7 +51,6 @@
 #'  getBestPolyhedron(
 #'  A = A, B = B, nbLines = nbLines, maxiter = maxiter,
 #'  thresholdIndic = thresholdIndic, quad = quad)
-#' 
 #' }
 #' 
 #' @import data.table 

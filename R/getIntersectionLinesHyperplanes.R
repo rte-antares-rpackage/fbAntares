@@ -90,4 +90,3 @@ evalInter <- function(P1, P2, nbPoints = 50000){
   return(length(intersect(indomaine1, indomaine2))/length(union(indomaine1, indomaine2)))
   
 }
-evalInter(P1,  P2)
