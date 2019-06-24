@@ -1,16 +1,8 @@
 .getNormalizedLines <- function(nbLines, dim) {
+  ## Input : number of lines to compute and space-dimension of the lines
+  ## Output : data.table with lines details (with norm == 1)
   
-  if (class(nbLines) != "numeric" | class(dim) != "numeric") {
-    stop(paste("nbLines and dim should be numeric, currently :", class(nbLines), 
-               class(dim)))
-  }
-  if (nbLines <= 0) {
-    stop(paste("You should ask for at least one line, currently :", nbLines))
-  }
-  if (dim <= 2) {
-    stop(paste("You should ask for at least two-dimensions lines, currently :", 
-               dim))
-  }
+  .crtlgetNormalizedLines(nbLines = nbLines, dim = dim)
   dtLines <- data.table(Line_Coo_X1 = rnorm(n = nbLines))
   for (i in 1:dim) {
     dtLines[, paste0("Line_Coo_X", i) := rnorm(n = nbLines)]
@@ -19,7 +11,6 @@
   for (i in 1:dim) {
     dtLines[, paste0("Line_Coo_X", i) := get(paste0("Line_Coo_X", i))/normvec]
   }
-  # dtLines[, normvec := sqrt(rowSums(dtLines[, 1:dim]^2))]
   dtLines[, normvec := NULL]
   return(dtLines)
 }
@@ -28,6 +19,16 @@
 
 
 .getIntersecPoints <- function(dtLines, PLAN) {
+  ## Input : 
+  ##  dtLines, obtained with the previous function .getNormalizedLines
+  ##  PLAN : data.table containing ptdf and ram of a polyhedron
+  ## Output : data.table containing the intersections of the lines and the polyhedron
+  
+  ## Voir si on adapte la fonction pour pouvoir l'utiliser sur plusieurs polyhèdres
+  ## d'un coup (pas intéressant je pense)
+  .crtldtFormat(dtLines)
+  .crtldtFormat(PLAN)
+
   PLAN[, Face := 1:nrow(PLAN)]
   # Passage en matrice des coordonnées des vecteurs directeurs des droites
   matLines <- as.matrix(dtLines[, .SD, .SDcols = colnames(dtLines)[
@@ -46,23 +47,16 @@
   # surcharge de ram si tout d'un coup
   lambda[lambda<0] <- 10000000
   
-  pct1 <- trunc(nrow(matLines)/100)
-  
   Points <- apply(lambda, 1, function(X)which.min(abs(X)))
   lambdaout<- apply(lambda, 1, function(X)min(abs(X)))
   
-  # all(toto == Points$Face)
-  
-  # Points[, Line := rep(1:nrow(Points))]
   Points <- data.table(Face = Points)
   Points$lambda <- lambdaout
   
   for(i in 1:nrow(ptdf)) {
     
     Points[[paste0("Line_Coo_X", i)]] <- matLines[, paste0("Line_Coo_X", i)]
-    
     Points[[paste0("X", i)]] <- Points$lambda*matLines[, paste0("Line_Coo_X", i)]
-    
   }
   
   Points <- merge(Points, PLAN, by = "Face")
@@ -70,10 +64,51 @@
   Points
 }
 
-
-evalInter <- function(P1, P2, nbPoints = 50000){
+#' @title Evaluate the shared volume of two polyhedra A and B
+#' 
+#' @description This function returns and indicator between 0 and 1 where 0 means
+#' the intersection between A and B is empty and 1 means A == B.
+#' Since there is no fast metric to compute the volume of a polyhedron in high 
+#' dimension, this indicator is computed by generating n points in a n-dimensonal
+#' space doing the ratio of the points in the two polyhedra and the points in
+#' at least one of the polyhedra.
+#' 
+#' @param A \code{data.table}, fix polyhedron, data.table containing at least 
+#' two ptdf columns :
+#' \itemize{
+#'  \item ptdfAT : autrichian vertices
+#'  \item ptdfBE : belgium vertices
+#'  \item ptdfDE : german vertices
+#'  \item ptdfFR : french vertices
+#' }
+#' @param A \code{data.table}, moving polyhedron, data.table containing at least 
+#' two ptdf columns :
+#' \itemize{
+#'  \item ptdfAT : autrichian vertices
+#'  \item ptdfBE : belgium vertices
+#'  \item ptdfDE : german vertices
+#'  \item ptdfFR : french vertices
+#' }
+#' @param nbPoints \code{numeric}, number of points generated
+#' 
+#' @examples
+#' \dontrun{
+#' library(data.table)
+#' polyhedra <- readRDS("~/RTE/fbAntares/inst/testdata/polyhedra.rds")
+#' A <- polyhedra[Date == "2019-02-14"]
+#' B <- polyhedra[Date == "2019-02-15"]
+#' nbPoints <- 50000
+#' 
+#'  evalInter(A = A, B = B, nbPoints = nbPoints)
+#' }
+#' 
+#' @import data.table 
+#' @importFrom stats runif
+#' 
+#' @export
+evalInter <- function(A, B, nbPoints = 50000){
   
-  col_ptdf <- colnames(P1)[grep("ptdf", colnames(P1))]
+  col_ptdf <- colnames(A)[grep("ptdf", colnames(A))]
   last_ptdfcol <- col_ptdf[length(col_ptdf)]
   
   # Voir peut-être comment rendre ça plus propre
@@ -82,7 +117,7 @@ evalInter <- function(P1, P2, nbPoints = 50000){
     PT[, paste0("Line_Coo_X", i) := runif(nbPoints) * 30000 - 15000]
   }
 
-  col_ptdf <- colnames(P1)[grep("ptdf", colnames(P1))]
+  col_ptdf <- colnames(A)[grep("ptdf", colnames(A))]
   last_ptdfcol <- col_ptdf[length(col_ptdf)]
   
   clcPTin <- function(P, PT, col_ptdf){
@@ -94,8 +129,8 @@ evalInter <- function(P1, P2, nbPoints = 50000){
     which(apply(re, 2, function(X, Y){all(X<Y)}, Y = P$ram))
   }
   
-  indomaine1 <- clcPTin(P1, PT, col_ptdf)
-  indomaine2 <- clcPTin(P2, PT, col_ptdf)
+  indomaine1 <- clcPTin(A, PT, col_ptdf)
+  indomaine2 <- clcPTin(B, PT, col_ptdf)
   
   return(length(intersect(indomaine1, indomaine2))/length(union(indomaine1, indomaine2)))
   

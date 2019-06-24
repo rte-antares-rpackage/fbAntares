@@ -9,7 +9,4 @@ test_that(".getNormalizedLines", {
   expect_true(nrow(dtLines) == 10000)
   expect_true(ncol(dtLines) == 4)
   expect_true(all(dtLines <= 1) & all(dtLines >= -1))
-  expect_error(.getNormalizedLines(nbLines, dim = 1))
-  expect_error(.getNormalizedLines(nbLines = -4, dim = 5))
-  expect_error(.getNormalizedLines(nbLines = "toto", dim = 5))
 })

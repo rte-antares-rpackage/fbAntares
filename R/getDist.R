@@ -34,13 +34,13 @@
 #' two stopping criteria of this function.
 #' @param thresholdIndic \code{numeric}, maximum number of iteration, it is one of the 
 #' two stopping criteria of this function.
-#' @examples
 #' 
+#' @examples
 #' \dontrun{
 #' library(data.table)
 #' library(quadprog)
 #' library(linprog)
-#' polyhedra <- readRDS("~/RTE/fbAntares/inst/testdata/polyhedra.rds")
+#' polyhedra <- readRDS(system.file("testdata/polyhedra.rds", package = "fbAntares"))
 #' A <- polyhedra[Date == "2019-02-14"]
 #' B <- polyhedra[Date == "2019-02-15"]
 #' nbLines <- 10000

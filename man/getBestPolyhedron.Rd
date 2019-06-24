@@ -48,12 +48,11 @@ on a distance using the intersections of a set of lines and the two polyhedrons
 and validate the moving polyhedron with a volume indicator.
 }
 \examples{
-
 \dontrun{
 library(data.table)
 library(quadprog)
 library(linprog)
-polyhedra <- readRDS("~/RTE/fbAntares/inst/testdata/polyhedra.rds")
+polyhedra <- readRDS(system.file("testdata/polyhedra.rds", package = "fbAntares"))
 A <- polyhedra[Date == "2019-02-14"]
 B <- polyhedra[Date == "2019-02-15"]
 nbLines <- 10000
