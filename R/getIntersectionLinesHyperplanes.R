@@ -1,6 +1,16 @@
 .getNormalizedLines <- function(nbLines, dim) {
   
-  # dtLines <- data.table(Line = 1:nbLines)
+  if (class(nbLines) != "numeric" | class(dim) != "numeric") {
+    stop(paste("nbLines and dim should be numeric, currently :", class(nbLines), 
+               class(dim)))
+  }
+  if (nbLines <= 0) {
+    stop(paste("You should ask for at least one line, currently :", nbLines))
+  }
+  if (dim <= 2) {
+    stop(paste("You should ask for at least two-dimensions lines, currently :", 
+               dim))
+  }
   dtLines <- data.table(Line_Coo_X1 = rnorm(n = nbLines))
   for (i in 1:dim) {
     dtLines[, paste0("Line_Coo_X", i) := rnorm(n = nbLines)]
