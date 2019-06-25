@@ -26,6 +26,7 @@
 }
 
 .crtlPtdf <- function(dt, dt2 = NULL) {
+  
   col_ptdf <- colnames(dt)[grep("ptdf", colnames(dt))]
   if(length(col_ptdf) == 0) {
     stop(paste("You should have ptdf columns to represent the polyhedron dimensions",
@@ -45,6 +46,7 @@
 }
 
 .crtlNumeric <- function(num) {
+  
   if (class(num) != "numeric") {
     stop(paste(num, "should be numeric, currently :",class(num)))
   }
@@ -54,6 +56,7 @@
 }
 
 .crtlBoolean <- function(bool) {
+  
   if (class(bool) != "logical") {
     stop(paste(bool, "should be logical, currently :",class(bool)))
   }
@@ -63,6 +66,7 @@
 }
 
 .crtlgetBestPolyhedron <- function(maxiter, thresholdIndic) {
+  
   if (trunc(maxiter) != maxiter) {
     warning(paste("You should put an integer value for maxiter, your value",
                   "has been truncated to", trunc(maxiter)))
