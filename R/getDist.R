@@ -56,6 +56,7 @@
 #' @import data.table 
 #' @import quadprog
 #' @import linprog
+#' @import lpSolve
 #' @importFrom stats rnorm runif
 #' 
 #' @export
