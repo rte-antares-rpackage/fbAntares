@@ -38,7 +38,7 @@ at least one of the polyhedra.
 \examples{
 \dontrun{
 library(data.table)
-polyhedra <- readRDS("~/RTE/fbAntares/inst/testdata/polyhedra.rds")
+polyhedra <- readRDS(system.file("testdata/polyhedra.rds", package = "fbAntares"))
 A <- polyhedra[Date == "2019-02-14"]
 B <- polyhedra[Date == "2019-02-15"]
 nbPoints <- 50000

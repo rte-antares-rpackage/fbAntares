@@ -62,7 +62,13 @@
 
 getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F) {
   
-  col_ptdf <- colnames(A)[grep("ptdf", colnames(A))]
+  col_ptdf <-  .crtlPtdf(A, B)
+  .crtldtFormat(A)
+  .crtldtFormat(B)
+  .crtlNumeric(nbLines)
+  .crtlNumeric(maxiter)
+  .crtlNumeric(thresholdIndic)
+  .crtlBoolean(quad)
   # .orderPtdfNames(A, B)
   A <- copy(A)
   dtLines <- .getNormalizedLines(nbLines = nbLines, dim = length(col_ptdf))

@@ -34,7 +34,8 @@
   matLines <- as.matrix(dtLines[, .SD, .SDcols = colnames(dtLines)[
     grep("Line_Coo_X", colnames(dtLines))]], nrow = nrow(dtLines))
   # On récupère les colonnes ptdf
-  col_ptdf <- colnames(PLAN)[grep("ptdf", colnames(PLAN))]
+  # col_ptdf <- colnames(PLAN)[grep("ptdf", colnames(PLAN))]
+  col_ptdf <-  .crtlPtdf(PLAN)
   ptdf <- matrix(unname(unlist(
     PLAN[, .SD, .SDcols = col_ptdf])), nrow = length(col_ptdf), byrow = T)
   ram <- unname(unlist(PLAN[, .SD, .SDcols = "ram"]))
@@ -94,7 +95,7 @@
 #' @examples
 #' \dontrun{
 #' library(data.table)
-#' polyhedra <- readRDS("~/RTE/fbAntares/inst/testdata/polyhedra.rds")
+#' polyhedra <- readRDS(system.file("testdata/polyhedra.rds", package = "fbAntares"))
 #' A <- polyhedra[Date == "2019-02-14"]
 #' B <- polyhedra[Date == "2019-02-15"]
 #' nbPoints <- 50000
@@ -108,7 +109,10 @@
 #' @export
 evalInter <- function(A, B, nbPoints = 50000){
   
-  col_ptdf <- colnames(A)[grep("ptdf", colnames(A))]
+  .crtldtFormat(A)
+  .crtldtFormat(B)
+  .crtlNumeric(nbPoints)
+  col_ptdf <-  .crtlPtdf(A, B)
   last_ptdfcol <- col_ptdf[length(col_ptdf)]
   
   # Voir peut-être comment rendre ça plus propre
@@ -117,8 +121,6 @@ evalInter <- function(A, B, nbPoints = 50000){
     PT[, paste0("Line_Coo_X", i) := runif(nbPoints) * 30000 - 15000]
   }
 
-  col_ptdf <- colnames(A)[grep("ptdf", colnames(A))]
-  last_ptdfcol <- col_ptdf[length(col_ptdf)]
   
   clcPTin <- function(P, PT, col_ptdf){
     for (col in col_ptdf[1:(length(col_ptdf)-1)]) {
