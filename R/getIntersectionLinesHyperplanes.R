@@ -2,6 +2,8 @@
   ## Input : number of lines to compute and space-dimension of the lines
   ## Output : data.table with lines details (with norm == 1)
   
+  normvec <- NULL
+  
   .crtlgetNormalizedLines(nbLines = nbLines, dim = dim)
   dtLines <- data.table(Line_Coo_X1 = rnorm(n = nbLines))
   for (i in 1:dim) {
@@ -26,6 +28,7 @@
   
   ## Voir si on adapte la fonction pour pouvoir l'utiliser sur plusieurs polyhèdres
   ## d'un coup (pas intéressant je pense)
+  Face <- NULL
   .crtldtFormat(dtLines)
   .crtldtFormat(PLAN)
 
@@ -82,7 +85,7 @@
 #'  \item ptdfDE : german vertices
 #'  \item ptdfFR : french vertices
 #' }
-#' @param A \code{data.table}, moving polyhedron, data.table containing at least 
+#' @param B \code{data.table}, moving polyhedron, data.table containing at least 
 #' two ptdf columns :
 #' \itemize{
 #'  \item ptdfAT : autrichian vertices

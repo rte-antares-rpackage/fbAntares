@@ -19,16 +19,7 @@ ram, Date, Period and two ptdf columns :
  \item Period : hour in the day, between 1 and 24
 }}
 
-\item{nbLines}{\code{numeric}, number of half-lines used to compute the distance
-between the two polyhedra.}
-
-\item{maxiter}{\code{numeric}, maximum number of iteration, it is one of the 
-two stopping criteria of this function.}
-
-\item{thresholdIndic}{\code{numeric}, maximum number of iteration, it is one of the 
-two stopping criteria of this function.}
-
-\item{A}{\code{data.table}, moving polyhedron, data.table containing at least 
+\item{B}{\code{data.table}, moving polyhedron, data.table containing at least 
 ram, Date, Period and two ptdf columns :
 \itemize{
  \item ptdfAT : autrichian vertices
@@ -39,6 +30,19 @@ ram, Date, Period and two ptdf columns :
  \item Date : date in format YYYY-MM-DD
  \item Period : hour in the day, between 1 and 24
 }}
+
+\item{nbLines}{\code{numeric}, number of half-lines used to compute the distance
+between the two polyhedra.}
+
+\item{maxiter}{\code{numeric}, maximum number of iteration, it is one of the 
+two stopping criteria of this function.}
+
+\item{thresholdIndic}{\code{numeric}, maximum number of iteration, it is one of the 
+two stopping criteria of this function.}
+
+\item{quad}{\code{logical}, TRUE if you want to solve it with a quadratic
+optimization problem, FALSE if you want to use a linear (default is linear, 
+which is faster)}
 }
 \description{
 This function takes in input two polyhedrons, the reference one and

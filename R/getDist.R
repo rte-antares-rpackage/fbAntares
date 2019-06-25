@@ -17,7 +17,7 @@
 #'  \item Date : date in format YYYY-MM-DD
 #'  \item Period : hour in the day, between 1 and 24
 #' }
-#' @param A \code{data.table}, moving polyhedron, data.table containing at least 
+#' @param B \code{data.table}, moving polyhedron, data.table containing at least 
 #' ram, Date, Period and two ptdf columns :
 #' \itemize{
 #'  \item ptdfAT : autrichian vertices
@@ -34,6 +34,9 @@
 #' two stopping criteria of this function.
 #' @param thresholdIndic \code{numeric}, maximum number of iteration, it is one of the 
 #' two stopping criteria of this function.
+#' @param quad \code{logical}, TRUE if you want to solve it with a quadratic
+#' optimization problem, FALSE if you want to use a linear (default is linear, 
+#' which is faster)
 #' 
 #' @examples
 #' \dontrun{
@@ -62,6 +65,9 @@
 #' @export
 
 getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F) {
+  
+  Line_Coo_X1 <- NULL
+  Line_Coo_X2 <- NULL
   
   col_ptdf <-  .crtlPtdf(A, B)
   .crtldtFormat(A)
@@ -103,6 +109,9 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F) 
 #######
 
 .getDmatdvec <- function(fixPlan, movingPlan, PLANOUT, col_ptdf, quad) {
+  
+  Face <- NULL
+  
   dvec <- rep(0, length(PLANOUT$Face))
   Dmat <- rep(0, length(PLANOUT$Face))
   for(DD  in unique(PLANOUT$Face)){

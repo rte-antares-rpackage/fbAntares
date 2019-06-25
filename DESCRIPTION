@@ -18,7 +18,8 @@ Depends:
   data.table
 Imports:
   quadprog,
-  linprog
+  linprog,
+  lpSolve
 RoxygenNote: 6.1.1
 Suggests: 
     testthat,

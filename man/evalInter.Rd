@@ -16,9 +16,7 @@ two ptdf columns :
  \item ptdfFR : french vertices
 }}
 
-\item{nbPoints}{\code{numeric}, number of points generated}
-
-\item{A}{\code{data.table}, moving polyhedron, data.table containing at least 
+\item{B}{\code{data.table}, moving polyhedron, data.table containing at least 
 two ptdf columns :
 \itemize{
  \item ptdfAT : autrichian vertices
@@ -26,6 +24,8 @@ two ptdf columns :
  \item ptdfDE : german vertices
  \item ptdfFR : french vertices
 }}
+
+\item{nbPoints}{\code{numeric}, number of points generated}
 }
 \description{
 This function returns and indicator between 0 and 1 where 0 means
