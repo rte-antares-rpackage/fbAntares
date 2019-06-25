@@ -69,7 +69,7 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F) 
   .crtlNumeric(maxiter)
   .crtlNumeric(thresholdIndic)
   .crtlBoolean(quad)
-  # .orderPtdfNames(A, B)
+  
   A <- copy(A)
   dtLines <- .getNormalizedLines(nbLines = nbLines, dim = length(col_ptdf))
   fixPlan <- .getIntersecPoints(dtLines, A)
