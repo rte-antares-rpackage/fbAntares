@@ -9,10 +9,10 @@
 #' @param A \code{data.table}, fix polyhedron, data.table containing at least 
 #' ram, Date, Period and two ptdf columns :
 #' \itemize{
-#'  \item ptdfAT : autrichian vertices
-#'  \item ptdfBE : belgium vertices
-#'  \item ptdfDE : german vertices
-#'  \item ptdfFR : french vertices
+#'  \item ptdfAT : autrichian ptdf
+#'  \item ptdfBE : belgium ptdf
+#'  \item ptdfDE : german ptdf
+#'  \item ptdfFR : french ptdf
 #'  \item ram : line limits
 #'  \item Date : date in format YYYY-MM-DD
 #'  \item Period : hour in the day, between 1 and 24
@@ -20,10 +20,10 @@
 #' @param B \code{data.table}, moving polyhedron, data.table containing at least 
 #' ram, Date, Period and two ptdf columns :
 #' \itemize{
-#'  \item ptdfAT : autrichian vertices
-#'  \item ptdfBE : belgium vertices
-#'  \item ptdfDE : german vertices
-#'  \item ptdfFR : french vertices
+#'  \item ptdfAT : autrichian ptdf
+#'  \item ptdfBE : belgium ptdf
+#'  \item ptdfDE : german ptdf
+#'  \item ptdfFR : french ptdf
 #'  \item ram : line limits
 #'  \item Date : date in format YYYY-MM-DD
 #'  \item Period : hour in the day, between 1 and 24
@@ -37,7 +37,12 @@
 #' @param quad \code{logical}, TRUE if you want to solve it with a quadratic
 #' optimization problem, FALSE if you want to use a linear (default is linear, 
 #' which is faster)
-#' 
+#' @param verbose \code{numeric}, shows the logs in console. By default, the value is 1.
+#' \itemize{
+#'  \item 0 : No log
+#'  \item 1 : No log
+#'  \item 2 : Medium log
+#'  }
 #' @examples
 #' \dontrun{
 #' library(data.table)
@@ -64,7 +69,7 @@
 #' 
 #' @export
 
-getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F) {
+getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F, verbose = 2) {
   
   Line_Coo_X1 <- NULL
   Line_Coo_X2 <- NULL
@@ -94,8 +99,9 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F) 
       }
     }
     indic <- evalInter(PLANOUT, A)
-    
-    print(paste("Iteration", k, "indic :", indic))
+    if (verbose > 1) {
+      print(paste("Iteration", k, "indic :", indic))
+    }
     movingPlan <- .getIntersecPoints(dtLines, PLANOUT)
     movingPlan <- movingPlan[order(Line_Coo_X1, Line_Coo_X2)]
     if (indic > thresholdIndic) {
@@ -116,7 +122,7 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F) 
   Dmat <- rep(0, length(PLANOUT$Face))
   for(DD  in unique(PLANOUT$Face)){
     Fb <- PLANOUT[Face == DD]
-    RO <- which(movingPlan$Face==DD)
+    RO <- which(movingPlan$Face == DD)
     movingPlan2 <- movingPlan[RO]
     fixPlan2 <- fixPlan[RO]
     colnames(fixPlan2)[grep("^X[1-9]", colnames(fixPlan2))]

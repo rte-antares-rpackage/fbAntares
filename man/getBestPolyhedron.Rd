@@ -4,16 +4,17 @@
 \alias{getBestPolyhedron}
 \title{Adjust a polyhedron from a set of facets to approach a reference polyhedron}
 \usage{
-getBestPolyhedron(A, B, nbLines, maxiter, thresholdIndic, quad = F)
+getBestPolyhedron(A, B, nbLines, maxiter, thresholdIndic, quad = F,
+  verbose = 2)
 }
 \arguments{
 \item{A}{\code{data.table}, fix polyhedron, data.table containing at least 
 ram, Date, Period and two ptdf columns :
 \itemize{
- \item ptdfAT : autrichian vertices
- \item ptdfBE : belgium vertices
- \item ptdfDE : german vertices
- \item ptdfFR : french vertices
+ \item ptdfAT : autrichian ptdf
+ \item ptdfBE : belgium ptdf
+ \item ptdfDE : german ptdf
+ \item ptdfFR : french ptdf
  \item ram : line limits
  \item Date : date in format YYYY-MM-DD
  \item Period : hour in the day, between 1 and 24
@@ -22,10 +23,10 @@ ram, Date, Period and two ptdf columns :
 \item{B}{\code{data.table}, moving polyhedron, data.table containing at least 
 ram, Date, Period and two ptdf columns :
 \itemize{
- \item ptdfAT : autrichian vertices
- \item ptdfBE : belgium vertices
- \item ptdfDE : german vertices
- \item ptdfFR : french vertices
+ \item ptdfAT : autrichian ptdf
+ \item ptdfBE : belgium ptdf
+ \item ptdfDE : german ptdf
+ \item ptdfFR : french ptdf
  \item ram : line limits
  \item Date : date in format YYYY-MM-DD
  \item Period : hour in the day, between 1 and 24
@@ -43,6 +44,13 @@ two stopping criteria of this function.}
 \item{quad}{\code{logical}, TRUE if you want to solve it with a quadratic
 optimization problem, FALSE if you want to use a linear (default is linear, 
 which is faster)}
+
+\item{verbose}{\code{numeric}, shows the logs in console. By default, the value is 1.
+\itemize{
+ \item 0 : No log
+ \item 1 : No log
+ \item 2 : Medium log
+ }}
 }
 \description{
 This function takes in input two polyhedrons, the reference one and

@@ -80,3 +80,29 @@
          thresholdIndic)
   }
 }
+
+
+
+#' Transform B to antares format
+#'
+#' @param B \code{data.table}, face for 3 country, BE, DE anf FR
+#'
+#' @noRd
+.fromBtoAntares <- function(face, col_ptdf){
+  B <- face[, .SD, .SDcols = col_ptdf]
+  names(B) <- gsub("ptdf", "", names(B))
+  nam <- as.character(1:nrow(B))
+  nam <- ifelse(nchar(nam)==1, paste0(0, nam), nam)
+  combi <- t(combn(names(B), 2))
+  vec <- c()
+  coefAntares <- data.table(Name = paste0("FB", nam))
+  for (X in 1:nrow(combi)) {
+    vec <- c(vec, paste(combi[X, ], collapse = "."))
+    coefAntares[, vec[X] := B[, get(combi[X, 1])] - B[, get(combi[X, 2])]]
+  }
+  coefAntares[, lapply(.SD, round, 2), .SDcols = !"Name"]
+
+}
+
+
+
