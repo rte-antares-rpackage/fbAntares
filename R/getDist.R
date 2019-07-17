@@ -98,7 +98,7 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F, 
         PLANOUT$ram[i] <- newram[i]
       }
     }
-    indic <- evalInter(PLANOUT, A)
+    indic <- evalInter(PLANOUT, A)[1, 1]
     if (verbose > 1) {
       print(paste("Iteration", k, "indic :", indic))
     }

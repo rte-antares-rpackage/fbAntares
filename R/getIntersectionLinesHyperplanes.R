@@ -137,6 +137,10 @@ evalInter <- function(A, B, nbPoints = 50000){
   indomaine1 <- clcPTin(A, PT, col_ptdf)
   indomaine2 <- clcPTin(B, PT, col_ptdf)
   
-  return(length(intersect(indomaine1, indomaine2))/length(union(indomaine1, indomaine2)))
+  volIntraInter <- (length(intersect(indomaine1, indomaine2))/length(union(indomaine1, indomaine2)))*100
+  error1 <- (1-length(intersect(indomaine1, indomaine2))/length(indomaine1))*100
+  error2 <- (1-length(intersect(indomaine1, indomaine2))/length(indomaine2))*100
+  
+  return(data.frame(volIntraInter = volIntraInter, error1 = error1, error2 = error2))
   
 }

@@ -59,7 +59,7 @@ computeFB <- function(PTDF = system.file("/input/ptdf/PTDF.csv", package = "anta
                       reports = TRUE,
                       dayType = "All", hour = "All", nbFaces = 36,
                       verbose = 1,
-                      nbLines = 10000, maxiter = 10, thresholdIndic = 0.9, quad = F,
+                      nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
                       seed = NULL)
 {
   
@@ -105,9 +105,10 @@ computeFB <- function(PTDF = system.file("/input/ptdf/PTDF.csv", package = "anta
       A = A, B = B, nbLines = nbLines, maxiter = maxiter, 
       thresholdIndic = thresholdIndic, quad = quad, verbose = verbose)
     res[, Face := NULL]
-    res
+    error <- evalInter(A, res)
     out <- data.table(hour = combi[X, hour], idDayType = combi[X, dayType],
-                      outFlowbased = list(res), volInterIntra = evalInter(A, res))
+                      outFlowbased = list(res), volIntraInter = error[1, 1],
+                      error1 = error[1, 2], error2 = error[1, 3])
   }, simplify = F))
   
   ######### OK

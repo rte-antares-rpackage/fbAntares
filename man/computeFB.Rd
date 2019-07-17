@@ -7,7 +7,7 @@
 computeFB(PTDF = system.file("/input/ptdf/PTDF.csv", package =
   "antaresFlowbased"), outputName = paste0(getwd(), "/antaresInput"),
   reports = TRUE, dayType = "All", hour = "All", nbFaces = 36,
-  verbose = 1, nbLines = 10000, maxiter = 10, thresholdIndic = 0.9,
+  verbose = 1, nbLines = 10000, maxiter = 10, thresholdIndic = 90,
   quad = F, seed = NULL)
 }
 \arguments{
