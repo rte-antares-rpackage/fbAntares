@@ -31,6 +31,9 @@
 #' TRUE.
 #' @param dayType \code{numeric}, by default, the value is All. (optional) Vector of id_days to compute.
 #' @param hour \code{numeric}, by default, the value is All. (optional) vector of hours/periods to compute.
+#' @param hubDrop \code{list}, list of hubs in the ptdf, with the ones which should
+#' sustracted to the others as the names of the arrays which themself contain the ones which
+#' be sustracted
 #' @param nbFaces \code{numeric}, standard shape parameters: number of sides to select. By default, the value is 36.
 #' @param nbLines \code{numeric}, number of halflines drawn for the distance computation, default 10 000
 #' @param maxiter \code{numeric}, maximum number of iteration on the optimization problem, default 10
@@ -54,22 +57,26 @@
 #' @importFrom stats cutree dist hclust
 #' @importFrom utils combn write.table
 #' @export
-computeFB <- function(PTDF = system.file("/input/ptdf/PTDF.csv", package = "antaresFlowbased"),
+computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"),
                       outputName =  paste0(getwd(), "/antaresInput"),
                       reports = TRUE,
                       dayType = "All", hour = "All", nbFaces = 36,
                       verbose = 1,
                       nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
-                      seed = NULL)
+                      hubDrop = list(NL = c("BE", "DE", "FR", "AT")), seed = NULL)
 {
   
-  Face <- ram <- outFlowbased <- generateReportFb <- idDayType <- Period <- NULL
+  PTDFDetails <- Face <- ram <- outFlowbased <- generateReportFb <- idDayType <- Period <- NULL
   # pb <- txtProgressBar(style = 3)
   
   
   
   ######### OK
   PTDF <- .readPTDF(PTDF)
+  
+  PTDFRaw <- copy(PTDF)
+  .ctrlHubDrop(hubDrop = hubDrop, PTDF = PTDF)
+  PTDF <- setDiffNotWantedPtdf(PTDF = PTDF, hubDrop = hubDrop)
   
   col_ptdf <- colnames(PTDF)[
     grep("ptdf", colnames(PTDF))]
@@ -106,8 +113,25 @@ computeFB <- function(PTDF = system.file("/input/ptdf/PTDF.csv", package = "anta
       thresholdIndic = thresholdIndic, quad = quad, verbose = verbose)
     res[, Face := NULL]
     error <- evalInter(A, res)
+    # out <- data.table(hour = combi[X, hour], idDayType = combi[X, dayType],
+    #                   outFlowbased = list(res), volIntraInter = error[1, 1],
+    #                   error1 = error[1, 2], error2 = error[1, 3])
+    # out <- data.table(hour = combi[X, hour], idDayType = combi[X, dayType],
+    #                   outFlowbased = list(data.table(
+    #                     idDayType = unique(res$idDayType), Period = unique(res$Period),
+    #                     PTDFDetails = list(res))), 
+    #                   volIntraInter = error[1, 1],
+    #                   error1 = error[1, 2], error2 = error[1, 3])
+    PTDFRawDetails <- PTDFRaw[Period == combi[X, hour] & idDayType == combi[X, dayType],
+                              .SD, .SDcols = c("idDayType", "Period", col_ptdf, "ram")]
+    VERTDetails <- getVertices(res)
+    VERTDetails[, c("Date", "Period") := NULL]
+    VERTDetails[, c("idDayType", "Period") := list(combi[X, hour], combi[X, dayType])]
+    setcolorder(VERTDetails, c("idDayType", "Period"))
+    
     out <- data.table(hour = combi[X, hour], idDayType = combi[X, dayType],
-                      outFlowbased = list(res), volIntraInter = error[1, 1],
+                        PTDFDetails = list(res), PTDFRawDetails = list(PTDFRawDetails),
+                      VERTDetails = list(VERTDetails), volIntraInter = error[1, 1],
                       error1 = error[1, 2], error2 = error[1, 3])
   }, simplify = F))
   
@@ -129,7 +153,7 @@ computeFB <- function(PTDF = system.file("/input/ptdf/PTDF.csv", package = "anta
     data.table(Id_day = combi[X, dayType], Id_hour = combi[X, hour],
                vect_b = flowbased[idDayType == combi[X, dayType] &
                                     hour == combi[X, hour],
-                                  outFlowbased][[1]][, ram], Name = paste0("FB", nam))
+                                  PTDFDetails][[1]][, ram], Name = paste0("FB", nam))
   }, simplify = F))
   
   

@@ -104,5 +104,25 @@
 
 }
 
-
+.ctrlHubDrop <- function(hubDrop, PTDF) {
+  col_ptdf <- colnames(PTDF)[grep("ptdf", colnames(PTDF))]
+  if (!grepl("ptdf", names(hubDrop))) {
+    ptdf_hubDrop <- c(paste0("ptdf", names(hubDrop)))
+  }
+  ptdf_hubDrop <- c(ptdf_hubDrop, sapply(names(hubDrop), function(X) {
+    sapply(1:length(hubDrop[[X]]), function(i) {
+      paste0("ptdf", hubDrop[[X]][i])
+    })
+  }))
+  
+  if (!all(ptdf_hubDrop %in% col_ptdf)) {
+    warning(paste(paste(
+      ptdf_hubDrop[!(ptdf_hubDrop %in% col_ptdf)], collapse = " "),
+      "is (are) not in ptdf name"))
+  }
+  
+  if (!all(col_ptdf %in% ptdf_hubDrop)) {
+    stop("hubDrop does not contain all the ptdf in PTDF")
+  }
+} 
 

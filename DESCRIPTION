@@ -19,7 +19,8 @@ Depends:
 Imports:
   quadprog,
   linprog,
-  lpSolve
+  lpSolve,
+  vertexenum
 RoxygenNote: 6.1.1
 Suggests: 
     testthat,

@@ -4,11 +4,12 @@
 \alias{computeFB}
 \title{Conversion of flow-based domains into an ANtares model with fixed PTDF}
 \usage{
-computeFB(PTDF = system.file("/input/ptdf/PTDF.csv", package =
-  "antaresFlowbased"), outputName = paste0(getwd(), "/antaresInput"),
+computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
+  "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
   reports = TRUE, dayType = "All", hour = "All", nbFaces = 36,
   verbose = 1, nbLines = 10000, maxiter = 10, thresholdIndic = 90,
-  quad = F, seed = NULL)
+  quad = F, hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
+  seed = NULL)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 
@@ -56,6 +57,10 @@ TRUE.}
 the optimization problem}
 
 \item{quad}{\code{logical}, quadratic problem or linear, default FALSE}
+
+\item{hubDrop}{\code{list}, list of hubs in the ptdf, with the ones which should
+sustracted to the others as the names of the arrays which themself contain the ones which
+be sustracted}
 
 \item{seed}{\code{numeric}, value of the seed, default NULL}
 }
