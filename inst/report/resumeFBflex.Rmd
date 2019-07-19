@@ -1,0 +1,1329 @@
+---
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+    css: styles_flex.css
+params: 
+    set_title: ""
+title: "`r params$set_title`"
+---
+
+
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(rAmCharts)
+library(antaresFlowbased)
+library(manipulateWidget)
+```
+
+
+Errors
+=====================================
+
+```{r, echo = FALSE, eval = TRUE}
+data_error <- dta[idDayType == dayType, .SD, .SDcols = c("idDayType", "Period", "error1", "error2")]
+
+```
+
+### Table
+```{r}
+data_render <- copy(data_error)
+setnames(data_render, c("error1", "error2"), c("Inf error", "Sup error"))
+knitr::kable(data_render)
+```
+
+### Histogram
+```{r}
+
+combineWidgets(
+    plot(amHist(x = data_error$error1, main = "Inf error", export = T, xlab = "Inf error")),
+    plot(amHist(x = data_error$error2, main = "Sup error", export = T, xlab = "Sup error"))
+)
+```
+
+
+Hour 1 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 1]
+hour <- 1
+```
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+Hour 2 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 2]
+hour <- 2
+```
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 3 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 3]
+hour <- 3
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+
+Hour 4 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 4]
+hour <- 4
+```
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+
+Hour 5 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 5]
+hour <- 5
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 6 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 6]
+hour <- 6
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 7 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 7]
+hour <- 7
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+
+Hour 8 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 8]
+hour <- 8
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 9 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 9]
+hour <- 9
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 10 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 10]
+hour <- 10
+```
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+
+Hour 11 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 11]
+hour <- 11
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 12 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 12]
+hour <- 12
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+Hour 13 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 13]
+hour <- 13
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+
+Hour 14 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 14]
+hour <- 14
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+
+Hour 15 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 15]
+hour <- 15
+```
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+
+Hour 16 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 16]
+hour <- 16
+```
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+
+Hour 17 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 17]
+hour <- 17
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 18 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 18]
+hour <- 18
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 19 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 19]
+hour <- 19
+```
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 20 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 20]
+hour <- 20
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+Hour 21 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 21]
+hour <- 21
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 22 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 22]
+hour <- 22
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 23 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 23]
+hour <- 23
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+Hour 24 {data-navmenu="Hour"}
+=====================================  
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE, eval = TRUE}
+data <- dta[Period == 24]
+hour <- 24
+```
+
+
+
+### Inf error (points belonging to the historical domain but not to the model)
+
+```{r}
+valueBox(paste0(round(data$error1, 1) , "%"), icon = "ion-ios-minus")
+```
+
+### Sup error (points belonging to the model but not to the historical domain)
+
+```{r}
+valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
+```
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### BE/FR
+```{r}
+graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+```
+
+### DE/FR
+```{r}
+graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
+```
+
+Row {data-height=650}
+------------------------------------------------------------------
+### BE/NL {.no-padding}
+```{r}
+graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+```
+
+
+### DE/NL
+```{r}
+graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+```
+
+
+

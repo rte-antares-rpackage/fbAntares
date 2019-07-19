@@ -80,6 +80,8 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   
   col_ptdf <- colnames(PTDF)[
     grep("ptdf", colnames(PTDF))]
+  col_ptdfraw <- colnames(PTDFRaw)[
+    grep("ptdf", colnames(PTDFRaw))]
   # univ <- .univ(nb = 500000, bInf = -10000, bSup = 10000, 
   #               col_ptdf = col_ptdf, seed = seed)
   
@@ -113,25 +115,23 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
       thresholdIndic = thresholdIndic, quad = quad, verbose = verbose)
     res[, Face := NULL]
     error <- evalInter(A, res)
-    # out <- data.table(hour = combi[X, hour], idDayType = combi[X, dayType],
-    #                   outFlowbased = list(res), volIntraInter = error[1, 1],
-    #                   error1 = error[1, 2], error2 = error[1, 3])
-    # out <- data.table(hour = combi[X, hour], idDayType = combi[X, dayType],
-    #                   outFlowbased = list(data.table(
-    #                     idDayType = unique(res$idDayType), Period = unique(res$Period),
-    #                     PTDFDetails = list(res))), 
-    #                   volIntraInter = error[1, 1],
-    #                   error1 = error[1, 2], error2 = error[1, 3])
+
     PTDFRawDetails <- PTDFRaw[Period == combi[X, hour] & idDayType == combi[X, dayType],
-                              .SD, .SDcols = c("idDayType", "Period", col_ptdf, "ram")]
+                              .SD, .SDcols = c("idDayType", "Period", col_ptdfraw, "ram")]
     VERTDetails <- getVertices(res)
     VERTDetails[, c("Date", "Period") := NULL]
-    VERTDetails[, c("idDayType", "Period") := list(combi[X, hour], combi[X, dayType])]
+    VERTDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
     setcolorder(VERTDetails, c("idDayType", "Period"))
     
-    out <- data.table(hour = combi[X, hour], idDayType = combi[X, dayType],
+    VERTRawDetails <- getVertices(A)
+    VERTRawDetails[, c("Date", "Period") := NULL]
+    VERTRawDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
+    setcolorder(VERTRawDetails, c("idDayType", "Period"))
+    
+    out <- data.table(Period = combi[X, hour], idDayType = combi[X, dayType],
                         PTDFDetails = list(res), PTDFRawDetails = list(PTDFRawDetails),
-                      VERTDetails = list(VERTDetails), volIntraInter = error[1, 1],
+                      VERTDetails = list(VERTDetails), VERTRawDetails = list(VERTRawDetails),
+                      volIntraInter = error[1, 1],
                       error1 = error[1, 2], error2 = error[1, 3])
   }, simplify = F))
   
@@ -152,7 +152,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     nam <- ifelse(nchar(nam) == 1, paste0("0", nam), nam)
     data.table(Id_day = combi[X, dayType], Id_hour = combi[X, hour],
                vect_b = flowbased[idDayType == combi[X, dayType] &
-                                    hour == combi[X, hour],
+                                    Period == combi[X, hour],
                                   PTDFDetails][[1]][, ram], Name = paste0("FB", nam))
   }, simplify = F))
   
