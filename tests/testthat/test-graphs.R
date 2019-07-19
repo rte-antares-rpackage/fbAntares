@@ -2,7 +2,7 @@ context("graphs")
 
 test_that("graphs", {
   
-  domainesFB <- readRDS(system.file("testdata/domainesFBReduce.RDS", package = "fbAntares"))
+  domainesFB <- readRDS(system.file("testdata/domainesFBReduce.rds", package = "fbAntares"))
   graph <- graphFlowBased2D(flowbased = domainesFB, ctry1 = "FR", ctry2 = "NL", 
                             hour = 5, dayType = 1)
   expect_true("AmChart" %in% class(graph))
