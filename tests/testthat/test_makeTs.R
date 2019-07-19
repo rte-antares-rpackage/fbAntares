@@ -2,22 +2,6 @@ context("createFBTS")
 
 test_that("make ts", {
   
-  # temp_dir <- tempdir()
-  # testStudy2 <- system.file("testdata",package = "fbAntares")
-  # if(testStudy2 == "")testStudy2 <- system.file("inst/testdata",package = "fbAntares")
-  # 
-  # if (Sys.info()['sysname'] == "Windows") {
-  #   untar(file.path(testStudy2, "ex_test.tgz"), exdir = temp_dir,
-  #         extras = "--force-local")
-  #   
-  #   untar(file.path(testStudy2, "exemple_test.tgz"), exdir = temp_dir,
-  #         extras = "--force-local")
-  #   
-  # } else {
-  #   untar(file.path(testStudy2, "ex_test.tgz"), exdir = temp_dir)
-  #   untar(file.path(testStudy2, "exemple_test.tgz"), exdir = temp_dir)
-  #   
-  # }
   op5 <- antaresRead::setSimulationPath(testStudy2)
   
   matProb <- readRDS(system.file("testdata/proba.RDS", package = "fbAntares"))

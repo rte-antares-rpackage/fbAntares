@@ -32,7 +32,7 @@
 #' Wednesday, you must specify firstDay = 3. The first day can be directly calculated
 #' by the function \link{identifyFirstDay}.
 #' @param seed \code{numeric} fixed random seed, used for the weighted draw of the 
-#' typical days. By default, the value is 04052017.
+#' typical days. By default, the value is NULL.
 #' @param silent \code{boolean}, non display of a progress bar. By default, the value is FALSE.
 #' @param outputPath \code{character}, path of the folder where the time series of 
 #' typical flow-based output file (ts.txt) will be written. The current directory is chosen by default.
@@ -79,6 +79,8 @@ createFBTS <- function(opts, probabilityMatrix, multiplier,
   
   ##test params
   #multiplier file
+  txtProgressBar <- setTxtProgressBar <- NULL
+  
   if(!is.data.frame(multiplier)){
     stop("multiplier must be a data.frame")
   }

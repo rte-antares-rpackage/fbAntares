@@ -38,7 +38,7 @@ Wednesday, you must specify firstDay = 3. The first day can be directly calculat
 by the function \link{identifyFirstDay}.}
 
 \item{seed}{\code{numeric} fixed random seed, used for the weighted draw of the 
-typical days. By default, the value is 04052017.}
+typical days. By default, the value is NULL.}
 
 \item{silent}{\code{boolean}, non display of a progress bar. By default, the value is FALSE.}
 

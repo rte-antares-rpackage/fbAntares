@@ -18,6 +18,8 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
                              xlim = c(-10000, 10000), ylim = c(-10000, 10000))
 {
   
+  Period <- idDayType <- VERTDetails <- VERTRawDetails <- NULL
+  
   if(is.null(hour)){
     hour <- flowbased$Period[1]
   }
