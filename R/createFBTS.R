@@ -154,7 +154,7 @@ createFBTS <- function(opts, probabilityMatrix, multiplier,
     names(reg) <- X[2]
     reg$timeStep <- "daily"
     reg$showProgress <- !silent
-    TS <- do.call("readInputTS", reg)
+    TS <- do.call(antaresRead::readInputTS, reg)
     TS <- .formatTs(TS)
     TS
   })

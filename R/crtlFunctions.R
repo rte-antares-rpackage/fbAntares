@@ -101,6 +101,15 @@
     coefAntares[, vec[X] := B[, get(combi[X, 1])] - B[, get(combi[X, 2])]]
   }
   coefAntares[, lapply(.SD, round, 2), .SDcols = !"Name"]
+  
+  
+  # coefAntares <- data.table(Name = paste0("FB", nam),
+  #                           BE.FR = round(B$BE - B$FR, 2),
+  #                           DE.FR = round(B$DE - B$FR, 2),
+  #                           DE.NL = round(B$DE, 2),
+  #                           BE.NL = round(B$BE, 2),
+  #                           BE.DE = round(B$BE - B$DE, 2),
+  #                           DE.AT = round(B$DE - B$AT, 2))
 
 }
 
@@ -124,5 +133,25 @@
   if (!all(col_ptdf %in% ptdf_hubDrop)) {
     stop("hubDrop does not contain all the ptdf in PTDF")
   }
-} 
+}
 
+
+.crtlCountriesCombn <- function(countries) {
+  if(class(countries) == "list") {
+    data <- data.frame(rbindlist(lapply(1:length(countries), function(X) {
+      if(length(countries[[X]]) != 2) {
+        stop(paste("The combination of countries must all be of length 2, currrently for the",
+                   X, "element of the list :", length(countries[[X]])))
+      }
+      data.frame("X1" = countries[[X]][1], "X2" = countries[[X]][2])
+    })))
+  } else if(class(countries) == "character") {
+    data <- data.frame(t(utils::combn(countries, 2)))
+  } else {
+    stop("countries type can only be list or character")
+  }
+  setDT(data)
+  data <- data[, lapply(.SD, as.character)]
+  setDF(data)
+  data
+}

@@ -9,13 +9,18 @@
 #' line of flowbased, have to be of length 1
 #' @param xlim \code{numeric}, limits of x-axis
 #' @param ylim \code{numeric}, limits of y-axis
+#' @param width \code{character}, for rAmCharts only. Default to "420px" 
+#' (set to "100/100" for dynamic resize)
+#' @param height \code{character}, for rAmCharts only. Default to "410px" 
+#' (set to "100/100" for dynamic resize)
 #'
 #' @import rAmCharts
 #' @importFrom grDevices chull
 #'
 #' @noRd
 graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NULL, 
-                             xlim = c(-10000, 10000), ylim = c(-10000, 10000))
+                             xlim = c(-10000, 10000), ylim = c(-10000, 10000),
+                             width = "420px", height = "410px")
 {
   
   Period <- idDayType <- VERTDetails <- VERTRawDetails <- NULL
@@ -24,8 +29,7 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
     hour <- flowbased$Period[1]
   }
   # browser()
-
-
+  
   if(is.null(dayType)){
     dayType <- flowbased$idDayType[1]
   }
@@ -68,15 +72,15 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
                        ctry1, ctry2, hubnameDiff)
   dtReal <- .getChull(flowbased[Period == hour & idDayType == dayType, VERTRawDetails][[1]], 
                       ctry1, ctry2, hubnameDiff)
-
+  
   max_r <- max(nrow(dtModel), nrow(dtReal))
   if(nrow(dtModel) < max_r){
     dtModel <- rbind(dtModel, data.frame(ctry1 = rep(NA, max_r-nrow(dtModel)),
-                                 ctry2 = rep(NA, max_r-nrow(dtModel))))
+                                         ctry2 = rep(NA, max_r-nrow(dtModel))))
   }
   if(nrow(dtReal) < max_r){
     dtReal <- rbind(dtReal, data.frame(ctry1 = rep(NA,max_r- nrow(dtReal)),
-                                   ctry2 = rep(NA, max_r-nrow(dtReal))))
+                                       ctry2 = rep(NA, max_r-nrow(dtReal))))
   }
   
   out <- cbind.data.frame(dtModel, dtReal)
@@ -85,9 +89,9 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
   out <- round(out, 2)
   
   hour <- paste0(" Hour ", hour)
-
+  
   dayType <- paste0(" Typical day ", dayType)
-
+  
   pipeR::pipeline(
     amXYChart(dataProvider = out),
     addTitle(text = paste0("Flow-based ", ctry1, "/", ctry2, hour, dayType)),
@@ -106,7 +110,8 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
     addValueAxes(title = paste(ctry1, "(MW)"), position = "bottom", minimum = xlim[1], maximum = xlim[2]),
     addValueAxes(title =  paste(ctry2, "(MW)"), minimum = ylim[1], maximum = ylim[2]),
     setExport(enabled = TRUE),
-    setLegend(enabled = TRUE)
+    setLegend(enabled = TRUE),
+    plot(width = width, height = height)
   )
   
 }
@@ -117,7 +122,7 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
   
   # remove NOTE data.table
   chull <- NULL
-
+  
   data <- data.frame(data)
   if(country1 == hubnameDiff){
     ctry1 <- -rowSums(data[!grepl("Date|Period|N|nbsign|sign", colnames(data))])
@@ -150,6 +155,10 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 #' indicated by \code{antaresFlowbased::fbOptions()}
 #' @param output_file \code{character}, output directory of the html reports. 
 #' By default, the value is \code{NULL}, the reports will be written in the current directory.
+#' @param countries \code{list, character} a list of couples of countries to choose the axises for the projection
+#' of the flowbased domains (ex : list(c("BE", "FR"), c("BE", "NL"))) or an array of countries
+#' (ex : c("FR", "NL", "AT")) to project the domains on all the countries combination 
+#' (here FR+NL, FR+AT and NL+AT)
 #' @param dayType \code{numeric}, numerical id of the chosen typical flow-based days
 #' @param allFB \code{data.table}, table of flow-based domains (real and modelled) 
 #' returned by the function \link{computeFB}. By default, the value is \code{NULL}: 
@@ -169,14 +178,17 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 #' generateReportFb(dayType = 7, fb_opts = antaresFlowbased::fbOptions(), allFB = allFB)
 #' }
 #' @export
-generateReportFb <- function(dayType, output_file = NULL,
-                             fb_opts =NULL,
-                             allFB = NULL){
+generateReportFb <- function(
+  dayType, output_file = NULL,
+  countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")),
+  fb_opts = NULL, allFB = NULL){
   
-  fb_opts <- Period <- idDayType <- VERTDetails <- VERTRawDetails <- NULL
+  Period <- idDayType <- VERTDetails <- VERTRawDetails <- NULL
   if(is.null(allFB)){
     allFB <- readRDS(paste0(fb_opts$path, "/domainesFB.RDS"))
+    
   }
+  combi <- .crtlCountriesCombn(countries)
   
   dayType2 <- dayType
   if(is.null(output_file)){
@@ -186,7 +198,10 @@ generateReportFb <- function(dayType, output_file = NULL,
   output_file <- paste0(output_file, "/", "FlowBased_TD",dayType, "_", Sys.Date(), ".html")
   e <- environment()
   e$dayType <- dayType
-  e$dta <- allFB[dayType == dayType2]
+  e$dta <- allFB[idDayType == dayType2]
+  e$countries <- countries
+  e$combi <- combi
+  
   
   rmarkdown::render(system.file("/report/resumeFBflex.Rmd", package = "fbAntares"),
                     output_file = output_file,
@@ -194,4 +209,6 @@ generateReportFb <- function(dayType, output_file = NULL,
                       "Typical Day ", dayType, " (generated on ", Sys.Date(), ")")),
                     intermediates_dir = output_Dir, envir = e,
                     quiet = TRUE)
+  
+  print(paste("You can find your report here :", output_file))
 }

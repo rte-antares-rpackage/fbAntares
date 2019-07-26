@@ -16,6 +16,24 @@ library(flexdashboard)
 library(rAmCharts)
 library(antaresFlowbased)
 library(manipulateWidget)
+library(DT)
+library(shiny)
+```
+
+```{r Fonction plot}
+
+vizModelReal <- function(data, combi, hour, dayType) {
+  
+  column(12,
+         combineWidgets(
+           ncol = 2,
+           list = lapply(1:nrow(combi), function(X) {
+             graphFlowBased2D(data, combi[X, 1], combi[X, 2], hour = hour,
+                              dayType = dayType)
+           }), height = "100%", width = "100%")
+         )
+}
+
 ```
 
 
@@ -38,8 +56,8 @@ knitr::kable(data_render)
 ```{r}
 
 combineWidgets(
-    plot(amHist(x = data_error$error1, main = "Inf error", export = T, xlab = "Inf error")),
-    plot(amHist(x = data_error$error2, main = "Sup error", export = T, xlab = "Sup error"))
+  plot(amHist(x = data_error$error1, main = "Inf error", export = T, xlab = "Inf error")),
+  plot(amHist(x = data_error$error2, main = "Sup error", export = T, xlab = "Sup error"))
 )
 ```
 
@@ -71,29 +89,33 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
-```
+<!-- ### BE/FR -->
+<!-- ```{r} -->
+<!-- graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType) -->
+<!-- ``` -->
+
+<!-- ### DE/FR -->
+<!-- ```{r} -->
+<!-- graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType) -->
+<!-- ``` -->
+
+<!-- Row {data-height=650} -->
+<!-- ------------------------------------------------------------------ -->
+<!-- ### BE/NL {.no-padding} -->
+<!-- ```{r} -->
+<!-- graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType) -->
+<!-- ``` -->
+
+
+<!-- ### DE/NL -->
+<!-- ```{r} -->
+<!-- graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType) -->
+<!-- ``` -->
 
 Hour 2 {data-navmenu="Hour"}
 =====================================  
@@ -124,29 +146,9 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
-```
-
 
 Hour 3 {data-navmenu="Hour"}
 =====================================  
@@ -179,27 +181,8 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -232,30 +215,9 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
-```
-
 
 
 Hour 5 {data-navmenu="Hour"}
@@ -286,29 +248,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 
 Row {data-height=650}
 -----------------------------------------------------------------------
-
-
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -340,29 +281,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 
 Row {data-height=650}
 -----------------------------------------------------------------------
-
-
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -396,27 +316,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -450,27 +351,9 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 
 Row {data-height=650}
 -----------------------------------------------------------------------
-### BE/FR
-```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
 
-### DE/FR
 ```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -504,27 +387,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -557,27 +421,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -610,27 +455,9 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 
 Row {data-height=650}
 -----------------------------------------------------------------------
-### BE/FR
-```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
 
-### DE/FR
 ```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -663,28 +490,10 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
-```
 
 Hour 13 {data-navmenu="Hour"}
 =====================================  
@@ -715,27 +524,10 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 
 Row {data-height=650}
 -----------------------------------------------------------------------
-### BE/FR
-```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
 
 
-### DE/NL
 ```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -768,29 +560,10 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 
 Row {data-height=650}
 -----------------------------------------------------------------------
-### BE/FR
+
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
-```
-
 
 
 Hour 15 {data-navmenu="Hour"}
@@ -822,30 +595,10 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
+
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
-```
-
-
 
 Hour 16 {data-navmenu="Hour"}
 =====================================  
@@ -875,29 +628,9 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
-```
-
 
 
 Hour 17 {data-navmenu="Hour"}
@@ -929,27 +662,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -983,27 +697,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -1036,27 +731,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -1090,27 +766,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 Hour 21 {data-navmenu="Hour"}
@@ -1141,29 +798,9 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
-```
-
 
 Hour 22 {data-navmenu="Hour"}
 =====================================  
@@ -1195,27 +832,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -1249,27 +867,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
-```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
 
 
@@ -1302,28 +901,8 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 
-### BE/FR
 ```{r}
-graphFlowBased2D(data, "BE", "FR", hour = hour, dayType = dayType)
+vizModelReal(data, combi, hour, dayType)
 ```
-
-### DE/FR
-```{r}
-graphFlowBased2D(data, "DE", "FR", hour = hour, dayType = dayType)
-```
-
-Row {data-height=650}
-------------------------------------------------------------------
-### BE/NL {.no-padding}
-```{r}
-graphFlowBased2D(data, "BE", "NL", hour = hour, dayType = dayType)
-```
-
-
-### DE/NL
-```{r}
-graphFlowBased2D(data, "DE", "NL", hour = hour, dayType = dayType)
-```
-
 
 
