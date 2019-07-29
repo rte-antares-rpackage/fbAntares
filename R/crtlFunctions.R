@@ -155,3 +155,37 @@
   setDF(data)
   data
 }
+
+
+.dateTreatment <- function(maxPos, dtPoints, start) {
+  if (maxPos == 24) {
+    Date <- seq.POSIXt(from = as.POSIXct(start, format = "%Y-%m-%dT%H:%M", tz = "UTC"), 
+                       length.out = 24, by = "60 min")
+  }
+  if (maxPos == 96) {
+    Date <- seq.POSIXt(from = as.POSIXct(start, format = "%Y-%m-%dT%H:%M", tz = "UTC"), 
+                       length.out = 96, by = "15 min")
+  }
+  
+  if(nrow(dtPoints) == 25) {
+    change <- seq.POSIXt(from = Date[grep("02:00:00" ,Date)], 
+                         length.out = 1, by = "60 min")
+    # print(change)
+    Date <- c(Date[1:grep("02:00:00" ,Date)], change, Date[
+      (grep("02:00:00" ,Date)+1):length(Date)])
+  } else if(nrow(dtPoints) == 23) {
+    Date <- Date[!(Date %in% Date[grep("02:00:00" ,Date)])]
+  }
+  
+  if(nrow(dtPoints) == 100) {
+    change <- seq.POSIXt(from = Date[grep("02:00:00" ,Date)], 
+                         length.out = 4, by = "15 min")
+    # print(change)
+    Date <- c(Date[1:grep("02:00:00" ,Date)], change, Date[
+      (grep("02:00:00" ,Date)+1):length(Date)])
+  } else if(nrow(dtPoints) == 92) {
+    Date <- Date[!(Date %in% Date[grep("02:00:00" ,Date):grep("02:45:00" ,Date)])]
+  }
+  Date
+}
+
