@@ -19,8 +19,8 @@ request <- "https://transparency.entsoe.eu/api?DocumentType=A69&In_Domain=10YDE-
 #' @param docType \code{character} docType, A80 for generation unit, A77 for 
 #' produciton unit, A69 for solar and wind forecast, 
 #' @param docStatus \code{character} docStatus "A05" : Active, "A09" : Cancel
-#' @param start \code{character} start date, format YYYYMMDDhhmm (ex : 201807200000)
-#' @param end \code{character} end date, format YYYYMMDDhhmm (ex : 201907200000)
+#' @param timeStart \code{character} start date, format YYYYMMDDhhmm (ex : 201807200000)
+#' @param timeEnd \code{character} end date, format YYYYMMDDhhmm (ex : 201907200000)
 #' Maximum of documents load by request is 200 so if data are not correctly try 
 #' an other timestep.
 #' @param processType \code{character} type of processed data you want, ex : 

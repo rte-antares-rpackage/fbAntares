@@ -25,6 +25,12 @@ produciton unit, A69 for solar and wind forecast,}
 
 \item{docStatus}{\code{character} docStatus "A05" : Active, "A09" : Cancel}
 
+\item{timeStart}{\code{character} start date, format YYYYMMDDhhmm (ex : 201807200000)}
+
+\item{timeEnd}{\code{character} end date, format YYYYMMDDhhmm (ex : 201907200000)
+Maximum of documents load by request is 200 so if data are not correctly try 
+an other timestep.}
+
 \item{processType}{\code{character} type of processed data you want, ex : 
 A16 = realised, A33 = year ahead}
 
@@ -40,12 +46,6 @@ the wanted directory}
 
 \item{fileName}{\code{character} Name of the file you want to write 
 (either csv or rds). If NULL, the file is writtend in your working directory}
-
-\item{start}{\code{character} start date, format YYYYMMDDhhmm (ex : 201807200000)}
-
-\item{end}{\code{character} end date, format YYYYMMDDhhmm (ex : 201907200000)
-Maximum of documents load by request is 200 so if data are not correctly try 
-an other timestep.}
 }
 \description{
 This function allows you to download data from entsoe and convert 
