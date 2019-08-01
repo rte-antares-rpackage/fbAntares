@@ -26,9 +26,7 @@ Imports:
   rAmCharts,
   rmarkdown,
   antaresRead,
-  pipeR,
-  XML,
-  magrittr
+  pipeR
 RoxygenNote: 6.1.1
 Suggests: 
     testthat,
