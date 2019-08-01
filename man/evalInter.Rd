@@ -25,8 +25,9 @@ two ptdf columns :
  \item ptdfFR : french vertices
 }}
 
-\item{nbPoints}{\code{numeric}, number of points generated
-#' @param seed \code{numeric} fixed random seed, used for the weighted draw of the 
+\item{nbPoints}{\code{numeric}, number of points generated}
+
+\item{seed}{\code{numeric} fixed random seed, used for the weighted draw of the 
 typical days. By default, the value is 123456}
 }
 \description{

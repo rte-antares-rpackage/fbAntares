@@ -94,7 +94,7 @@
 #'  \item ptdfFR : french vertices
 #' }
 #' @param nbPoints \code{numeric}, number of points generated
-#' #' @param seed \code{numeric} fixed random seed, used for the weighted draw of the 
+#' @param seed \code{numeric} fixed random seed, used for the weighted draw of the 
 #' typical days. By default, the value is 123456
 #' 
 #' @examples
