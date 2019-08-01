@@ -21,7 +21,7 @@ giveBClassif <- function(PTDF, nbClust = 36)
     res <- cutree(hclust(dist(PTDFKm, method = "euclidean"), method = "ward.D"), nbClust)
   } else {
     
-    resKm <- kmeans(PTDFKm, centers = 5000, nstart = 10)
+    resKm <- kmeans(PTDFKm, centers = 5000, nstart = 20)
     
     res <- cutree(hclust(dist(resKm$centers, method = "euclidean"), method = "ward.D"), nbClust)
     
@@ -47,9 +47,9 @@ giveBClassif <- function(PTDF, nbClust = 36)
     centers[conCernRow,  paste0(
       "ptdf", c("BE", "DE", "FR", "AT")) := as.list(valueVect)]
   }
-  # affectRow(centers, c(-1,0,0,0))
-  # affectRow(centers, c(0,-1,0,0))
-  # affectRow(centers, c(0,0,-1,0))
-  # affectRow(centers, c(0,1,0,0))
+  affectRow(centers, c(-1,0,0,0))
+  affectRow(centers, c(0,-1,0,0))
+  affectRow(centers, c(0,0,-1,0))
+  affectRow(centers, c(0,1,0,0))
   centers[,paste0("ptdf", c("BE", "DE", "FR", "AT"))]
 }

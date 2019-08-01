@@ -6,10 +6,10 @@
 \usage{
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
-  reports = TRUE, dayType = "All", hour = "All", nbFaces = 36,
-  verbose = 1, nbLines = 10000, maxiter = 10, thresholdIndic = 90,
-  quad = F, hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
-  seed = 123456)
+  reports = TRUE, areaName = "cwe_at", areacsv = NULL,
+  dayType = "All", hour = "All", nbFaces = 36, verbose = 1,
+  nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
+  hubDrop = list(NL = c("BE", "DE", "FR", "AT")), seed = 123456)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 
@@ -35,6 +35,13 @@ By default, this leads to an example file (\code{"PTDF.csv"}, saved in the packa
 
 \item{reports}{\code{boolean}, if TRUE, the function will write html reports (one per typical day). By default, the value is 
 TRUE.}
+
+\item{areaName}{\code{character} The name of the area of your study, possible values are
+cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+which explains how your area work.}
+
+\item{areacsv}{\code{character} file name of the csv you give if you chose
+other for the areaName parameter.}
 
 \item{dayType}{\code{numeric}, by default, the value is All. (optional) Vector of id_days to compute.}
 
@@ -76,7 +83,8 @@ modelled domains and the volumetric error between them.
 \dontrun{
 # Compute models for all days and hours of a PTDF file, with no reports 
 # automatically generated at the same time
-computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), reports = FALSE)
+computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
+reports = FALSE, areaName = "cwe_at")
 
 }
 }

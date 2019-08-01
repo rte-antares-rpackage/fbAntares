@@ -88,21 +88,35 @@
 #' @param B \code{data.table}, face for 3 country, BE, DE anf FR
 #'
 #' @noRd
-.fromBtoAntares <- function(face, col_ptdf){
+.fromBtoAntares <- function(face, col_ptdf, areaName){
   B <- face[, .SD, .SDcols = col_ptdf]
   names(B) <- gsub("ptdf", "", names(B))
   nam <- as.character(1:nrow(B))
   nam <- ifelse(nchar(nam)==1, paste0(0, nam), nam)
 
   
-  
-  coefAntares <- data.table(Name = paste0("FB", nam),
-                            BE.FR = round(B$BE - B$FR, 2),
-                            DE.FR = round(B$DE - B$FR, 2),
-                            DE.NL = round(B$DE, 2),
-                            BE.NL = round(B$BE, 2),
-                            BE.DE = round(B$BE - B$DE, 2),
-                            AT.DE = round(B$AT - B$DE, 2))
+  if (areaName == "cwe_at") {
+    coefAntares <- data.table(Name = paste0("FB", nam),
+                              BE.FR = round(B$BE - B$FR, 2),
+                              DE.FR = round(B$DE - B$FR, 2),
+                              DE.NL = round(B$DE, 2),
+                              BE.NL = round(B$BE, 2),
+                              BE.DE = round(B$BE - B$DE, 2),
+                              AT.DE = round(B$AT - B$DE, 2))
+  } else if (areaName == "cwe") {
+    coefAntares <- data.table(Name = paste0("FB", nam),
+                              BE.FR = round(B$BE - B$FR, 2),
+                              DE.FR = round(B$DE - B$FR, 2),
+                              DE.NL = round(B$DE, 2),
+                              BE.NL = round(B$BE, 2),
+                              BE.DE = round(B$BE - B$DE, 2))
+  } else if (areaName == "other") {
+    
+  } else {
+    stop(paste("The value of areaName must be one of the following :",
+               "cwe, cwe_at, other,", "currently :", areaName))
+  }
+
 
 }
 

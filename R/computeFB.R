@@ -34,6 +34,11 @@
 #' @param hubDrop \code{list}, list of hubs in the ptdf, with the ones which should
 #' sustracted to the others as the names of the arrays which themself contain the ones which
 #' be sustracted
+#' @param areaName \code{character} The name of the area of your study, possible values are
+#' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+#' which explains how your area work.
+#' @param areacsv \code{character} file name of the csv you give if you chose
+#' other for the areaName parameter.
 #' @param nbFaces \code{numeric}, standard shape parameters: number of sides to select. By default, the value is 36.
 #' @param nbLines \code{numeric}, number of halflines drawn for the distance computation, default 10 000
 #' @param maxiter \code{numeric}, maximum number of iteration on the optimization problem, default 10
@@ -51,7 +56,8 @@
 #' \dontrun{
 #' # Compute models for all days and hours of a PTDF file, with no reports 
 #' # automatically generated at the same time
-#' computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), reports = FALSE)
+#' computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
+#' reports = FALSE, areaName = "cwe_at")
 #' 
 #' }
 #' @importFrom stats cutree dist hclust
@@ -60,6 +66,7 @@
 computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"),
                       outputName =  paste0(getwd(), "/antaresInput"),
                       reports = TRUE,
+                      areaName = "cwe_at", areacsv = NULL,
                       dayType = "All", hour = "All", nbFaces = 36,
                       verbose = 1,
                       nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
@@ -70,7 +77,6 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   }
   PTDFDetails <- Face <- ram <- outFlowbased <- generateReportFb <- idDayType <- Period <- NULL
   # pb <- txtProgressBar(style = 3)
-  
   
   
   ######### OK
@@ -98,6 +104,10 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     hour <- unique(PTDF$Period)
   }
   
+  ##From B to antares
+  
+  antaresFace <- .fromBtoAntares(face, col_ptdf, areaName = areaName)
+  
   combi <- data.table(expand.grid(hour, dayType))
   names(combi) <- c("hour", "dayType")
   
@@ -117,8 +127,10 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
       thresholdIndic = thresholdIndic, quad = quad, verbose = verbose)
     res[, Face := NULL]
     error <- evalInter(A, res)
-    print(error)
-
+    if(verbose >= 2) {
+      print(error)
+    }
+    
     PTDFRawDetails <- PTDFRaw[Period == combi[X, hour] & idDayType == combi[X, dayType],
                               .SD, .SDcols = c("idDayType", "Period", col_ptdfraw, "ram")]
     VERTDetails <- getVertices(res)
@@ -132,7 +144,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     setcolorder(VERTRawDetails, c("idDayType", "Period"))
     
     out <- data.table(Period = combi[X, hour], idDayType = combi[X, dayType],
-                        PTDFDetails = list(res), PTDFRawDetails = list(PTDFRawDetails),
+                      PTDFDetails = list(res), PTDFRawDetails = list(PTDFRawDetails),
                       VERTDetails = list(VERTDetails), VERTRawDetails = list(VERTRawDetails),
                       volIntraInter = error[1, 1],
                       error1 = error[1, 2], error2 = error[1, 3])
@@ -142,9 +154,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   
   
   
-  ##From B to antares
   
-  antaresFace <- .fromBtoAntares(face, col_ptdf)
   
   ######### OK
   

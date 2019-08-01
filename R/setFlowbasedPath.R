@@ -83,7 +83,8 @@ setFlowbasedPath <- function(path, model) {
   all_files <- list.files(path, full.names = FALSE, recursive = FALSE)
   
   if(!all(c("weight.txt", "domainesFB.RDS", "second_member.txt", "ts.txt") %in% all_files)){
-    stop("Flowbased reportory must have this 4 files : 'weight.txt', 'domainesFB.RDS', 'second_member.txt' and 'ts.txt'")
+    stop(paste("Flowbased reportory must have this 4 files : 'weight.txt',", 
+               "'domainesFB.RDS', 'second_member.txt' and 'ts.txt'"))
   }
   
   res <- list(path = path)
@@ -99,13 +100,15 @@ setFlowbasedPath <- function(path, model) {
 #'
 fbOptions <- function() {
   opts <- getOption("flowbased")
-  if (is.null(opts)) stop("Default flowbased options are not set. You need to run 'setFlowbasedPath()' to set them.")
-  else return(opts)
+  if (is.null(opts)) {
+    stop("Default flowbased options are not set. You need to run 'setFlowbasedPath()' to set them.")
+  } else return(opts)
 }
 
 #' @rdname flowbased-path
 #' @export
 #'
 getAvailableModel <- function(){
-  return(list.dirs(system.file("input/model", package = "antaresFlowbased"), full.names = FALSE, recursive = FALSE))
+  return(list.dirs(system.file("input/model", package = "antaresFlowbased"), 
+                   full.names = FALSE, recursive = FALSE))
 }
