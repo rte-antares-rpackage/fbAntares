@@ -37,6 +37,8 @@
 #' @param quad \code{logical}, TRUE if you want to solve it with a quadratic
 #' optimization problem, FALSE if you want to use a linear (default is linear, 
 #' which is faster)
+#' @param seed \code{numeric} fixed random seed, used for the weighted draw of the 
+#' typical days. By default, the value is 123456
 #' @param verbose \code{numeric}, shows the logs in console. By default, the value is 1.
 #' \itemize{
 #'  \item 0 : No log
@@ -69,8 +71,11 @@
 #' 
 #' @export
 
-getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F, verbose = 2) {
-  
+getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F, 
+                              verbose = 2, seed = 123456) {
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
   Line_Coo_X1 <- NULL
   Line_Coo_X2 <- NULL
   
@@ -90,7 +95,7 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F, 
   fixPlan <- fixPlan[order(Line_Coo_X1, Line_Coo_X2)]
   movingPlan <- .getIntersecPoints(dtLines, PLANOUT)
   movingPlan <- movingPlan[order(Line_Coo_X1, Line_Coo_X2)]
-  
+  indic0 <- 0
   for(k in 1:maxiter) {
     newram <- .getDmatdvec(fixPlan, movingPlan, PLANOUT, col_ptdf, quad)
     for (i in 1:nrow(PLANOUT)) {
@@ -99,15 +104,26 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F, 
       }
     }
     indic <- evalInter(PLANOUT, A)[1, 1]
+
     if (verbose > 1) {
       print(paste("Iteration", k, "indic :", indic))
+    }
+    
+    if (indic > indic0) {
+      indic0 <- indic
+      bestRam <- newram
+    } else if (indic == indic0) {
+      return(PLANOUT)
+    }else if (indic == indicmoinsun) {
+      return(PLANOUT)
     }
     movingPlan <- .getIntersecPoints(dtLines, PLANOUT)
     movingPlan <- movingPlan[order(Line_Coo_X1, Line_Coo_X2)]
     if (indic > thresholdIndic) {
       return(PLANOUT)
-    }
-    
+    } 
+    indicmoinsun <- indic
+
   }
   return(PLANOUT)
 }

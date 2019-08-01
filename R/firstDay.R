@@ -21,8 +21,9 @@
 #' }
 #' @import antaresRead
 #' @export
-identifyFirstDay <- function(opts, firstArea = "fr", secondArea = c("fr", "de", "be", "nl"))
+identifyFirstDay <- function(opts, firstArea = "fr", secondArea = c("fr", "de", "be", "nl", "at"))
 {
+  
   meanFR <- .giveMean7(firstArea, opts)
   
   if(!is.null(secondArea))meanCWE <- .giveMean7(secondArea, opts)

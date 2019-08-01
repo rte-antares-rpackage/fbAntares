@@ -4,7 +4,7 @@
 \alias{evalInter}
 \title{Evaluate the shared volume of two polyhedra A and B}
 \usage{
-evalInter(A, B, nbPoints = 50000)
+evalInter(A, B, nbPoints = 50000, seed = 123456)
 }
 \arguments{
 \item{A}{\code{data.table}, fix polyhedron, data.table containing at least 
@@ -25,7 +25,9 @@ two ptdf columns :
  \item ptdfFR : french vertices
 }}
 
-\item{nbPoints}{\code{numeric}, number of points generated}
+\item{nbPoints}{\code{numeric}, number of points generated
+#' @param seed \code{numeric} fixed random seed, used for the weighted draw of the 
+typical days. By default, the value is 123456}
 }
 \description{
 This function returns and indicator between 0 and 1 where 0 means

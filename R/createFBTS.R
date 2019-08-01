@@ -32,7 +32,7 @@
 #' Wednesday, you must specify firstDay = 3. The first day can be directly calculated
 #' by the function \link{identifyFirstDay}.
 #' @param seed \code{numeric} fixed random seed, used for the weighted draw of the 
-#' typical days. By default, the value is NULL.
+#' typical days. By default, the value is 123456
 #' @param silent \code{boolean}, non display of a progress bar. By default, the value is FALSE.
 #' @param outputPath \code{character}, path of the folder where the time series of 
 #' typical flow-based output file (ts.txt) will be written. The current directory is chosen by default.
@@ -53,14 +53,14 @@
 #'                          coef = c(1, 352250, 246403))
 #' 
 #' # Set the path to Antares study inputs 
-#' opts <- antaresRead::setSimulationPath("D:/Users/titorobe/Desktop/antaresStudy", 1)
+#' opts <- antaresRead::setSimulationPath("../../Pour Julien/MT_base_nucM2_2023/", simulation = 1)
 #' 
 #' # calendar
 #' # first day identified based on the input data of the 
 #' # Antares study designated by opts
-#' firstDay <- identifyFirstDay(opts) 
-#' interSeasonBegin <- as.Date(c("2017-09-03", "2018-02-02"))
-#' interSeasonEnd <- as.Date(c("2020-10-04", "2018-05-02"))
+#' firstDay <- identifyFirstDay(opts, secondArea = NULL) 
+#' interSeasonBegin <- c("2018-10-01", "2019-03-16")
+#' interSeasonEnd <- c("2018-10-31", "2019-05-15")
 #' 
 #' # Generate flow-based time series
 #' ts <- createFBTS(opts = opts, probabilityMatrix = matProb, multiplier = multiplier,

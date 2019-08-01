@@ -40,7 +40,7 @@
 #' @param thresholdIndic \code{numeric}, minimum value of the validation indicator to stop, default 0.9
 #' the optimization problem
 #' @param quad \code{logical}, quadratic problem or linear, default FALSE
-#' @param seed \code{numeric}, value of the seed, default NULL
+#' @param seed \code{numeric}, value of the seed, default 123456
 #' @param verbose \code{numeric}, shows the logs in console. By default, the value is 1.
 #' \itemize{
 #'  \item 0 : No log
@@ -51,7 +51,7 @@
 #' \dontrun{
 #' # Compute models for all days and hours of a PTDF file, with no reports 
 #' # automatically generated at the same time
-#' computeFB(PTDF = system.file("testdata/2019-07-17ptdf.csv", package = "fbAntares"), reports = FALSE)
+#' computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), reports = FALSE)
 #' 
 #' }
 #' @importFrom stats cutree dist hclust
@@ -63,9 +63,11 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       dayType = "All", hour = "All", nbFaces = 36,
                       verbose = 1,
                       nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
-                      hubDrop = list(NL = c("BE", "DE", "FR", "AT")), seed = NULL)
+                      hubDrop = list(NL = c("BE", "DE", "FR", "AT")), seed = 123456)
 {
-  
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
   PTDFDetails <- Face <- ram <- outFlowbased <- generateReportFb <- idDayType <- Period <- NULL
   # pb <- txtProgressBar(style = 3)
   
@@ -115,6 +117,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
       thresholdIndic = thresholdIndic, quad = quad, verbose = verbose)
     res[, Face := NULL]
     error <- evalInter(A, res)
+    print(error)
 
     PTDFRawDetails <- PTDFRaw[Period == combi[X, hour] & idDayType == combi[X, dayType],
                               .SD, .SDcols = c("idDayType", "Period", col_ptdfraw, "ram")]

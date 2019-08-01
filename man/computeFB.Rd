@@ -9,7 +9,7 @@ computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   reports = TRUE, dayType = "All", hour = "All", nbFaces = 36,
   verbose = 1, nbLines = 10000, maxiter = 10, thresholdIndic = 90,
   quad = F, hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
-  seed = NULL)
+  seed = 123456)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 
@@ -62,7 +62,7 @@ the optimization problem}
 sustracted to the others as the names of the arrays which themself contain the ones which
 be sustracted}
 
-\item{seed}{\code{numeric}, value of the seed, default NULL}
+\item{seed}{\code{numeric}, value of the seed, default 123456}
 }
 \description{
 This function follows two steps: based on the list of flow-based domains given in input, it will calculate a standard shape
@@ -76,7 +76,7 @@ modelled domains and the volumetric error between them.
 \dontrun{
 # Compute models for all days and hours of a PTDF file, with no reports 
 # automatically generated at the same time
-computeFB(PTDF = system.file("testdata/2019-07-17ptdf.csv", package = "fbAntares"), reports = FALSE)
+computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), reports = FALSE)
 
 }
 }

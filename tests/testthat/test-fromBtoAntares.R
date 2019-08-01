@@ -6,7 +6,7 @@ test_that(".fromBtoAntares", {
   col_ptdf <- colnames(data)[grep("ptdf", colnames(data))]
   output <- .fromBtoAntares(data, col_ptdf)
   
-  expect_true(ncol(output) == ncol(combn(col_ptdf, 2)))
+  expect_true(ncol(output) == 7)
   expect_true(nrow(output) > 0)
   expect_true("data.table" %in% class(output))
 })

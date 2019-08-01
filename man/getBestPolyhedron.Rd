@@ -5,7 +5,7 @@
 \title{Adjust a polyhedron from a set of facets to approach a reference polyhedron}
 \usage{
 getBestPolyhedron(A, B, nbLines, maxiter, thresholdIndic, quad = F,
-  verbose = 2)
+  verbose = 2, seed = 123456)
 }
 \arguments{
 \item{A}{\code{data.table}, fix polyhedron, data.table containing at least 
@@ -51,6 +51,9 @@ which is faster)}
  \item 1 : No log
  \item 2 : Medium log
  }}
+
+\item{seed}{\code{numeric} fixed random seed, used for the weighted draw of the 
+typical days. By default, the value is 123456}
 }
 \description{
 This function takes in input two polyhedrons, the reference one and

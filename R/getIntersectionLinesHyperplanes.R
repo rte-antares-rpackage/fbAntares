@@ -94,6 +94,8 @@
 #'  \item ptdfFR : french vertices
 #' }
 #' @param nbPoints \code{numeric}, number of points generated
+#' #' @param seed \code{numeric} fixed random seed, used for the weighted draw of the 
+#' typical days. By default, the value is 123456
 #' 
 #' @examples
 #' \dontrun{
@@ -110,7 +112,10 @@
 #' @importFrom stats runif
 #' 
 #' @export
-evalInter <- function(A, B, nbPoints = 50000){
+evalInter <- function(A, B, nbPoints = 50000, seed = 123456){
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
   
   .crtldtFormat(A)
   .crtldtFormat(B)
