@@ -2,7 +2,7 @@ context("createFBTS")
 
 test_that("make ts", {
   
-  op5 <- antaresRead::setSimulationPath(testStudy2)
+  op5 <- suppressWarnings(antaresRead::setSimulationPath(testStudy2))
   
   matProb <- readRDS(system.file("testdata/proba.RDS", package = "fbAntares"))
   
