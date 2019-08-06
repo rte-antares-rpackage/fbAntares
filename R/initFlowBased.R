@@ -231,7 +231,7 @@ initFlowBased <- function(fb_opts = antaresFlowbased::fbOptions()$path,
       seM[Name == tpR$name][tsT, on="Id_day", allow.cartesian=TRUE]$vect_b
     })
     
-    createCluster(area = "model_description_fb",
+    antaresEditObject::createCluster(area = "model_description_fb",
                   cluster_name = clusterName,
                   unitcount = 1L,
                   group = "other",
@@ -299,7 +299,7 @@ initFlowBased <- function(fb_opts = antaresFlowbased::fbOptions()$path,
     names(ctV) <-clUpdate 
     names(coefficients) <- tolower(names(coefficients))
     coefficients <- c(coefficients, ctV)
-    createBindingConstraint(name = ctName,
+    antaresEditObject::createBindingConstraint(name = ctName,
                             values = NULL,
                             timeStep = timeStep,
                             operator = "less",
@@ -318,7 +318,7 @@ initFlowBased <- function(fb_opts = antaresFlowbased::fbOptions()$path,
   bdcToSupress <- nameBdc[grep("_fb$", nameBdc)]
   
   sapply(bdcToSupress, function(X){
-    removeBindingConstraint(X, opts = opts)
+    antaresEditObject::removeBindingConstraint(X, opts = opts)
     NULL
   })
 }
@@ -326,9 +326,10 @@ initFlowBased <- function(fb_opts = antaresFlowbased::fbOptions()$path,
 
 .deleteOldAreaAndCreatNew <- function(opts, area = "model_description_fb")
 {
-  if("model_description_fb" %in% getAreas(opts = opts))opts <- removeArea(area, opts = opts)
-  
-  opts <- createArea(area, opts = opts)
+  if("model_description_fb" %in% getAreas(opts = opts)) {
+    opts <- antaresEditObject::removeArea(area, opts = opts)
+  }
+  opts <- antaresEditObject::createArea(area, opts = opts)
   opts
   NULL
 }

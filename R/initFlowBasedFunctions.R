@@ -14,8 +14,13 @@
   }
   recontructName <- 1:nrow(weigth)
   recontructName <- as.character(recontructName)
-  recontructName <- ifelse(nchar(recontructName) == 1, paste0(0, recontructName), 
-                           recontructName)
+  maxnchar <- max(nchar(recontructName))
+  recontructName <- ifelse(nchar(recontructName)==1, paste0(0, recontructName), recontructName)
+  if(maxnchar == 3) {
+    recontructName <- ifelse(nchar(recontructName)==2, paste0(0, recontructName), recontructName)
+  }
+  # recontructName <- ifelse(nchar(recontructName) == 1, paste0(0, recontructName), 
+  #                          recontructName)
   recontructName <- paste0("FB", recontructName)
 
   if(any(recontructName != weigth$name)){
@@ -44,7 +49,11 @@
   secondMember$vect_b <- round(secondMember$vect_b, 0)
   nameConstraints <- sort(unique(secondMember$Name))
   nam <- 1:length(nameConstraints)
+  maxnchar <- max(nchar(nam))
   nam <- ifelse(nchar(nam)==1, paste0(0, nam), nam)
+  if(maxnchar == 3) {
+    nam <- ifelse(nchar(nam)==2, paste0(0, nam), nam)
+  }
   nam <- paste0("FB", nam)
   if(!(all(nameConstraints == nam))){
     stop("Problem in name of constraints in file second_member.txt")

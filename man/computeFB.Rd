@@ -7,9 +7,10 @@
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
   reports = TRUE, areaName = "cwe_at", areacsv = NULL,
-  dayType = "All", hour = "All", nbFaces = 36, verbose = 1,
+  dayType = "All", hour = "All", nbFaces = 75, verbose = 1,
   nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
-  hubDrop = list(NL = c("BE", "DE", "FR", "AT")), seed = 123456)
+  hubDrop = list(NL = c("BE", "DE", "FR", "AT")), fixFaces = NULL,
+  seed = 123456)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 
@@ -68,6 +69,13 @@ the optimization problem}
 \item{hubDrop}{\code{list}, list of hubs in the ptdf, with the ones which should
 sustracted to the others as the names of the arrays which themself contain the ones which
 be sustracted}
+
+\item{fixFaces}{\code{data.table} data.table if you want to use fix faces for the creation
+of the flowbased models. If you want to do it, the data.table has the following form :
+data.table(func = c("min", "min", "max", "min"), zone = c("BE", "FR", "DE", "DE")).
+func is the direction of the fix faces and zone is the area of this direction.
+If you give for example min and DE, there will be a fix face at the minimum import
+value of Germany.}
 
 \item{seed}{\code{numeric}, value of the seed, default 123456}
 }

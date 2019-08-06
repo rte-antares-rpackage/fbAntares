@@ -22,7 +22,8 @@ library(shiny)
 
 ```{r Fonction plot}
 
-vizModelReal <- function(data, combi, hour, dayType) {
+vizModelReal <- function(data, combi, hour, dayType, 
+                             xlim = xlim, ylim = ylim) {
   
   column(12,
          combineWidgets(

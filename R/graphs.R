@@ -19,7 +19,7 @@
 #'
 #' @noRd
 graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NULL, 
-                             xlim = c(-10000, 10000), ylim = c(-10000, 10000),
+                             xlim = c(-12000, 12000), ylim = c(-12000, 12000),
                              width = "420px", height = "410px")
 {
   
@@ -164,7 +164,8 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 #' returned by the function \link{computeFB}. By default, the value is \code{NULL}: 
 #' in this case, the flow-based data is directly read in the model designated by 
 #' the parameter fb_opts.
-#'
+#' @param xlim \code{numeric}, limits of x-axis
+#' @param ylim \code{numeric}, limits of y-axis
 #' @import rmarkdown flexdashboard rAmCharts manipulateWidget
 #'
 #' @examples
@@ -181,7 +182,7 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 generateReportFb <- function(
   dayType, output_file = NULL,
   countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")),
-  fb_opts = NULL, allFB = NULL){
+  fb_opts = NULL, allFB = NULL, xlim = c(-12000, 12000), ylim = c(-12000, 12000)){
   
   Period <- idDayType <- VERTDetails <- VERTRawDetails <- NULL
   if(is.null(allFB)){
