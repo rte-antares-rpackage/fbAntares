@@ -5,7 +5,7 @@
 \title{Adjust a polyhedron from a set of facets to approach a reference polyhedron}
 \usage{
 getBestPolyhedron(A, B, nbLines, maxiter, thresholdIndic, quad = F,
-  verbose = 2, seed = 123456)
+  verbose = 2, seed = 123456, fixFaces, VERTRawDetails)
 }
 \arguments{
 \item{A}{\code{data.table}, fix polyhedron, data.table containing at least 
@@ -50,7 +50,14 @@ which is faster)}
  \item 0 : No log
  \item 1 : No log
  \item 2 : Medium log
- }}
+ }
+ @param fixFaces \code{data.table} data.table if you want to use fix faces for the creation
+of the flowbased models. If you want to do it, the data.table has the following form :
+data.table(func = c("min", "min", "max", "min"), zone = c("BE", "FR", "DE", "DE")).
+func is the direction of the fix faces and zone is the area of this direction.
+If you give for example min and DE, there will be a fix face at the minimum import
+value of Germany.
+ @param VERTRawDetails \code{data.table}, vertices of the polyhedron A}
 
 \item{seed}{\code{numeric} fixed random seed, used for the weighted draw of the 
 typical days. By default, the value is 123456}

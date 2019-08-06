@@ -45,6 +45,13 @@
 #'  \item 1 : No log
 #'  \item 2 : Medium log
 #'  }
+#'  @param fixFaces \code{data.table} data.table if you want to use fix faces for the creation
+#' of the flowbased models. If you want to do it, the data.table has the following form :
+#' data.table(func = c("min", "min", "max", "min"), zone = c("BE", "FR", "DE", "DE")).
+#' func is the direction of the fix faces and zone is the area of this direction.
+#' If you give for example min and DE, there will be a fix face at the minimum import
+#' value of Germany.
+#'  @param VERTRawDetails \code{data.table}, vertices of the polyhedron A
 #' @examples
 #' \dontrun{
 #' library(data.table)
@@ -72,7 +79,7 @@
 #' @export
 
 getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F, 
-                              verbose = 2, seed = 123456) {
+                              verbose = 2, seed = 123456, fixFaces, VERTRawDetails) {
   if (!is.null(seed)) {
     set.seed(seed)
   }
@@ -86,9 +93,38 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
   .crtlNumeric(maxiter)
   .crtlNumeric(thresholdIndic)
   .crtlBoolean(quad)
-  
+  # browser()
   A <- copy(A)
   dtLines <- .getNormalizedLines(nbLines = nbLines, dim = length(col_ptdf))
+  
+  ###########
+  maxRow <- unname(unlist(VERTRawDetails[, lapply(.SD, which.max), .SDcols = colnames(
+    VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
+  minRow <- unname(unlist(VERTRawDetails[, lapply(.SD, which.min), .SDcols = colnames(
+    VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
+  
+  normvec <- sqrt(rowSums(VERTRawDetails[
+    c(minRow, maxRow), .SD, .SDcols = colnames(
+      VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]^2))
+  
+  Linesmerge <- VERTRawDetails[c(minRow, maxRow), .SD, .SDcols = colnames(
+    VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]/normvec
+  setnames(Linesmerge, colnames(dtLines)[grep("Line", colnames(dtLines))])
+  
+  Linesmerge <- rbindlist(lapply(1:(nbLines/(10*nrow(Linesmerge))), function(X) {
+    Linesmerge + runif(nrow(Linesmerge))/100000
+  }))
+  
+  dtLines <- merge(dtLines, Linesmerge, by = colnames(Linesmerge), all = T)
+  
+  
+  
+  ###########
+  # dtLines <- merge(dtLines, B[, .SD, .SDcols = colnames(B)[grep("ptdf", colnames(B))]][
+  #   (nrow(B)-nrow(fixFaces)+1):nrow(B)], all = T,
+  #   by.y = colnames(B)[grep("ptdf", colnames(B))], 
+  #   by.x = colnames(dtLines)[grep("Line", colnames(dtLines))])
+  
   fixPlan <- .getIntersecPoints(dtLines, A)
   PLANOUT <- copy(B)
   
@@ -97,14 +133,18 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
   movingPlan <- movingPlan[order(Line_Coo_X1, Line_Coo_X2)]
   indic0 <- 0
   for(k in 1:maxiter) {
-    newram <- .getDmatdvec(fixPlan, movingPlan, PLANOUT, col_ptdf, quad)
+    newram <- .getDmatdvec(fixPlan, movingPlan, PLANOUT, col_ptdf, quad, fixFaces)
+    # newram[(length(newram)-nrow(fixFaces)+1):length(newram)] <- 0
     for (i in 1:nrow(PLANOUT)) {
+      
       if(newram[i] != 0) {
         PLANOUT$ram[i] <- newram[i]
       }
     }
+    # print(movingPlan[Line_Coo_X4 == -1])
+    # print(tail(unique(movingPlan[order(Face), Face])))
     indic <- evalInter(PLANOUT, A)[1, 1]
-
+    
     if (verbose > 1) {
       print(paste("Iteration", k, "indic :", indic))
     }
@@ -123,14 +163,14 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
       return(PLANOUT)
     } 
     indicmoinsun <- indic
-
+    
   }
   return(PLANOUT)
 }
 
 #######
 
-.getDmatdvec <- function(fixPlan, movingPlan, PLANOUT, col_ptdf, quad) {
+.getDmatdvec <- function(fixPlan, movingPlan, PLANOUT, col_ptdf, quad, fixFaces) {
   
   Face <- NULL
   
@@ -167,11 +207,11 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
       
     }
   }
-  .launchOptim(Dmat, dvec, quad)
+  .launchOptim(Dmat, dvec, quad, fixFaces, PLANOUT)
 }
 
 
-.launchOptim <- function(Dmat, dvec, quad) {
+.launchOptim <- function(Dmat, dvec, quad, fixFaces, PLANOUT) {
   
   if (quad) {
     Dmat[Dmat == 0] <- 1
@@ -183,8 +223,18 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
                     Amat = Amat,
                     bvec = bvec)
   } else {
-    B <- diag(Dmat, nrow =length(Dmat))
-    res <- lp(direction = "min", objective.in = Dmat, const.mat = B, 
+    
+    Bdiag <- diag(Dmat, nrow =length(Dmat))
+    if (!is.null(fixFaces)) {
+      if (nrow(fixFaces) > 0) {
+        diag(Bdiag[(ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag),
+                   (ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag)]) <- 1
+        dvec[(length(dvec)-nrow(fixFaces)+1):length(dvec)] <- PLANOUT$ram[
+          (nrow(PLANOUT)-nrow(fixFaces)+1):nrow(PLANOUT)]
+      }
+    }
+    
+    res <- lp(direction = "min", objective.in = Dmat, const.mat = Bdiag, 
               const.rhs = dvec, const.dir = ">=")
   }
   

@@ -34,6 +34,12 @@
 #' @param hubDrop \code{list}, list of hubs in the ptdf, with the ones which should
 #' sustracted to the others as the names of the arrays which themself contain the ones which
 #' be sustracted
+#' @param  fixFaces \code{data.table} data.table if you want to use fix faces for the creation
+#' of the flowbased models. If you want to do it, the data.table has the following form :
+#' data.table(func = c("min", "min", "max", "min"), zone = c("BE", "FR", "DE", "DE")).
+#' func is the direction of the fix faces and zone is the area of this direction.
+#' If you give for example min and DE, there will be a fix face at the minimum import
+#' value of Germany.
 #' @param areaName \code{character} The name of the area of your study, possible values are
 #' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
 #' which explains how your area work.
@@ -67,10 +73,12 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       outputName =  paste0(getwd(), "/antaresInput"),
                       reports = TRUE,
                       areaName = "cwe_at", areacsv = NULL,
-                      dayType = "All", hour = "All", nbFaces = 36,
+                      dayType = "All", hour = "All", nbFaces = 75,
                       verbose = 1,
                       nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
-                      hubDrop = list(NL = c("BE", "DE", "FR", "AT")), seed = 123456)
+                      hubDrop = list(NL = c("BE", "DE", "FR", "AT")), 
+                      fixFaces = NULL,
+                      seed = 123456)
 {
   if (!is.null(seed)) {
     set.seed(seed)
@@ -93,7 +101,19 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   # univ <- .univ(nb = 500000, bInf = -10000, bSup = 10000, 
   #               col_ptdf = col_ptdf, seed = seed)
   
-  face <- giveBClassif(PTDF, nbClust = nbFaces)
+  ##### début test
+  if (!is.null(fixFaces)) { 
+    if (nrow(fixFaces) > 0) {
+      .crtlFixFaces(fixFaces = fixFaces, col_ptdf = col_ptdf)
+      
+    }
+    nbCl <- nbFaces-nrow(fixFaces)
+  } else {
+    nbCl <- nbFaces
+  }
+  ##### fin test
+  
+  face <- giveBClassif(PTDF, nbClust = nbCl, fixFaces = fixFaces, col_ptdf = col_ptdf)
   face <- round(face, 2)
   if(dayType == "All"){
     dayType <- unique(PTDF$idDayType)
@@ -119,12 +139,29 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     A <- PTDF[Period == combi[X, hour] &
                 idDayType == combi[X, dayType], .SD,
               .SDcols = c("idDayType", "Period", col_ptdf, "ram")]
+    
+    VERTRawDetails <- getVertices(A)
+    VERTRawDetails[, c("Date", "Period") := NULL]
+    VERTRawDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
+    setcolorder(VERTRawDetails, c("idDayType", "Period"))
+    
     B <- copy(face)
-    B[, c("ram", "idDayType", "Period") := list(100, unique(A$idDayType), unique(A$Period))]
+    B[, c("ram", "idDayType", "Period") := list(1000, unique(A$idDayType), unique(A$Period))]
+    # B[, c("ram", "idDayType", "Period") := list(100, unique(A$idDayType), unique(A$Period))]
+    ####### début test
+    if (!is.null(fixFaces)) {
+      if (nrow(fixFaces) > 0) {
+      dtFixRam <- .getFixRams(fixFaces, VERTRawDetails)
+      B[(nrow(B)-nrow(dtFixRam)+1):nrow(B), ram := abs(dtFixRam$ram)]
+      }
+    }
+    ####### fin test
     setcolorder(B, colnames(A))
     res <- getBestPolyhedron(
       A = A, B = B, nbLines = nbLines, maxiter = maxiter, 
-      thresholdIndic = thresholdIndic, quad = quad, verbose = verbose)
+      thresholdIndic = thresholdIndic, quad = quad, verbose = verbose, 
+      fixFaces = fixFaces, VERTRawDetails = VERTRawDetails)
+    
     res[, Face := NULL]
     error <- evalInter(A, res)
     if(verbose >= 2) {
@@ -138,10 +175,6 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     VERTDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
     setcolorder(VERTDetails, c("idDayType", "Period"))
     
-    VERTRawDetails <- getVertices(A)
-    VERTRawDetails[, c("Date", "Period") := NULL]
-    VERTRawDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
-    setcolorder(VERTRawDetails, c("idDayType", "Period"))
     
     out <- data.table(Period = combi[X, hour], idDayType = combi[X, dayType],
                       PTDFDetails = list(res), PTDFRawDetails = list(PTDFRawDetails),
@@ -153,16 +186,17 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   ######### OK
   
   
-  
-  
-  
   ######### OK
   
   ##Output
   allFaces <- rbindlist(sapply(1:nrow(combi), function(X){
     
     nam <- 1:nrow(antaresFace)
-    nam <- ifelse(nchar(nam) == 1, paste0("0", nam), nam)
+    maxnchar <- max(nchar(nam))
+    nam <- ifelse(nchar(nam)==1, paste0(0, nam), nam)
+    if(maxnchar == 3) {
+      nam <- ifelse(nchar(nam)==2, paste0(0, nam), nam)
+    }
     data.table(Id_day = combi[X, dayType], Id_hour = combi[X, hour],
                vect_b = flowbased[idDayType == combi[X, dayType] &
                                     Period == combi[X, hour],

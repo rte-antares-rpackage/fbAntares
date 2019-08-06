@@ -20,7 +20,7 @@
 
 
 
-.getIntersecPoints <- function(dtLines, PLAN) {
+.getIntersecPoints <- function(dtLines, PLAN, center = NULL) {
   ## Input : 
   ##  dtLines, obtained with the previous function .getNormalizedLines
   ##  PLAN : data.table containing ptdf and ram of a polyhedron
@@ -31,7 +31,7 @@
   Face <- NULL
   .crtldtFormat(dtLines)
   .crtldtFormat(PLAN)
-
+  
   PLAN[, Face := 1:nrow(PLAN)]
   # Passage en matrice des coordonnées des vecteurs directeurs des droites
   matLines <- as.matrix(dtLines[, .SD, .SDcols = colnames(dtLines)[
@@ -46,8 +46,19 @@
   # Valeur du produit scalaire dans la formule pour trouver le lambda
   denom <- matLines %*% ptdf
   
+  ######## Test sur le centre
+  if (!is.null(center)) {
+    center <- as.matrix(center)
+    center <- matrix(center, nrow = ncol(ptdf), ncol = 4, byrow = T)
+    # browser()
+    tCenter <- colSums(ptdf * t(center))
+    denom2 <- tCenter/t(denom)
+  }
   # surcharge de ram si tout d'un coup
-  lambda <- t(ram/t(denom))
+  lambda <- t(ram/t(denom)) 
+  if (!is.null(center)) {
+    lambda <- lambda - t(denom2)
+  }
   # surcharge de ram si tout d'un coup
   lambda[lambda<0] <- 10000000
   
@@ -56,11 +67,16 @@
   
   Points <- data.table(Face = Points)
   Points$lambda <- lambdaout
-  
+  center <- unique(center)
   for(i in 1:nrow(ptdf)) {
     
     Points[[paste0("Line_Coo_X", i)]] <- matLines[, paste0("Line_Coo_X", i)]
-    Points[[paste0("X", i)]] <- Points$lambda*matLines[, paste0("Line_Coo_X", i)]
+    if (is.null(center)) {
+      Points[[paste0("X", i)]] <- Points$lambda*matLines[, paste0("Line_Coo_X", i)]
+    } else {
+      Points[[paste0("X", i)]] <- Points$lambda*matLines[, paste0("Line_Coo_X", i)] + center[1, i]
+    }
+    
   }
   
   Points <- merge(Points, PLAN, by = "Face")
@@ -128,7 +144,7 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456){
   for (i in 2:(length(col_ptdf)-1)) {
     PT[, paste0("Line_Coo_X", i) := runif(nbPoints) * 30000 - 15000]
   }
-
+  
   
   clcPTin <- function(P, PT, col_ptdf){
     for (col in col_ptdf[1:(length(col_ptdf)-1)]) {

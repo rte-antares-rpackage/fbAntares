@@ -8,7 +8,7 @@
   if (nbLines <= 0) {
     stop(paste("You should ask for at least one line, currently :", nbLines))
   }
-  if (dim <= 2) {
+  if (dim < 2) {
     stop(paste("You should ask for at least two-dimensions lines, currently :", 
                dim))
   }
@@ -92,8 +92,12 @@
   B <- face[, .SD, .SDcols = col_ptdf]
   names(B) <- gsub("ptdf", "", names(B))
   nam <- as.character(1:nrow(B))
+  maxnchar <- max(nchar(nam))
   nam <- ifelse(nchar(nam)==1, paste0(0, nam), nam)
-
+  if(maxnchar == 3) {
+    nam <- ifelse(nchar(nam)==2, paste0(0, nam), nam)
+  }
+  
   
   if (areaName == "cwe_at") {
     coefAntares <- data.table(Name = paste0("FB", nam),
@@ -116,8 +120,8 @@
     stop(paste("The value of areaName must be one of the following :",
                "cwe, cwe_at, other,", "currently :", areaName))
   }
-
-
+  
+  
 }
 
 .ctrlHubDrop <- function(hubDrop, PTDF) {
@@ -164,3 +168,37 @@
 }
 
 
+
+.crtlFixFaces <- function(fixFaces, col_ptdf) {
+  col <- colnames(fixFaces)
+  if(!all(col == c("func", "zone"))) {
+    stop(paste("The colnames of fixFaces must be func and zone in this order.",
+               "Currently :", paste(col, collapse = ", ")))
+  }
+  valfunc <- unique(fixFaces$func)
+  valzone <- unique(fixFaces$zone)
+  if(!all(valfunc %in% c("min", "max"))) {
+    stop(paste("The values of func in fixFaces must be min or max, currently :", 
+               paste(valfunc, collapse = ", ")))
+  }
+  if(!all(valzone %in% gsub("ptdf", "", col_ptdf))) {
+    stop(paste("The values of zone in fixFaces must be in the ptdf colnames, which are :", 
+               paste(gsub("ptdf", "", col_ptdf), collapse = ", "), "currently :", 
+               paste(valzone, collapse = ", ")))
+  }
+}
+
+.getFixRams <- function(fixFaces, VERTRawDetails) {
+  zone <- NULL
+  dtFixRam <- rbindlist(lapply(1:nrow(fixFaces), function(X) {
+    func <- fixFaces[X, func]
+    if (func == "min") {
+      ramVal <- VERTRawDetails[get(fixFaces[X, zone]) == min(get(fixFaces[X, zone])),
+                               get(fixFaces[X, zone])]
+    } else if (func == "max") {
+      ramVal <- VERTRawDetails[get(fixFaces[X, zone]) == max(get(fixFaces[X, zone])),
+                               get(fixFaces[X, zone])]
+    } 
+    data.table(zone = fixFaces[X, zone], ram = ramVal)
+  }))
+}

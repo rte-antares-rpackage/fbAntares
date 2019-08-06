@@ -5,12 +5,13 @@
 #'
 #' @param PTDF \code{data.frame | data.table}, PTDF
 #' @param nbClust \code{numeric}, number of cluster
-#'
+#' @importFrom stats kmeans
+#' @importFrom utils read.table
 #' @noRd
 #' 
-giveBClassif <- function(PTDF, nbClust = 36)
+giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf)
 {
-  
+  addFixFaces <- zone <- Ind <- NULL
   PTDFKm <- PTDF[, .SD, .SDcols = colnames(PTDF)[grep("ptdf", colnames(PTDF))]]
   
   # normalize the values in order to make the clustering
@@ -23,7 +24,8 @@ giveBClassif <- function(PTDF, nbClust = 36)
     
     resKm <- kmeans(PTDFKm, centers = 5000, nstart = 20)
     
-    res <- cutree(hclust(dist(resKm$centers, method = "euclidean"), method = "ward.D"), nbClust)
+    res <- cutree(hclust(dist(resKm$centers, method = "euclidean"), 
+                         method = "ward.D"), nbClust)
     
     dtresKm <- data.table(Ind =1:length(resKm$cluster) ,resKm = resKm$cluster)
     dtresCah <- data.table(resKm = as.numeric(names(res)), res)
@@ -38,18 +40,40 @@ giveBClassif <- function(PTDF, nbClust = 36)
   
   
   
-  ##### Explication nécessaire de la partie affectRow et de l'intérêt des faces fixes
-  ##### car de meilleurs résultats sans l'utiliser
-  affectRow <- function(centers, valueVect)
-  {
-    conCernRow <- which.min(colSums((t(as.matrix(centers[, .SD, .SDcols = paste0(
-      "ptdf", c("BE", "DE", "FR", "AT"))])) - c(valueVect))^2))
-    centers[conCernRow,  paste0(
-      "ptdf", c("BE", "DE", "FR", "AT")) := as.list(valueVect)]
+  ##### Début test modif
+  addFixFaces <- function(centers, fixFaces) {
+    centers <- rbindlist(list(centers, rbindlist(lapply(1:nrow(fixFaces), function(X) {
+      
+      ptdfnotnull <- col_ptdf[grepl(fixFaces[X, zone], col_ptdf)]
+      ptdfnull <- col_ptdf[!grepl(fixFaces[X, zone], col_ptdf)]
+      func <- fixFaces[X, func]
+      valfunc <- ifelse(func == "min", -1, 1)
+      
+      dt <- read.table(text = "", col.names = c(ptdfnotnull, ptdfnull))
+      dt[1, ] <- c(valfunc, rep(0, length(ptdfnull)))
+      setDT(dt)
+      setcolorder(dt, colnames(centers))
+      dt
+    }))))
   }
-  affectRow(centers, c(-1,0,0,0))
-  affectRow(centers, c(0,-1,0,0))
-  affectRow(centers, c(0,0,-1,0))
-  affectRow(centers, c(0,1,0,0))
-  centers[,paste0("ptdf", c("BE", "DE", "FR", "AT"))]
+  if (!is.null(fixFaces)) {
+    if (nrow(fixFaces) >= 1) {
+      centers <- addFixFaces(centers = centers, fixFaces = fixFaces)
+    }
+  }
+  centers
+  ##### Fin test modif
+  
+  # affectRow <- function(centers, valueVect)
+  # {
+  #   conCernRow <- which.min(colSums((t(as.matrix(centers[, .SD, .SDcols = paste0(
+  #     "ptdf", c("BE", "DE", "FR", "AT"))])) - c(valueVect))^2))
+  #   centers[conCernRow,  paste0(
+  #     "ptdf", c("BE", "DE", "FR", "AT")) := as.list(valueVect)]
+  # }
+  # affectRow(centers, c(-1,0,0,0))
+  # affectRow(centers, c(0,-1,0,0))
+  # affectRow(centers, c(0,0,-1,0))
+  # affectRow(centers, c(0,1,0,0))
+  # centers[, paste0("ptdf", c("BE", "DE", "FR", "AT"))]
 }
