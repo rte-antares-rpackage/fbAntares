@@ -227,10 +227,16 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
     Bdiag <- diag(Dmat, nrow =length(Dmat))
     if (!is.null(fixFaces)) {
       if (nrow(fixFaces) > 0) {
-        diag(Bdiag[(ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag),
-                   (ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag)]) <- 1
+        if (nrow(fixFaces) > 1) {
+          diag(Bdiag[(ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag),
+                     (ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag)]) <- 1
+        } else {
+          Bdiag[(ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag),
+                (ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag)] <- 1
+        }
+
         dvec[(length(dvec)-nrow(fixFaces)+1):length(dvec)] <- PLANOUT$ram[
-          (nrow(PLANOUT)-nrow(fixFaces)+1):nrow(PLANOUT)]
+          (nrow(PLANOUT)-nrow(fixFaces)+1):nrow(PLANOUT)] 
       }
     }
     

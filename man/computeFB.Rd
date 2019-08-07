@@ -100,7 +100,7 @@ reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "A
 # Example using more arguments
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
 reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
-dayType = 1, clusteringHours = c(7:10, 17:19), nbLines = 50000, maxiter = 20, 
-thresholdIndic = 95, fixFaces = data.table(func = "min", zone = "BE"))
+nbFaces = 75, dayType = 1, clusteringHours = c(7:10, 17:19), nbLines = 50000, 
+maxiter = 20, thresholdIndic = 95, fixFaces = data.table(func = "min", zone = "BE"))
 }
 }

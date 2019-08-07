@@ -12,8 +12,10 @@
 giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf, clusteringHours)
 {
   addFixFaces <- zone <- Ind <- NULL
-  if (clusteringHours == "All") {
-    clusteringHours <- unique(PTDF$Period)
+  if(length(clusteringHours) == 1) {
+    if (clusteringHours == "All") {
+      clusteringHours <- unique(PTDF$Period)
+    }
   }
   PTDFKm <- PTDF[Period %in% clusteringHours,
                  .SD, .SDcols = colnames(PTDF)[grep("ptdf", colnames(PTDF))]]

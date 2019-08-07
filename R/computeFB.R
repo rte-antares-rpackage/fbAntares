@@ -70,8 +70,8 @@
 #' # Example using more arguments
 #' computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
 #' reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
-#' dayType = 1, clusteringHours = c(7:10, 17:19), nbLines = 50000, maxiter = 20, 
-#' thresholdIndic = 95, fixFaces = data.table(func = "min", zone = "BE"))
+#' nbFaces = 75, dayType = 1, clusteringHours = c(7:10, 17:19), nbLines = 50000, 
+#' maxiter = 20, thresholdIndic = 95, fixFaces = data.table(func = "min", zone = "BE"))
 #' }
 #' @importFrom stats cutree dist hclust
 #' @importFrom utils combn write.table
@@ -123,15 +123,18 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   face <- giveBClassif(PTDF, nbClust = nbCl, fixFaces = fixFaces, col_ptdf = col_ptdf,
                        clusteringHours = clusteringHours)
   face <- round(face, 2)
-  if(dayType == "All"){
-    dayType <- unique(PTDF$idDayType)
+  if(length(dayType) == 1) {
+    if(dayType == "All"){
+      dayType <- unique(PTDF$idDayType)
+    }
   }
   
-  if(hour == "All"){
-    # reports <- FALSE
-    hour <- unique(PTDF$Period)
+  if(length(hour) == 1) {
+    if(hour == "All"){
+      # reports <- FALSE
+      hour <- unique(PTDF$Period)
+    }
   }
-  
   ##From B to antares
   
   antaresFace <- .fromBtoAntares(face, col_ptdf, areaName = areaName)
@@ -159,8 +162,8 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     ####### début test
     if (!is.null(fixFaces)) {
       if (nrow(fixFaces) > 0) {
-      dtFixRam <- .getFixRams(fixFaces, VERTRawDetails)
-      B[(nrow(B)-nrow(dtFixRam)+1):nrow(B), ram := abs(dtFixRam$ram)]
+        dtFixRam <- .getFixRams(fixFaces, VERTRawDetails)
+        B[(nrow(B)-nrow(dtFixRam)+1):nrow(B), ram := abs(dtFixRam$ram)]
       }
     }
     ####### fin test
