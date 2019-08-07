@@ -23,7 +23,7 @@ library(shiny)
 ```{r Fonction plot}
 
 vizModelReal <- function(data, combi, hour, dayType, 
-                             xlim = xlim, ylim = ylim) {
+                         xlim = xlim, ylim = ylim) {
   
   column(12,
          combineWidgets(
@@ -32,7 +32,7 @@ vizModelReal <- function(data, combi, hour, dayType,
              graphFlowBased2D(data, combi[X, 1], combi[X, 2], hour = hour,
                               dayType = dayType)
            }), height = "100%", width = "100%")
-         )
+  )
 }
 
 ```

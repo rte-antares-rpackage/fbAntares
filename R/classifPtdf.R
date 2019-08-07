@@ -24,7 +24,7 @@ giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf, clusteringHours
   PTDFKmCare <- PTDFKm^2
   PTDFKmCare <- rowSums(PTDFKmCare)
   PTDFKm <- PTDFKm / sqrt(PTDFKmCare)
-  if (nrow(PTDFKm)^2 < 2^30) {
+  if (nrow(PTDFKm)^2 < 2^28) {
     res <- cutree(hclust(dist(PTDFKm, method = "euclidean"), method = "ward.D"), nbClust)
   } else {
     

@@ -1,6 +1,9 @@
 .getVirtualCalendar <- function(dates, interSeasonBegin, interSeasonEnd, firstDay){
   
   #Push interSeasonBegin and interSeasonEnd on virtual dates
+  dates <- as.Date(dates)
+  interSeasonBegin <- as.Date(interSeasonBegin)
+  interSeasonEnd <- as.Date(interSeasonEnd)
   allY <- unique(year(dates))
   
   

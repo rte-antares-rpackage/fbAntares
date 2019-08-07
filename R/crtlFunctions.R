@@ -202,3 +202,58 @@
     data.table(zone = fixFaces[X, zone], ram = ramVal)
   }))
 }
+
+.checkDayInTS <- function(ts, calendar) {
+  namesWe <- names(calendar)[grepl("We", names(calendar))]
+  namesWd <- names(calendar)[grepl("Wd", names(calendar))]
+  
+  namesWe <- c("summerWe", "winterWe", "interSeasonWe")
+  namesWd <- c("summerWd", "winterWd", "interSeasonWd")
+  
+  uniqsummerWe <- unique(unlist(unname(unique(
+    ts[Date %in% calendar$summerWe, .SD, .SDcols = !"Date"]))))
+  uniqsummerWd <- unique(unlist(unname(unique(
+    ts[Date %in% calendar$summerWd, .SD, .SDcols = !"Date"]))))
+  
+  uniqwinterWe <- unique(unlist(unname(unique(
+    ts[Date %in% calendar$winterWe, .SD, .SDcols = !"Date"]))))
+  uniqwinterWd <- unique(unlist(unname(unique(
+    ts[Date %in% calendar$winterWd, .SD, .SDcols = !"Date"]))))
+  
+  uniqinterSeasonWe <- unique(unlist(unname(unique(
+    ts[Date %in% calendar$interSeasonWe, .SD, .SDcols = !"Date"]))))
+  uniqinterSeasonWd <- unique(unlist(unname(unique(
+    ts[Date %in% calendar$interSeasonWd, .SD, .SDcols = !"Date"]))))
+  
+  if(!all(uniqsummerWe %in% "4")) {
+    stop(paste("The summer weekend days can only have 4 as typical day value,",
+               "however some of them have the value(s) :", 
+               paste(uniqsummerWe, collapse = ", ")))
+  }
+  if(!all(uniqsummerWd %in% c("1", "2", "3"))) {
+    stop(paste("The summer working days can only have 1, 2 or 3 as typical day value,",
+               "however some of them have the value(s) :", 
+               paste(uniqsummerWd, collapse = ", ")))
+  }
+  if(!all(uniqwinterWe %in% "8")) {
+    stop(paste("The summer weekend days can only have 8 as typical day value,",
+               "however some of them have the value(s) :", 
+               paste(winterWe, collapse = ", ")))
+  }
+  if(!all(uniqwinterWd %in% c("5", "6", "7"))) {
+    stop(paste("The summer weekend days can only have 5, 6 or 7 as typical day value,",
+               "however some of them have the value(s) :", 
+               paste(winterWd, collapse = ", ")))
+  }
+  if(!all(uniqinterSeasonWe %in% "12")) {
+    stop(paste("The summer weekend days can only have 12 as typical day value,",
+               "however some of them have the value(s) :", 
+               paste(interSeasonWe, collapse = ", ")))
+  }
+  if(!all(uniqinterSeasonWd %in% c("9", "10", "11"))) {
+    stop(paste("The summer weekend days can only have 9, 10 or 11 as typical day value,",
+               "however some of them have the value(s) :", 
+               paste(interSeasonWd, collapse = ", ")))
+  }
+  
+}

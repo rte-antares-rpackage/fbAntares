@@ -2,7 +2,7 @@
 % Please edit documentation in R/getMaxImportExport.R
 \name{getMaxImportExport}
 \alias{getMaxImportExport}
-\title{Identify the type of the first day of a study}
+\title{Return a data.table with the maximum values of import and export}
 \usage{
 getMaxImportExport(domainesFB)
 }

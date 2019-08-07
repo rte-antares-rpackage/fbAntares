@@ -1,4 +1,4 @@
-#' @title Identify the type of the first day of a study
+#' @title Return a data.table with the maximum values of import and export
 #' 
 #' @description 
 #' This function takes the object domainesFB, generated with \link{computeFB}
