@@ -7,10 +7,10 @@
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
   reports = TRUE, areaName = "cwe_at", areacsv = NULL,
-  dayType = "All", hour = "All", nbFaces = 75, verbose = 1,
-  nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
-  hubDrop = list(NL = c("BE", "DE", "FR", "AT")), fixFaces = NULL,
-  seed = 123456)
+  dayType = "All", hour = "All", clusteringHours = "All",
+  nbFaces = 75, verbose = 1, nbLines = 10000, maxiter = 10,
+  thresholdIndic = 90, quad = F, hubDrop = list(NL = c("BE", "DE",
+  "FR", "AT")), fixFaces = NULL, seed = 123456)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 
@@ -47,6 +47,9 @@ other for the areaName parameter.}
 \item{dayType}{\code{numeric}, by default, the value is All. (optional) Vector of id_days to compute.}
 
 \item{hour}{\code{numeric}, by default, the value is All. (optional) vector of hours/periods to compute.}
+
+\item{clusteringHours}{\code{numeric}, by default, the value is All. (optional) 
+Hours you want to choose for the faces selection.}
 
 \item{nbFaces}{\code{numeric}, standard shape parameters: number of sides to select. By default, the value is 36.}
 
@@ -92,7 +95,12 @@ modelled domains and the volumetric error between them.
 # Compute models for all days and hours of a PTDF file, with no reports 
 # automatically generated at the same time
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
-reports = FALSE, areaName = "cwe_at")
+reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT"))
 
+# Example using more arguments
+computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
+reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
+dayType = 1, clusteringHours = c(7:10, 17:19), nbLines = 50000, maxiter = 20, 
+thresholdIndic = 95, fixFaces = data.table(func = "min", zone = "BE"))
 }
 }

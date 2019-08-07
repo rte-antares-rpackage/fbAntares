@@ -34,6 +34,8 @@
 #' @param hubDrop \code{list}, list of hubs in the ptdf, with the ones which should
 #' sustracted to the others as the names of the arrays which themself contain the ones which
 #' be sustracted
+#' @param clusteringHours \code{numeric}, by default, the value is All. (optional) 
+#' Hours you want to choose for the faces selection.
 #' @param  fixFaces \code{data.table} data.table if you want to use fix faces for the creation
 #' of the flowbased models. If you want to do it, the data.table has the following form :
 #' data.table(func = c("min", "min", "max", "min"), zone = c("BE", "FR", "DE", "DE")).
@@ -63,8 +65,13 @@
 #' # Compute models for all days and hours of a PTDF file, with no reports 
 #' # automatically generated at the same time
 #' computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
-#' reports = FALSE, areaName = "cwe_at")
+#' reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT"))
 #' 
+#' # Example using more arguments
+#' computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
+#' reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
+#' dayType = 1, clusteringHours = c(7:10, 17:19), nbLines = 50000, maxiter = 20, 
+#' thresholdIndic = 95, fixFaces = data.table(func = "min", zone = "BE"))
 #' }
 #' @importFrom stats cutree dist hclust
 #' @importFrom utils combn write.table
@@ -73,8 +80,8 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       outputName =  paste0(getwd(), "/antaresInput"),
                       reports = TRUE,
                       areaName = "cwe_at", areacsv = NULL,
-                      dayType = "All", hour = "All", nbFaces = 75,
-                      verbose = 1,
+                      dayType = "All", hour = "All", clusteringHours = "All",
+                      nbFaces = 75, verbose = 1,
                       nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
                       hubDrop = list(NL = c("BE", "DE", "FR", "AT")), 
                       fixFaces = NULL,
@@ -113,7 +120,8 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   }
   ##### fin test
   
-  face <- giveBClassif(PTDF, nbClust = nbCl, fixFaces = fixFaces, col_ptdf = col_ptdf)
+  face <- giveBClassif(PTDF, nbClust = nbCl, fixFaces = fixFaces, col_ptdf = col_ptdf,
+                       clusteringHours = clusteringHours)
   face <- round(face, 2)
   if(dayType == "All"){
     dayType <- unique(PTDF$idDayType)
