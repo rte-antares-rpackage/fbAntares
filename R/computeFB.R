@@ -34,6 +34,8 @@
 #' @param hubDrop \code{list}, list of hubs in the ptdf, with the ones which should
 #' sustracted to the others as the names of the arrays which themself contain the ones which
 #' be sustracted
+#' @param clusteringDayType \code{numeric}, by default, the value is All. (optional) 
+#' Typical days you want to choose for the faces selection.
 #' @param clusteringHours \code{numeric}, by default, the value is All. (optional) 
 #' Hours you want to choose for the faces selection.
 #' @param  fixFaces \code{data.table} data.table if you want to use fix faces for the creation
@@ -80,7 +82,8 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       outputName =  paste0(getwd(), "/antaresInput"),
                       reports = TRUE,
                       areaName = "cwe_at", areacsv = NULL,
-                      dayType = "All", hour = "All", clusteringHours = "All",
+                      dayType = "All", hour = "All", 
+                      clusteringDayType = "All", clusteringHours = "All",
                       nbFaces = 75, verbose = 1,
                       nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
                       hubDrop = list(NL = c("BE", "DE", "FR", "AT")), 
@@ -120,8 +123,9 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   }
   ##### fin test
   
-  face <- giveBClassif(PTDF, nbClust = nbCl, fixFaces = fixFaces, col_ptdf = col_ptdf,
-                       clusteringHours = clusteringHours)
+  face <- giveBClassif(
+    PTDF, nbClust = nbCl, fixFaces = fixFaces, col_ptdf = col_ptdf,
+    clusteringDayType = clusteringDayType, clusteringHours = clusteringHours)
   face <- round(face, 2)
   if(length(dayType) == 1) {
     if(dayType == "All"){

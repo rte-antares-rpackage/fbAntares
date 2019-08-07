@@ -9,15 +9,21 @@
 #' @importFrom utils read.table
 #' @noRd
 #' 
-giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf, clusteringHours)
+giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf, 
+                         clusteringDayType, clusteringHours)
 {
   addFixFaces <- zone <- Ind <- NULL
+  if(length(clusteringDayType) == 1) {
+    if (clusteringDayType == "All") {
+      clusteringDayType <- unique(PTDF$idDayType)
+    }
+  }
   if(length(clusteringHours) == 1) {
     if (clusteringHours == "All") {
       clusteringHours <- unique(PTDF$Period)
     }
   }
-  PTDFKm <- PTDF[Period %in% clusteringHours,
+  PTDFKm <- PTDF[Period %in% clusteringHours & idDayType %in% clusteringDayType,
                  .SD, .SDcols = colnames(PTDF)[grep("ptdf", colnames(PTDF))]]
   
   # normalize the values in order to make the clustering
