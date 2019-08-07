@@ -52,5 +52,6 @@ getMaxImportExport <- function(domainesFB) {
   
   dtAll <- cbind(domainesFB[, .SD, .SDcols = c("idDayType", "Period")],
                  dtmaxModel, dtmaxReal, dtmaxDiff, dtminModel, dtminReal, dtminDiff)
+  dtAll <- dtAll[, lapply(.SD, round, digits = 0)]
   return(dtAll)
 }
