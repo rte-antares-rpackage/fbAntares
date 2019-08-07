@@ -7,10 +7,11 @@
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
   reports = TRUE, areaName = "cwe_at", areacsv = NULL,
-  dayType = "All", hour = "All", clusteringHours = "All",
-  nbFaces = 75, verbose = 1, nbLines = 10000, maxiter = 10,
-  thresholdIndic = 90, quad = F, hubDrop = list(NL = c("BE", "DE",
-  "FR", "AT")), fixFaces = NULL, seed = 123456)
+  dayType = "All", hour = "All", clusteringDayType = "All",
+  clusteringHours = "All", nbFaces = 75, verbose = 1,
+  nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
+  hubDrop = list(NL = c("BE", "DE", "FR", "AT")), fixFaces = NULL,
+  seed = 123456)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 
@@ -47,6 +48,9 @@ other for the areaName parameter.}
 \item{dayType}{\code{numeric}, by default, the value is All. (optional) Vector of id_days to compute.}
 
 \item{hour}{\code{numeric}, by default, the value is All. (optional) vector of hours/periods to compute.}
+
+\item{clusteringDayType}{\code{numeric}, by default, the value is All. (optional) 
+Typical days you want to choose for the faces selection.}
 
 \item{clusteringHours}{\code{numeric}, by default, the value is All. (optional) 
 Hours you want to choose for the faces selection.}
