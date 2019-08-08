@@ -213,3 +213,50 @@ generateReportFb <- function(
   
   print(paste("You can find your report here :", output_file))
 }
+
+
+
+#' @title Run a shiny application to visualize the real and modelled flow-based domains
+#' 
+#' @description 
+#' Run a shiny application displaying the results of the conversion of real domains into Antares models. It will display for
+#' each typical day and each hour the volumetric errors of conversion (inf_error: forgotten points in the 
+#' model, sup_error: modelled points missing in the real domain) and dynamic plots of the real and modelled domains. Html reports
+#' for each day can also be exported.
+#'
+#' 
+#' @param fb_opts \code{list} of flow-based parameters returned by the function 
+#' \link{setFlowbasedPath}: directory of the flow-based model to study.
+#' By default, the value is indicated by \code{fbAntares::fbOptions()}
+#' @param countries \code{list, character} a list of couples of countries to choose the axises for the projection
+#' of the flowbased domains (ex : list(c("BE", "FR"), c("BE", "NL"))) or an array of countries
+#' (ex : c("FR", "NL", "AT")) to project the domains on all the countries combination 
+#' (here FR+NL, FR+AT and NL+AT)
+#' @import shiny manipulateWidget
+#'
+#'
+#' @examples
+#'
+#' \dontrun{
+#'  fb_opts = fbAntares::fbOptions()
+#'  runAppError(fb_opts, 
+#'  countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")))
+#' }
+#' @export
+runAppError <- function(
+  fb_opts = fbAntares::fbOptions(),
+  countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT"))){
+  
+  dta <- readRDS(paste0(fb_opts$path, "/domainesFB.RDS"))
+  print(dta)
+  combi <- .crtlCountriesCombn(countries)
+  print(combi)
+  G <- .GlobalEnv
+  stopifnot(all(c(
+    "Period", "idDayType", "PTDFDetails", "PTDFRawDetails", "VERTDetails",
+    "VERTRawDetails", "volIntraInter", "error1", "error2") %in% colnames(dta)))
+  assign("dtaUseByShiny", dta, envir = G)
+  assign("combi", combi, envir = G)
+  shiny::runApp(system.file("shinyError", package = "fbAntares"),
+                launch.browser = TRUE)
+}
