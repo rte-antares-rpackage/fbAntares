@@ -9,8 +9,8 @@
 #' begin of interseason
 #' @param interSeasonEnd \code{character or date}, date or vector of dates, YYYY-MM-DD, 
 #' end of interseason
-#' @param output \code{character}, the output of you want, either summary or 
-#' yearbyyear if you want the details
+#' @param output \code{character}, the output of you want, either summary, 
+#' yearbyyear or all, default is summary, if you want the details check the example.
 #' 
 #' @examples
 #' \dontrun{
@@ -20,6 +20,7 @@
 #' interSeasonEnd <- c("2028-10-31", "2029-05-15")
 #' statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "summary")
 #' statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "yearbyyear")
+#' statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "all")
 #' }
 #' @importFrom stats median sd var
 #' @export
@@ -84,6 +85,15 @@ getStatsFBts <- function(ts, interSeasonBegin =  c("2028-10-01", "2029-03-16"),
       max = round(max(get(paste0("dayType", (X-1)))), 2))]
   }))
   
-  return(list(typicalDayByYear = typicalDayByYear, typDayBySeason = typDayBySeason))
+  if (output == "summary") {
+    return(typDayBySeason)
+  } else if (output == "yearbyyear") {
+    return(typicalDayByYear)
+  } else if (output == "all") {
+    return(list(typicalDayByYear = typicalDayByYear, typDayBySeason = typDayBySeason))
+  } else {
+    stop(paste("The output can only be summary, yearbyyear or all, currently :", output))
+  }
+  
   
 }

@@ -71,7 +71,7 @@ setFlowbasedPath <- function(path, model) {
   }
   
   if (!missing(model)) {
-    dir_model <- system.file("input/model", package = "antaresFlowbased")
+    dir_model <- system.file("input/model", package = "fbAntares")
     available_model <- list.dirs(dir_model, full.names = FALSE, recursive = FALSE)
     if(!model%in%available_model){
       stop("Invalid model name. See availabled model with getAvailableModel()")
@@ -109,6 +109,6 @@ fbOptions <- function() {
 #' @export
 #'
 getAvailableModel <- function(){
-  return(list.dirs(system.file("input/model", package = "antaresFlowbased"), 
+  return(list.dirs(system.file("input/model", package = "fbAntares"), 
                    full.names = FALSE, recursive = FALSE))
 }

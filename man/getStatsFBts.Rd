@@ -16,8 +16,8 @@ begin of interseason}
 \item{interSeasonEnd}{\code{character or date}, date or vector of dates, YYYY-MM-DD, 
 end of interseason}
 
-\item{output}{\code{character}, the output of you want, either summary or 
-yearbyyear if you want the details}
+\item{output}{\code{character}, the output of you want, either summary, 
+yearbyyear or all, default is summary, if you want the details check the example.}
 }
 \description{
 This function takes the object ts, generated with \link{createFBTS}
@@ -31,5 +31,6 @@ interSeasonBegin <-  c("2028-10-01", "2029-03-16")
 interSeasonEnd <- c("2028-10-31", "2029-05-15")
 statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "summary")
 statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "yearbyyear")
+statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "all")
 }
 }

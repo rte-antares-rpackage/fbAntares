@@ -102,7 +102,7 @@
 #' @import data.table antaresRead plyr antaresEditObject
 #' 
 #' @export
-initFlowBased <- function(fb_opts = antaresFlowbased::fbOptions()$path,
+initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
                           opts = antaresRead::simOptions(), 
                           scenarios = rep(1:200, times = 5)){
   

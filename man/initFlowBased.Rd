@@ -4,7 +4,7 @@
 \alias{initFlowBased}
 \title{Initialization of the Antares flow-based study}
 \usage{
-initFlowBased(fb_opts = antaresFlowbased::fbOptions()$path,
+initFlowBased(fb_opts = fbAntares::fbOptions()$path,
   opts = antaresRead::simOptions(), scenarios = rep(1:200, times = 5))
 }
 \arguments{
