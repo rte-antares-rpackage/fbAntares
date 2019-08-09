@@ -14,6 +14,25 @@ test_that("graphs", {
   graph3 <- graphFlowBased2D(flowbased = domainesFB, ctry1 = "NL", ctry2 = "ptdfAT", 
                              hour = NULL, dayType = NULL)
   expect_true("htmlwidget" %in% class(graph3))
+  
+  
+   fb_opts <- setFlowbasedPath(path = system.file("input/model/antaresInput/", package = "fbAntares"))
+   
+   out <- plotFB(dayType = 1, hour = 1, country1 = "FR", country2 = "NL",
+   fb_opts = fb_opts, areaName = "cwe-at")
+   expect_true("combineWidgets" %in% class(out))
+   
+   out <- plotFB(dayType = 1, hour = 1:4,country1 = "FR",country2 = "NL",
+   fb_opts = fb_opts, areaName = "cwe")
+   expect_true("combineWidgets" %in% class(out))
+   
+   out <- plotFB(dayType = 1, hour = 1:2, country1 = "DE", country2 = "AT",
+   fb_opts = fb_opts, areaName = "cwe-at")
+   expect_true("combineWidgets" %in% class(out))
+   
+   out <- plotFB(dayType = 1, hour = 1, country1 = c("FR", "DE"),
+       country2 = c("NL", "FR"), fb_opts = fb_opts, areaName = "cwe-at")
+  expect_true("combineWidgets" %in% class(out))
 })
 
 # test_that("test plotNetPositionFB", {

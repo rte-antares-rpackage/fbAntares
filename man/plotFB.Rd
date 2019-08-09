@@ -17,8 +17,9 @@ plotFB(dayType, hour, country1, country2,
 \item{country2}{\code{character}, name of the country (axis Y)}
 
 \item{fb_opts}{\code{list} of flowbased parameters returned by the function \link{setFlowbasedPath} : directory of the flow-based
-model. By default, the value is indicated by \code{fbAntares::fbOptions()}
-#' @param areaName \code{character} The name of the area of your study, possible values are
+model. By default, the value is indicated by \code{fbAntares::fbOptions()}}
+
+\item{areaName}{\code{character} The name of the area of your study, possible values are
 cwe_at (default), cwe and other. If you choose other, you have to give a csv file
 which explains how your area work.}
 }

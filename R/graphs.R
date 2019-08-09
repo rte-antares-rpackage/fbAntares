@@ -152,7 +152,7 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 #' @param country2 \code{character}, name of the country (axis Y)
 #' @param fb_opts \code{list} of flowbased parameters returned by the function \link{setFlowbasedPath} : directory of the flow-based
 #' model. By default, the value is indicated by \code{fbAntares::fbOptions()}
-#' #' @param areaName \code{character} The name of the area of your study, possible values are
+#' @param areaName \code{character} The name of the area of your study, possible values are
 #' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
 #' which explains how your area work.
 #'
@@ -191,17 +191,17 @@ plotFB <- function(dayType, hour, country1, country2,
   
   
   if (areaName == "cwe-at") {
-    if(!country1 %in% c("DE", "BE", "FR", "NL", "AT")){
+    if(!all(country1 %in% c("DE", "BE", "FR", "NL", "AT"))){
       stop("country1 must be DE, BE, FR, NL or AT")
     }
-    if(!country2 %in% c("DE", "BE", "FR", "NL", "AT")){
+    if(!all(country2 %in% c("DE", "BE", "FR", "NL", "AT"))){
       stop("country2 must be DE, BE, FR, NL or AT")
     }
   } else if (areaName == "cwe") {
-    if(!country1 %in% c("DE", "BE", "FR", "NL")){
+    if(!all(country1 %in% c("DE", "BE", "FR", "NL"))){
       stop("country1 must be DE, BE, FR or NL")
     }
-    if(!country2 %in% c("DE", "BE", "FR", "NL")){
+    if(!all(country2 %in% c("DE", "BE", "FR", "NL"))){
       stop("country2 must be DE, BE, FR or NL")
     }
   } else if (areaName == "other") {
