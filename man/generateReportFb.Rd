@@ -44,10 +44,10 @@ plots for each hour of the real and modelled domains.
 
 \dontrun{
 #Generate report for the typical day 7 of a model (already designated by setFlowBasedPath)
-generateReportFb(dayType = 7, fb_opts = antaresFlowbased::fbOptions())
+generateReportFb(dayType = 7, fb_opts = fbAntares::fbOptions())
 
 #Generate a report for the typical day 7 of a PTDF file
 allFB <- computeFB(PTDF = "/path/PTDF_file.csv",reports = FALSE, dayType = 7)
-generateReportFb(dayType = 7, fb_opts = antaresFlowbased::fbOptions(), allFB = allFB)
+generateReportFb(dayType = 7, fb_opts = fbAntares::fbOptions(), allFB = allFB)
 }
 }

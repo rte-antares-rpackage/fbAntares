@@ -5,7 +5,7 @@
 \title{Plot typical flow-based domains}
 \usage{
 plotFB(dayType, hour, country1, country2,
-  fb_opts = antaresFlowbased::fbOptions())
+  fb_opts = fbAntares::fbOptions(), areaName = "cwe-at")
 }
 \arguments{
 \item{dayType}{\code{numeric}, numerical id of the typical day(s)}
@@ -17,7 +17,10 @@ plotFB(dayType, hour, country1, country2,
 \item{country2}{\code{character}, name of the country (axis Y)}
 
 \item{fb_opts}{\code{list} of flowbased parameters returned by the function \link{setFlowbasedPath} : directory of the flow-based
-model. By default, the value is indicated by \code{antaresFlowbased::fbOptions()}}
+model. By default, the value is indicated by \code{fbAntares::fbOptions()}
+#' @param areaName \code{character} The name of the area of your study, possible values are
+cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+which explains how your area work.}
 }
 \description{
 This function enables to plot one or several typical flow-based domains, in 2 dimensions (the axis being 2 countries).
@@ -25,12 +28,15 @@ This function enables to plot one or several typical flow-based domains, in 2 di
 \examples{
 
 \dontrun{
- fb_opts = fbAntares::fbOptions()
- plotFB(dayType = 1, hour = 1, country1 = "FR", country2 = "NL", fb_opts = fb_opts)
- plotFB(dayType = 1:2, hour = 1,country1 = "FR",country2 = "NL", fb_opts = fb_opts)
- plotFB(dayType = 1:2, hour = 1:2, country1 = "FR", country2 = "NL", fb_opts = fb_opts)
+ fb_opts <- setFlowbasedPath(path = system.file("input/model/antaresInput/", package = "fbAntares"))
+ plotFB(dayType = 1, hour = 1, country1 = "FR", country2 = "NL", 
+ fb_opts = fb_opts, areaName = "cwe-at")
+ plotFB(dayType = 1, hour = 1:4,country1 = "FR",country2 = "NL", 
+ fb_opts = fb_opts, areaName = "cwe")
+ plotFB(dayType = 1, hour = 1:2, country1 = "DE", country2 = "AT", 
+ fb_opts = fb_opts, areaName = "cwe-at")
  plotFB(dayType = 1, hour = 1, country1 = c("FR", "DE"), 
-     country2 = c("NL", "FR"), fb_opts = fb_opts)
+     country2 = c("NL", "FR"), fb_opts = fb_opts, areaName = "cwe-at")
 }
 
 

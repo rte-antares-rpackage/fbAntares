@@ -151,50 +151,82 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 #' @param country1 \code{character}, name of the country (axis X)
 #' @param country2 \code{character}, name of the country (axis Y)
 #' @param fb_opts \code{list} of flowbased parameters returned by the function \link{setFlowbasedPath} : directory of the flow-based
-#' model. By default, the value is indicated by \code{antaresFlowbased::fbOptions()}
+#' model. By default, the value is indicated by \code{fbAntares::fbOptions()}
+#' #' @param areaName \code{character} The name of the area of your study, possible values are
+#' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+#' which explains how your area work.
 #'
 #' @examples
 #'
 #' \dontrun{
-#'  fb_opts = fbAntares::fbOptions()
-#'  plotFB(dayType = 1, hour = 1, country1 = "FR", country2 = "NL", fb_opts = fb_opts)
-#'  plotFB(dayType = 1:2, hour = 1,country1 = "FR",country2 = "NL", fb_opts = fb_opts)
-#'  plotFB(dayType = 1:2, hour = 1:2, country1 = "FR", country2 = "NL", fb_opts = fb_opts)
+#'  fb_opts <- setFlowbasedPath(path = system.file("input/model/antaresInput/", package = "fbAntares"))
+#'  plotFB(dayType = 1, hour = 1, country1 = "FR", country2 = "NL", 
+#'  fb_opts = fb_opts, areaName = "cwe-at")
+#'  plotFB(dayType = 1, hour = 1:4,country1 = "FR",country2 = "NL", 
+#'  fb_opts = fb_opts, areaName = "cwe")
+#'  plotFB(dayType = 1, hour = 1:2, country1 = "DE", country2 = "AT", 
+#'  fb_opts = fb_opts, areaName = "cwe-at")
 #'  plotFB(dayType = 1, hour = 1, country1 = c("FR", "DE"), 
-#'      country2 = c("NL", "FR"), fb_opts = fb_opts)
+#'      country2 = c("NL", "FR"), fb_opts = fb_opts, areaName = "cwe-at")
 #' }
 #'
 #'
 #' @export
-plotFB <- function(dayType, hour, country1, country2, fb_opts = fbAntares::fbOptions()){
+plotFB <- function(dayType, hour, country1, country2, 
+                   fb_opts = fbAntares::fbOptions(), areaName = "cwe-at"){
   hoursel <- hour
   dayTypesel <- dayType
   
   dta <- readRDS(paste0(fb_opts$path, "/domainesFB.RDS"))
   
-  if(!all(hour%in%(dta$Period - 1)))stop(paste0("Some hour are not in data : ",paste0(hour[!hour%in%(dta$hour - 1)])))
+  if(!all(hour%in%(dta$Period - 1))) {
+    stop(paste0("Some hour are not in data : ",paste0(hour[!hour%in%(dta$hour - 1)])))
+  }
   
   
-  if(!all(dayType%in%dta$idDayType))stop(paste0("Some typical day are not in data : ",
-                                                paste0(dayType[!dayType%in%dta$dayType])))
+  if(!all(dayType%in%dta$idDayType)){
+    stop(paste0("Some typical day are not in data : ",
+                paste0(dayType[!dayType%in%dta$dayType])))
+  }
   
   
-  if(!all(country1 %in% c("DE","BE","FR","NL", "AT")))stop("All country1 must be in : DE, BE, FR, NL")
+  if (areaName == "cwe-at") {
+    if(!country1 %in% c("DE", "BE", "FR", "NL", "AT")){
+      stop("country1 must be DE, BE, FR, NL or AT")
+    }
+    if(!country2 %in% c("DE", "BE", "FR", "NL", "AT")){
+      stop("country2 must be DE, BE, FR, NL or AT")
+    }
+  } else if (areaName == "cwe") {
+    if(!country1 %in% c("DE", "BE", "FR", "NL")){
+      stop("country1 must be DE, BE, FR or NL")
+    }
+    if(!country2 %in% c("DE", "BE", "FR", "NL")){
+      stop("country2 must be DE, BE, FR or NL")
+    }
+  } else if (areaName == "other") {
+    ## à coder
+  } else {
+    stop(paste("The value of areaName must be one of the following :",
+               "cwe, cwe_at, other,", "currently :", areaName))
+  }
   
-  if(!all(country2 %in% c("DE","BE","FR","NL", "AT")))stop("All country2 must be in : DE, BE, FR, NL")
-  
-  if(length(country1) != length(country2))stop("country1 must be same length to country2")
-  
+  if(length(country1) != length(country2)){
+    stop("country1 must be same length to country2")
+  }
   
   allCtry <- data.frame(country1 = country1, country2 = country2)
+  
   graphList <- sapply(hour, function(hoursel){
     sapply(dayType, function(dayTypesel){
       apply(allCtry, 1, function(countsel){
         
         ctsel <- data.frame(t(countsel))
         tempData <- dta[Period == (hoursel) & idDayType == dayTypesel]
-        if(length(tempData)==0)stop(paste0("Not available data for typical day ", dayTypesel, " hour ", hoursel))
-        
+        if(length(tempData)==0) {
+          stop(paste0("Not available data for typical day ", 
+                      dayTypesel, " hour ", hoursel))
+        }
         graphFlowBased2D(tempData,
                          as.character(ctsel$country1), as.character(ctsel$country2)
                          , dayType = dayTypesel, hour = hoursel)
@@ -240,11 +272,11 @@ plotFB <- function(dayType, hour, country1, country2, fb_opts = fbAntares::fbOpt
 #'
 #' \dontrun{
 #' #Generate report for the typical day 7 of a model (already designated by setFlowBasedPath)
-#' generateReportFb(dayType = 7, fb_opts = antaresFlowbased::fbOptions())
+#' generateReportFb(dayType = 7, fb_opts = fbAntares::fbOptions())
 #' 
 #' #Generate a report for the typical day 7 of a PTDF file
 #' allFB <- computeFB(PTDF = "/path/PTDF_file.csv",reports = FALSE, dayType = 7)
-#' generateReportFb(dayType = 7, fb_opts = antaresFlowbased::fbOptions(), allFB = allFB)
+#' generateReportFb(dayType = 7, fb_opts = fbAntares::fbOptions(), allFB = allFB)
 #' }
 #' @export
 generateReportFb <- function(
@@ -433,7 +465,7 @@ plotNetPositionFB <- function( data, dayType,
                                nbMaxPt = 10000, palette = "rainbow",
                                xlim = c(-8000, 8000), ylim = c(-8000, 8000)){
   
-
+  
   if(!palette[1]%in%c("cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow")){
     stop('Palette must be in : "cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow"')
   }
@@ -469,7 +501,7 @@ plotNetPositionFB <- function( data, dayType,
     stop(paste("The value of areaName must be one of the following :",
                "cwe, cwe_at, other,", "currently :", areaName))
   }
-
+  
   
   if(!all(c("BALANCE", "UNSP. ENRG", "LOLD", "DTG MRG")%in%names(data$areas))){
     stop("This type of positions does not appear in the simulation data.")
