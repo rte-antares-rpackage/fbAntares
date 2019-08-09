@@ -290,6 +290,9 @@ runAppError <- function(
 #' @param hour \code{numeric} : hour to plot(format : 0:23, in accordance with Antares output). The value can also be 'all'.
 #' @param country1 \code{character} : first country, axis X
 #' @param country2 \code{character} : second country, axis Y
+#' @param areaName \code{character} The name of the area of your study, possible values are
+#' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+#' which explains how your area work.
 #' @param filteringEmptyDomains \code{boolean}, if TRUE, the function will only plot the domains for which it can find values
 #' in \code{data} in accordance with \code{dayType} and \code{hour}. By default, it is FALSE.
 #' @param nbMaxPt \code{numeric} : maximum number of points plotted on the graph. It can be increased (which increases computation

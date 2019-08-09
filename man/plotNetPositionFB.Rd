@@ -22,6 +22,10 @@ filtered.}
 
 \item{country2}{\code{character} : second country, axis Y}
 
+\item{areaName}{\code{character} The name of the area of your study, possible values are
+cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+which explains how your area work.}
+
 \item{fb_opts}{\code{list} of simulation parameters returned by the function
 \link{setSimulationPath} or flow-based model directory obtained with
 \link{setFlowbasedPath}. By default, the value will be indicated by \code{antaresRead::simOptions()}}

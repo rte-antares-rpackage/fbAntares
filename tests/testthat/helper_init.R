@@ -22,7 +22,7 @@ if (Sys.info()['sysname'] == "Windows") {
 
 
 testStudy2 <- file.path(temp_dir, "ex_test")
-opts2 <- antaresRead::setSimulationPath(testStudy2)
+opts2 <- suppressWarnings(antaresRead::setSimulationPath(testStudy2))
 opts <- opts2
 testStudy <- testStudy2
 assign("opts2", opts2, envir = globalenv())
@@ -31,7 +31,7 @@ assign("testStudy2", testStudy2, envir = globalenv())
 assign("testStudy", testStudy, envir = globalenv())
 
 testSt <-  file.path(temp_dir, "exemple_test")
-testSt <- antaresRead::setSimulationPath(testSt, 1)
+testSt <- suppressWarnings(antaresRead::setSimulationPath(testSt, 1))
 # 
 # tar(tarfile = "ex_test.tgz",files = "ex_test",
 #     compression = "gzip")
