@@ -34,6 +34,9 @@
 #' Antares to combine Antares time series (the scenarios builder) and the flow-based 
 #' time series. By default, the value is \code{rep(1:200, times = 5)}
 #'  (1000 mcYears, with 200 time series repeated 5 times)
+#' @param areaName \code{character} The name of the area of your study, possible values are
+#' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+#' which explains how your area work.
 #' 
 #' @note 
 #' 
@@ -104,7 +107,7 @@
 #' @export
 initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
                           opts = antaresRead::simOptions(), 
-                          scenarios = rep(1:200, times = 5)){
+                          scenarios = rep(1:200, times = 5), areaName = "cwe_at"){
   
   suppressWarnings(opts <- antaresRead::setSimulationPath(opts$studyPath, "input"))
   #Control antaresSolver >=6.1
@@ -126,7 +129,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   
   ###Load fbModel data
   #Load weight.txt
-  W <- .getWeight(paste0(fb_opts, "/weight.txt"))
+  W <- .getWeight(paste0(fb_opts, "/weight.txt"), areaName = areaName)
   
   #Load second_member.txt
   seM <- .getSecondMember(paste0(fb_opts, "/second_member.txt"))

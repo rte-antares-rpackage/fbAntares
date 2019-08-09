@@ -5,7 +5,8 @@
 \title{Initialization of the Antares flow-based study}
 \usage{
 initFlowBased(fb_opts = fbAntares::fbOptions()$path,
-  opts = antaresRead::simOptions(), scenarios = rep(1:200, times = 5))
+  opts = antaresRead::simOptions(), scenarios = rep(1:200, times = 5),
+  areaName = "cwe_at")
 }
 \arguments{
 \item{fb_opts}{\code{list} of flowbased parameters (flow-based model directory) 
@@ -21,6 +22,10 @@ builder. It will be written in the file scenario.txt and used by
 Antares to combine Antares time series (the scenarios builder) and the flow-based 
 time series. By default, the value is \code{rep(1:200, times = 5)}
  (1000 mcYears, with 200 time series repeated 5 times)}
+
+\item{areaName}{\code{character} The name of the area of your study, possible values are
+cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+which explains how your area work.}
 }
 \description{
 This function initializes the environment for a flow-based study. 

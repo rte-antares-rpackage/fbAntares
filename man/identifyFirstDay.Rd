@@ -5,7 +5,7 @@
 \title{Identify the type of the first day of a study}
 \usage{
 identifyFirstDay(opts, firstArea = "fr", secondArea = c("fr", "de",
-  "be", "nl", "at"))
+  "be", "nl"))
 }
 \arguments{
 \item{opts}{\code{list} of simulation parameters returned by the function \link{setSimulationPath} : path of the Antares study. 
