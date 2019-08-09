@@ -141,6 +141,74 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 }
 
 
+#' @title Plot typical flow-based domains
+#' 
+#' @description 
+#' This function enables to plot one or several typical flow-based domains, in 2 dimensions (the axis being 2 countries).
+#'
+#' @param hour \code{numeric}, hour(s) (can be from 0 to 23 or from 1 to 24 depending on the data of the flow-based model)
+#' @param dayType \code{numeric}, numerical id of the typical day(s)
+#' @param country1 \code{character}, name of the country (axis X)
+#' @param country2 \code{character}, name of the country (axis Y)
+#' @param fb_opts \code{list} of flowbased parameters returned by the function \link{setFlowbasedPath} : directory of the flow-based
+#' model. By default, the value is indicated by \code{antaresFlowbased::fbOptions()}
+#'
+#' @examples
+#'
+#' \dontrun{
+#'  fb_opts = fbAntares::fbOptions()
+#'  plotFB(dayType = 1, hour = 1, country1 = "FR", country2 = "NL", fb_opts = fb_opts)
+#'  plotFB(dayType = 1:2, hour = 1,country1 = "FR",country2 = "NL", fb_opts = fb_opts)
+#'  plotFB(dayType = 1:2, hour = 1:2, country1 = "FR", country2 = "NL", fb_opts = fb_opts)
+#'  plotFB(dayType = 1, hour = 1, country1 = c("FR", "DE"), 
+#'      country2 = c("NL", "FR"), fb_opts = fb_opts)
+#' }
+#'
+#'
+#' @export
+plotFB <- function(dayType, hour, country1, country2, fb_opts = antaresFlowbased::fbOptions()){
+  hoursel <- hour
+  dayTypesel <- dayType
+  
+  dta <- readRDS(paste0(fb_opts$path, "/domainesFB.RDS"))
+  
+  if(!all(hour%in%(dta$Period - 1)))stop(paste0("Some hour are not in data : ",paste0(hour[!hour%in%(dta$hour - 1)])))
+  
+  
+  if(!all(dayType%in%dta$idDayType))stop(paste0("Some typical day are not in data : ",
+                                                paste0(dayType[!dayType%in%dta$dayType])))
+  
+  
+  if(!all(country1 %in% c("DE","BE","FR","NL", "AT")))stop("All country1 must be in : DE, BE, FR, NL")
+  
+  if(!all(country2 %in% c("DE","BE","FR","NL", "AT")))stop("All country2 must be in : DE, BE, FR, NL")
+  
+  if(length(country1) != length(country2))stop("country1 must be same length to country2")
+  
+  
+  allCtry <- data.frame(country1 = country1, country2 = country2)
+  graphList <- sapply(hour, function(hoursel){
+    sapply(dayType, function(dayTypesel){
+      apply(allCtry, 1, function(countsel){
+        
+        ctsel <- data.frame(t(countsel))
+        tempData <- dta[Period == (hoursel) & idDayType == dayTypesel]
+        if(length(tempData)==0)stop(paste0("Not available data for typical day ", dayTypesel, " hour ", hoursel))
+        
+        graphFlowBased2D(tempData,
+                         as.character(ctsel$country1), as.character(ctsel$country2)
+                         , dayType = dayTypesel, hour = hoursel)
+      })
+    })
+  })
+  combineWidgets(list = graphList)
+}
+
+
+
+
+
+
 #' @title Generate html report on a typical flow-based day
 #' 
 #' @description This function generates an html report on one or several typical days, 
