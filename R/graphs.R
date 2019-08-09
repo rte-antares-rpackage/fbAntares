@@ -166,7 +166,7 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 #'
 #'
 #' @export
-plotFB <- function(dayType, hour, country1, country2, fb_opts = antaresFlowbased::fbOptions()){
+plotFB <- function(dayType, hour, country1, country2, fb_opts = fbAntares::fbOptions()){
   hoursel <- hour
   dayTypesel <- dayType
   
