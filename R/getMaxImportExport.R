@@ -44,8 +44,8 @@ getMaxImportExport <- function(domainesFB) {
   colnames(dtmaxReal) <- paste0("ValueMaxReal", colnames(dtmaxReal))
   colnames(dtminReal) <- paste0("ValueMinReal", colnames(dtminReal))
   
-  dtmaxDiff <- abs(dtmaxModel-dtmaxReal)
-  dtminDiff <- abs(dtminModel-dtminReal)
+  dtmaxDiff <- dtmaxModel-dtmaxReal
+  dtminDiff <- dtminReal-dtminModel
   
   colnames(dtmaxDiff) <- paste0("DiffMaxModelReal", colnames(dtmaxDiff))
   colnames(dtminDiff) <- paste0("DiffMinModelReal", colnames(dtminDiff))
