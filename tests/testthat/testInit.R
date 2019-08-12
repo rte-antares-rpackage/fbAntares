@@ -16,29 +16,29 @@ test_that("test initFlowBased", {
 })
 
 
-# test_that("test initFlowBased", {
-#   opts2 <- suppressWarnings(antaresRead::setSimulationPath(testStudy2))
-# 
-#   fb_opts <- system.file("input/model/antaresInput", package = "fbAntares")
-#   if(fb_opts == "") fb_opts <- system.file("testdata/antaresInput", package = "fbAntares")
-#   init <- try(suppressWarnings(initFlowBased(
-#     fb_opts = fb_opts, scenarios = rep(1:200, times = 5), opts = opts2)))
-#   expect_true(class(init) == "list")
-#   opts2 <- setSimulationPath(testStudy2)
-# 
-# 
-#   expect_true("model_description_fb" %in% getAreas(opts = opts2))
-# 
-# 
-#   ctr <- fread(paste0(fb_opts, "/weight.txt"))
-#   bdc <- names(readBindingConstraints(opts2))
-#   expect_true(all(paste0(ctr$Name, "_fb") %in% bdc))
-# 
-#   clusters <- antaresRead::readClusterDesc(opts2)
-#   clusters <- clusters[area == "model_description_fb"]
-#   expect_true(all(clusters$unitcount == 1))
-# 
-#   clbdc <- all(clusters$cluster %in% paste0("model_description_fb_", tolower(bdc)))
-#   expect_true(clbdc)
-# 
-# })
+test_that("test initFlowBased", {
+  opts2 <- suppressWarnings(antaresRead::setSimulationPath(testStudy2))
+
+  fb_opts <- system.file("input/model/antaresInput", package = "fbAntares")
+  if(fb_opts == "") fb_opts <- system.file("testdata/antaresInput", package = "fbAntares")
+  init <- try(suppressWarnings(initFlowBased(
+    fb_opts = fb_opts, scenarios = rep(1:200, times = 5), opts = opts2, areaName = "cwe")))
+  # expect_true(class(init) == "list")
+  opts2 <- antaresRead::setSimulationPath(testStudy2)
+
+
+  expect_true("model_description_fb" %in% antaresRead::getAreas(opts = opts2))
+
+
+  # ctr <- fread(paste0(fb_opts, "/weight.txt"))
+  # bdc <- names(antaresRead::readBindingConstraints(opts2))
+  # expect_true(all(paste0(ctr$Name, "_fb") %in% bdc))
+
+  clusters <- antaresRead::readClusterDesc(opts2)
+  clusters <- clusters[area == "model_description_fb"]
+  expect_true(all(clusters$unitcount == 1))
+
+  # clbdc <- all(clusters$cluster %in% paste0("model_description_fb_", tolower(bdc)))
+  # expect_true(clbdc)
+
+})
