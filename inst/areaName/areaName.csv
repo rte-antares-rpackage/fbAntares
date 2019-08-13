@@ -1,4 +1,5 @@
-area;links
-cwe;be.fr,de.fr,de.nl,be.nl,be.de
-cwe_at;be.fr,de.fr,de.nl,be.nl,be.de,at.de
-others;As you wish!
+area;links;country
+cwe;be.fr,de.fr,de.nl,be.nl,be.de;DE,BE,FR,NL
+cwe_at;be.fr,de.fr,de.nl,be.nl,be.de,at.de;DE,BE,FR,NL,AT
+others;As you wish!;
+toto;Same;

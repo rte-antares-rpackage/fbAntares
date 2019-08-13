@@ -419,7 +419,7 @@ runAppError <- function(
 #' plotNetPositionFB(fb_opts = opts,
 #'          data = dta,
 #'          dayType = 3, hour = c(0, 19),
-#'          country1 = "BE", country2 = "FR", areaName = "cwe-at")
+#'          country1 = "BE", country2 = "FR", areaName = "cwe_at")
 #'          
 #' # Change color palette and areaName
 #' plotNetPositionFB(fb_opts = opts,
@@ -436,7 +436,7 @@ runAppError <- function(
 #'          data = dta,
 #'          dayType = "all", hour = 0,
 #'          country1 = "DE", country2 = "FR",
-#'          areaName = "cwe-at")
+#'          areaName = "cwe_at")
 #'
 #' # Filtering empty domains : only the matching domain of timeid 1 will be drawn
 #'
@@ -451,7 +451,7 @@ runAppError <- function(
 #' plotNetPositionFB(fb_opts = opts,
 #'          data = dta,
 #'          dayType = "all", hour = 0,
-#'          country1 = "AT", country2 = "DE", areaName = "cwe-at",
+#'          country1 = "AT", country2 = "DE", areaName = "cwe_at",
 #'          filteringEmptyDomains = TRUE,
 #'          xlim = c(-12000, 12000), ylim = c(-12000, 12000))
 #' }
@@ -459,7 +459,7 @@ runAppError <- function(
 #' @importFrom grDevices topo.colors
 #' @export
 plotNetPositionFB <- function( data, dayType,
-                               hour, country1, country2, areaName = "cwe-at",
+                               hour, country1, country2, areaName = "cwe_at",
                                fb_opts = antaresRead::simOptions(),
                                filteringEmptyDomains = FALSE,
                                nbMaxPt = 10000, palette = "rainbow",
@@ -480,34 +480,24 @@ plotNetPositionFB <- function( data, dayType,
                   "data it's to use antaresRead. If straitment bug it's probably", 
                   "due to your data object"))
   }
+
   
-  if (areaName == "cwe-at") {
-    if(!country1 %in% c("DE", "BE", "FR", "NL", "AT")){
-      stop("country1 must be DE, BE, FR, NL or AT")
-    }
-    if(!country2 %in% c("DE", "BE", "FR", "NL", "AT")){
-      stop("country2 must be DE, BE, FR, NL or AT")
-    }
-  } else if (areaName == "cwe") {
-    if(!country1 %in% c("DE", "BE", "FR", "NL")){
-      stop("country1 must be DE, BE, FR or NL")
-    }
-    if(!country2 %in% c("DE", "BE", "FR", "NL")){
-      stop("country2 must be DE, BE, FR or NL")
-    }
-  } else if (areaName == "other") {
-    ## à coder
-  } else {
-    stop(paste("The value of areaName must be one of the following :",
-               "cwe, cwe_at, other,", "currently :", areaName))
-  }
   
+  
+  ##New version
+  areaConf <- .getAreaName(areaName)
+  
+  nameCheck <- c(areaConf$country[[1]])
+  if(!country1 %in% nameCheck){
+    stop(paste0("country1 must be", paste(nameCheck, collapse = " ")))
+  } 
+  if(!country2 %in% nameCheck){
+    stop(paste0("country2 must be", paste(nameCheck, collapse = " ")))
+  } 
   
   if(!all(c("BALANCE", "UNSP. ENRG", "LOLD", "DTG MRG")%in%names(data$areas))){
     stop("This type of positions does not appear in the simulation data.")
   }
-  
-  
   
   idS <- antaresRead::getIdCols(data$areas)
   ##Test if no-adq are present

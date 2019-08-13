@@ -7,5 +7,6 @@
   
   dd <- dd[area == areaName]
   dd$links <- list(strsplit(dd$links, ","))
+  dd$country <- list(strsplit(dd$country, ","))
   dd
 }
