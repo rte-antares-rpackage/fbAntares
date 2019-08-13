@@ -167,8 +167,6 @@
   data
 }
 
-
-
 .crtlFixFaces <- function(fixFaces, col_ptdf) {
   col <- colnames(fixFaces)
   if(!all(col == c("func", "zone"))) {
