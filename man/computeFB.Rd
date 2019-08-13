@@ -6,12 +6,11 @@
 \usage{
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
-  reports = TRUE, areaName = "cwe_at", areacsv = NULL,
-  dayType = "All", hour = "All", clusteringDayType = "All",
-  clusteringHours = "All", nbFaces = 75, verbose = 1,
-  nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
-  hubDrop = list(NL = c("BE", "DE", "FR", "AT")), fixFaces = NULL,
-  seed = 123456)
+  reports = TRUE, areaName = "cwe_at", areacsv = NULL, dayType = "All",
+  hour = "All", clusteringDayType = "All", clusteringHours = "All",
+  nbFaces = 75, verbose = 1, nbLines = 10000, maxiter = 10,
+  thresholdIndic = 90, quad = F, hubDrop = list(NL = c("BE", "DE", "FR",
+  "AT")), fixFaces = NULL, seed = 123456)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 

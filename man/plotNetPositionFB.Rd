@@ -5,9 +5,9 @@
 \title{Plot a flow-based typical domain and the Net Positions reached within in an Antares simulation}
 \usage{
 plotNetPositionFB(data, dayType, hour, country1, country2,
-  areaName = "cwe-at", fb_opts = antaresRead::simOptions(),
-  filteringEmptyDomains = FALSE, nbMaxPt = 10000,
-  palette = "rainbow", xlim = c(-8000, 8000), ylim = c(-8000, 8000))
+  areaName = "cwe_at", fb_opts = antaresRead::simOptions(),
+  filteringEmptyDomains = FALSE, nbMaxPt = 10000, palette = "rainbow",
+  xlim = c(-8000, 8000), ylim = c(-8000, 8000))
 }
 \arguments{
 \item{data}{\code{antaresDataList} Antares output data, imported with \link{readAntares}. It can be a filtered (time or loss
@@ -75,7 +75,7 @@ dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at"),
 plotNetPositionFB(fb_opts = opts,
          data = dta,
          dayType = 3, hour = c(0, 19),
-         country1 = "BE", country2 = "FR", areaName = "cwe-at")
+         country1 = "BE", country2 = "FR", areaName = "cwe_at")
          
 # Change color palette and areaName
 plotNetPositionFB(fb_opts = opts,
@@ -92,7 +92,7 @@ plotNetPositionFB(fb_opts = opts,
          data = dta,
          dayType = "all", hour = 0,
          country1 = "DE", country2 = "FR",
-         areaName = "cwe-at")
+         areaName = "cwe_at")
 
 # Filtering empty domains : only the matching domain of timeid 1 will be drawn
 
@@ -107,7 +107,7 @@ plotNetPositionFB(fb_opts = opts,
 plotNetPositionFB(fb_opts = opts,
          data = dta,
          dayType = "all", hour = 0,
-         country1 = "AT", country2 = "DE", areaName = "cwe-at",
+         country1 = "AT", country2 = "DE", areaName = "cwe_at",
          filteringEmptyDomains = TRUE,
          xlim = c(-12000, 12000), ylim = c(-12000, 12000))
 }
