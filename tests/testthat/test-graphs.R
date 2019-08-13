@@ -19,7 +19,7 @@ test_that("graphs", {
   fb_opts <- setFlowbasedPath(path = system.file("input/model/antaresInput/", package = "fbAntares"))
   
   out <- plotFB(dayType = 1, hour = 1, country1 = "FR", country2 = "NL",
-                fb_opts = fb_opts, areaName = "cwe-at")
+                fb_opts = fb_opts, areaName = "cwe_at")
   expect_true("combineWidgets" %in% class(out))
   
   out <- plotFB(dayType = 1, hour = 1:4,country1 = "FR",country2 = "NL",
@@ -27,11 +27,11 @@ test_that("graphs", {
   expect_true("combineWidgets" %in% class(out))
   
   out <- plotFB(dayType = 1, hour = 1:2, country1 = "DE", country2 = "AT",
-                fb_opts = fb_opts, areaName = "cwe-at")
+                fb_opts = fb_opts, areaName = "cwe_at")
   expect_true("combineWidgets" %in% class(out))
   
   out <- plotFB(dayType = 1, hour = 1, country1 = c("FR", "DE"),
-                country2 = c("NL", "FR"), fb_opts = fb_opts, areaName = "cwe-at")
+                country2 = c("NL", "FR"), fb_opts = fb_opts, areaName = "cwe_at")
   expect_true("combineWidgets" %in% class(out))
 })
 

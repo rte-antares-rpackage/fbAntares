@@ -190,26 +190,16 @@ plotFB <- function(dayType, hour, country1, country2,
   }
   
   
-  if (areaName == "cwe-at") {
-    if(!all(country1 %in% c("DE", "BE", "FR", "NL", "AT"))){
-      stop("country1 must be DE, BE, FR, NL or AT")
-    }
-    if(!all(country2 %in% c("DE", "BE", "FR", "NL", "AT"))){
-      stop("country2 must be DE, BE, FR, NL or AT")
-    }
-  } else if (areaName == "cwe") {
-    if(!all(country1 %in% c("DE", "BE", "FR", "NL"))){
-      stop("country1 must be DE, BE, FR or NL")
-    }
-    if(!all(country2 %in% c("DE", "BE", "FR", "NL"))){
-      stop("country2 must be DE, BE, FR or NL")
-    }
-  } else if (areaName == "other") {
-    ## à coder
-  } else {
-    stop(paste("The value of areaName must be one of the following :",
-               "cwe, cwe_at, other,", "currently :", areaName))
-  }
+  ##New version
+  areaConf <- .getAreaName(areaName)
+  
+  nameCheck <- c(areaConf$country[[1]])
+  if(!country1 %in% nameCheck){
+    stop(paste0("country1 must be", paste(nameCheck, collapse = " ")))
+  } 
+  if(!country2 %in% nameCheck){
+    stop(paste0("country2 must be", paste(nameCheck, collapse = " ")))
+  } 
   
   if(length(country1) != length(country2)){
     stop("country1 must be same length to country2")
@@ -549,7 +539,12 @@ plotNetPositionFB <- function( data, dayType,
   
   mcYears <- unique(data$areas$mcYear)
   out <- out2 <- NULL
+  
   ipn <- .giveIpn(data, areaName = areaName)
+  
+  
+  
+  
   out <- .constructDataForGraph(hour = hour,
                                 dayType = dayType,
                                 mcYears = mcYears,
@@ -721,28 +716,57 @@ plotNetPositionFB <- function( data, dayType,
   `UNSP. ENRG_ADQPatch` <- `DTG MRG_ADQPatch` <- NULL
   
   links <- dcast(dta$links, time + mcYear~link, value.var = "FLOW LIN.")
+  allCt <- names(links)
+  allCt <- allCt[-which(allCt == "time")]
+  allCt <- allCt[-which(allCt == "mcYear")]
+  ct <- unique(unlist(sapply(allCt, function(X)strsplit(X, ' - '))))
+  ct
   
-  if (areaName == "cwe-at") {
-    links[, be :=  `be - de` + `be - fr` + `be - nl`]
-    links[, de := - `be - de` + `de - fr` + `de - nl` - `at - de`]
-    links[, fr :=  -`be - fr` - `de - fr`]
-    links[, nl :=  -`be - nl` - `de - nl`]
-    links[, at :=  `at - de`]
-    links
-    links <- links[, .SD, .SDcols = c("time", "mcYear", "be", "de", "fr", "nl", "at")]
-  } else if (areaName == "cwe") {
-    links[, be :=  `be - de` + `be - fr` + `be - nl`]
-    links[, de := - `be - de` + `de - fr` + `de - nl`]
-    links[, fr :=  -`be - fr` - `de - fr`]
-    links[, nl :=  -`be - nl` - `de - nl`]
-    links
-    links <- links[, .SD, .SDcols = c("time", "mcYear","be","de" ,"fr","nl")]
-  } else if (areaName == "other") {
-    ## à coder
-  } else {
-    stop(paste("The value of areaName must be one of the following :",
-               "cwe, cwe_at, other,", "currently :", areaName))
-  }
+  
+  sapply(ct, function(ctCons){
+    ctCons
+    ct1 <- grep(ct[1], allCt)
+    ct1 <- allCt[ct1]
+    ctPlus <- which(substr(ct1, 1, 2) == ctCons)
+    pluS <- paste0(paste0("+", paste0("`", ct1[ctPlus], "`")), collapse = "")
+    ctMoins <- which(substr(ct1, 1, 2) != ctCons)
+    moins <- paste0(paste0("-", paste0("`", ct1[ctMoins], "`")))
+    if(length(ctPlus) == 0){
+      expEnd <- moins
+    }else if(length(ctMoins) == 0){
+      expEnd <- pluS
+      
+    }else{
+      expEnd <- paste0(pluS, moins)
+    }
+    links[, tp := eval(parse(text = expEnd))]
+    setnames(links, "tp", ctCons)
+  })
+  links <- links[, .SD, .SDcols = c("time", "mcYear",ct)]
+  
+  
+  
+  # if (areaName == "cwe-at") {
+  #   links[, be :=  `be - de` + `be - fr` + `be - nl`]
+  #   links[, de := - `be - de` + `de - fr` + `de - nl` - `at - de`]
+  #   links[, fr :=  -`be - fr` - `de - fr`]
+  #   links[, nl :=  -`be - nl` - `de - nl`]
+  #   links[, at :=  `at - de`]
+  #   links
+  #   links <- links[, .SD, .SDcols = c("time", "mcYear", "be", "de", "fr", "nl", "at")]
+  # } else if (areaName == "cwe") {
+  #   links[, be :=  `be - de` + `be - fr` + `be - nl`]
+  #   links[, de := - `be - de` + `de - fr` + `de - nl`]
+  #   links[, fr :=  -`be - fr` - `de - fr`]
+  #   links[, nl :=  -`be - nl` - `de - nl`]
+  #   links
+  #   links <- links[, .SD, .SDcols = c("time", "mcYear","be","de" ,"fr","nl")]
+  # } else if (areaName == "other") {
+  #   ## à coder
+  # } else {
+  #   stop(paste("The value of areaName must be one of the following :",
+  #              "cwe, cwe_at, other,", "currently :", areaName))
+  # }
   
   links <- melt(links, id = 1:2)
   setnames(links, "variable", "area")
