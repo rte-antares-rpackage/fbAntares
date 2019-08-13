@@ -119,7 +119,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   
   #.ctrlSolver()
   
-  
+  areaConf <- .getAreaName(areaName)
   
   #test fbModel
   .controlFbMod(fb_opts)
@@ -129,7 +129,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   
   ###Load fbModel data
   #Load weight.txt
-  W <- .getWeight(paste0(fb_opts, "/weight.txt"), areaName = areaName)
+  W <- .getWeight(paste0(fb_opts, "/weight.txt"), areaConf = areaConf)
   
   #Load second_member.txt
   seM <- .getSecondMember(paste0(fb_opts, "/second_member.txt"))

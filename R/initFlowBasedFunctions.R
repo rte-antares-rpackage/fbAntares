@@ -1,29 +1,38 @@
 #' Load weigth file
 #'
 #' @param weigth \code{character} path
+#' @param areaConf \code{data.table} area conf
 #'
 #' @return weigth \code{data.table} weigth file
 #'
 #' @noRd
-.getWeight <- function(weigth, areaName){
+.getWeight <- function(weigth, areaConf){
   weigth <- data.table::fread(weigth, sep = "\t", dec = ".")
   names(weigth) <- names(weigth)%>>%
     tolower()
-  if (areaName == "cwe_at") {
-    if(any(names(weigth) != c("name", "be.fr", "de.fr", "de.nl", "be.nl", "be.de", "at.de"))){
-      stop("Names of weigth.txt must be name, be.fr, de.fr, de.nl, be.nl, be.de, at.de")
-    }
-  } else if (areaName == "cwe") {
-    if(any(names(weigth) != c("name", "be.fr", "de.fr", "de.nl", "be.nl", "be.de"))){
-      stop("Names of weigth.txt must be name, be.fr, de.fr, de.nl, be.nl, be.de")
-    }
-  } else if (areaName == "other") {
-    ## A coder
-  } else {
-    stop(paste("The value of areaName must be one of the following :",
-               "cwe, cwe_at, other,", "currently :", areaName))
+  
+  ##New version
+  nameCheck <- c("name", areaConf$links[[1]])
+  if(any(!names(weigth) %in% nameCheck)){
+    stop(paste0("Names of weigth.txt must be name ", paste(nameCheck, collapse = " ")))
   }
   
+  # 
+  # if (areaName == "cwe_at") {
+  #   if(any(names(weigth) != c("name", "be.fr", "de.fr", "de.nl", "be.nl", "be.de", "at.de"))){
+  #     stop("Names of weigth.txt must be name, be.fr, de.fr, de.nl, be.nl, be.de, at.de")
+  #   }
+  # } else if (areaName == "cwe") {
+  #   if(any(names(weigth) != c("name", "be.fr", "de.fr", "de.nl", "be.nl", "be.de"))){
+  #     stop("Names of weigth.txt must be name, be.fr, de.fr, de.nl, be.nl, be.de")
+  #   }
+  # } else if (areaName == "other") {
+  #   ## A coder
+  # } else {
+  #   stop(paste("The value of areaName must be one of the following :",
+  #              "cwe, cwe_at, other,", "currently :", areaName))
+  # }
+  # 
   recontructName <- 1:nrow(weigth)
   recontructName <- as.character(recontructName)
   maxnchar <- max(nchar(recontructName))
