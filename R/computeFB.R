@@ -142,7 +142,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   ##From B to antares
   
   areaConf <- .getAreaName(areaName)
-  antaresFace <- .fromBtoAntares(face, col_ptdf, areaName = areaConf)
+  antaresFace <- .fromBtoAntares(face, col_ptdf, areaConf = areaConf)
   
   combi <- data.table(expand.grid(hour, dayType))
   names(combi) <- c("hour", "dayType")
