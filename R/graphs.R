@@ -743,30 +743,6 @@ plotNetPositionFB <- function( data, dayType,
   })
   links <- links[, .SD, .SDcols = c("time", "mcYear",ct)]
   
-  
-  
-  # if (areaName == "cwe-at") {
-  #   links[, be :=  `be - de` + `be - fr` + `be - nl`]
-  #   links[, de := - `be - de` + `de - fr` + `de - nl` - `at - de`]
-  #   links[, fr :=  -`be - fr` - `de - fr`]
-  #   links[, nl :=  -`be - nl` - `de - nl`]
-  #   links[, at :=  `at - de`]
-  #   links
-  #   links <- links[, .SD, .SDcols = c("time", "mcYear", "be", "de", "fr", "nl", "at")]
-  # } else if (areaName == "cwe") {
-  #   links[, be :=  `be - de` + `be - fr` + `be - nl`]
-  #   links[, de := - `be - de` + `de - fr` + `de - nl`]
-  #   links[, fr :=  -`be - fr` - `de - fr`]
-  #   links[, nl :=  -`be - nl` - `de - nl`]
-  #   links
-  #   links <- links[, .SD, .SDcols = c("time", "mcYear","be","de" ,"fr","nl")]
-  # } else if (areaName == "other") {
-  #   ## à coder
-  # } else {
-  #   stop(paste("The value of areaName must be one of the following :",
-  #              "cwe, cwe_at, other,", "currently :", areaName))
-  # }
-  
   links <- melt(links, id = 1:2)
   setnames(links, "variable", "area")
   dta$areas <- merge(dta$areas, links, by = c("time", "mcYear", "area"))
