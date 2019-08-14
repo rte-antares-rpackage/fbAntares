@@ -711,7 +711,7 @@ plotNetPositionFB <- function( data, dayType,
 }
 
 .giveIpn <- function(dta, areaName){
-  be <- de <- fr <- nl <- `be - de` <- `be - fr` <- `be - nl` <- `de - fr` <- `de - nl` <- lole <- value <-NULL
+  lole <- value <-NULL
   `UNSP. ENRG` <- `DTG MRG` <- NULL
   `UNSP. ENRG_ADQPatch` <- `DTG MRG_ADQPatch` <- NULL
   
