@@ -714,14 +714,11 @@ plotNetPositionFB <- function( data, dayType,
   lole <- value <-NULL
   `UNSP. ENRG` <- `DTG MRG` <- NULL
   `UNSP. ENRG_ADQPatch` <- `DTG MRG_ADQPatch` <- NULL
-  
   links <- dcast(dta$links, time + mcYear~link, value.var = "FLOW LIN.")
   allCt <- names(links)
   allCt <- allCt[-which(allCt == "time")]
   allCt <- allCt[-which(allCt == "mcYear")]
   ct <- unique(unlist(sapply(allCt, function(X)strsplit(X, ' - '))))
-  ct
-  
   
   sapply(ct, function(ctCons){
     ct1 <- grep(ct[1], allCt)
@@ -741,21 +738,14 @@ plotNetPositionFB <- function( data, dayType,
     links[, tp := eval(parse(text = expEnd))]
     setnames(links, "tp", ctCons)
   })
-  links <- links[, .SD, .SDcols = c("time", "mcYear",ct)]
   
+  links <- links[, .SD, .SDcols = c("time", "mcYear",ct)]
   links <- melt(links, id = 1:2)
   setnames(links, "variable", "area")
   dta$areas <- merge(dta$areas, links, by = c("time", "mcYear", "area"))
-  
   dta$areas[, lole :=`UNSP. ENRG` - `DTG MRG` - value]
-  
   dta$areas[, ipn := value]
-  
   ipn <- dcast(dta$areas, time + mcYear~area, value.var = c("ipn"))
-  
-  
-  
-  
   
   ipn
 }

@@ -56,7 +56,27 @@ test_that("make ts", {
   expect_true(all(secondF == 6))
   
   
+  expect_error(suppressWarnings(createFBTS(opts = op5, probabilityMatrix = matProb, multiplier = "toto",
+                                    interSeasonBegin = interSeasonBegin, interSeasonEnd = interSeasonEnd,
+                                    firstDay = firstDay, seed = k, silent = TRUE, outputPath =  tempdir())))
   
   
+  multiplier1 <- multiplier
+  multiplier1$toto <- 1
+  expect_error(createFBTS(opts = op5, probabilityMatrix = matProb, multiplier = multiplier1,
+                                           interSeasonBegin = interSeasonBegin, interSeasonEnd = interSeasonEnd,
+                                           firstDay = firstDay, seed = k, silent = TRUE, outputPath =  tempdir()))
+  
+  expect_error(createFBTS(opts = op5, probabilityMatrix = matProb, multiplier = multiplier,
+                          interSeasonBegin = interSeasonBegin, interSeasonEnd = interSeasonEnd,
+                          firstDay = 8, seed = k, silent = TRUE, outputPath =  tempdir()))
+  multiplier1 <- rbind(multiplier, data.frame(variable = "tot", coef = 1))
+  expect_error(createFBTS(opts = op5, probabilityMatrix = matProb, multiplier = multiplier1,
+                          interSeasonBegin = interSeasonBegin, interSeasonEnd = interSeasonEnd,
+                          firstDay = firstDay, seed = k, silent = TRUE, outputPath =  tempdir()))
+  
+ setNamesProbabilityMatrix(matProb, "fr@load", "toto")
+  expect_true("toto" %in% names(matProb[[1]]))
+  expect_true("toto" %in% names(matProb[[2]]))
   
 })
