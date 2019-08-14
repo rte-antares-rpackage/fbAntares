@@ -724,7 +724,6 @@ plotNetPositionFB <- function( data, dayType,
   
   
   sapply(ct, function(ctCons){
-    ctCons
     ct1 <- grep(ct[1], allCt)
     ct1 <- allCt[ct1]
     ctPlus <- which(substr(ct1, 1, 2) == ctCons)
