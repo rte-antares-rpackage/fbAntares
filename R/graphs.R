@@ -520,7 +520,8 @@ plotNetPositionFB <- function(data, dayType,
   }
   if("outFlowBased" %in% names(domaines)){
     setnames(domaines, "outFlowBased", "VERTDetails")
-  }
+    domaines$VERTDetails[[1]] <-     domaines$VERTDetails[[1]]$pointX
+ }
   
   
   
