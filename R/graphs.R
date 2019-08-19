@@ -448,7 +448,7 @@ runAppError <- function(
 #'
 #' @importFrom grDevices topo.colors
 #' @export
-plotNetPositionFB <- function( data, dayType,
+plotNetPositionFB <- function(data, dayType,
                                hour, country1, country2, areaName = "cwe_at",
                                fb_opts = antaresRead::simOptions(),
                                filteringEmptyDomains = FALSE,
@@ -771,9 +771,21 @@ plotNetPositionFB <- function( data, dayType,
       dSel <- domaines[which(idDayType == DD & Period ==( HH  + 1))]
       
       ##TODO vérifier que c'est bien pointX!)
-      points <- dSel$VERTDetails[[1]]$pointX
-      points$NL <-  - points$BE - points$DE - points$FR
+      points <- dSel$VERTDetails[[1]]
       
+      col_ptdfraw <- colnames(dSel$PTDFRawDetails[[1]])[
+        grepl("ptdf", colnames(dSel$PTDFRawDetails[[1]]))]
+      col_vert <- colnames(dSel$VERTDetails[[1]])[
+        !grepl("idDayType|Period", colnames(dSel$VERTDetails[[1]]))]
+      col_ptdfraw <- gsub("ptdf", "", col_ptdfraw)
+      coldiff <- col_ptdfraw[!(col_ptdfraw %in% col_vert)]
+      
+      resdiff <- -dSel$VERTDetails[[1]][[col_vert[1]]]
+      for (i in 2:length(col_vert)) {
+        resdiff <- resdiff - dSel$VERTDetails[[1]][[col_vert[i]]]
+      }
+      points[[coldiff]] <- resdiff
+
       res <- data.frame("ctry1" = points[[ctry1]],
                         "ctry2" = points[[ctry2]])
       
