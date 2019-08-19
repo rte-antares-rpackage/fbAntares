@@ -520,7 +520,8 @@ plotNetPositionFB <- function( data, dayType,
   }
   if("outFlowBased" %in% names(domaines)){
     setnames(domaines, "outFlowBased", "VERTDetails")
-  }
+    domaines$VERTDetails[[1]] <-     domaines$VERTDetails[[1]]$pointX
+ }
   
   
   
@@ -771,7 +772,7 @@ plotNetPositionFB <- function( data, dayType,
       dSel <- domaines[which(idDayType == DD & Period ==( HH  + 1))]
       
       ##TODO vérifier que c'est bien pointX!)
-      points <- dSel$VERTDetails[[1]]$pointX
+      points <- dSel$VERTDetails[[1]]
       points$NL <-  - points$BE - points$DE - points$FR
       
       res <- data.frame("ctry1" = points[[ctry1]],
