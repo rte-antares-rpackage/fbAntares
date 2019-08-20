@@ -40,15 +40,15 @@ test_that("test plotNetPositionFB", {
   #   
   dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl"),
                                   links = c("be - de","be - fr","be - nl",
-                                            "de - fr","de - nl"), mcYears = 2,
+                                            "de - fr","de - nl"), mcYears = 1,
                                   select = c("LOLD", "UNSP. ENRG",
                                              "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
-                                  opts = testSt , showProgress = FALSE)
+                                  opts = testSt2 , showProgress = FALSE)
   #   
   #   ## plot a domain and the matching output points 
-  res <- plotNetPositionFB(fb_opts = testSt,
+  res <- plotNetPositionFB(fb_opts = testSt2,
                            data = dta,
-                           dayType = 6, hour = 19:20,
+                           dayType = 1, hour = 19:20,
                            country1 = "BE", country2 = "FR", areaName = "cwe")
   expect_true("combineWidgets" %in% class(res))
 })

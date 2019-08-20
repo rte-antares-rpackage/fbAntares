@@ -30,8 +30,11 @@ assign("opts", opts, envir = globalenv())
 assign("testStudy2", testStudy2, envir = globalenv())
 assign("testStudy", testStudy, envir = globalenv())
 
+testSt2 <-  file.path(temp_dir, "ex_test")
+testSt2 <- suppressWarnings(antaresRead::setSimulationPath(testSt2, 1))
 testSt <-  file.path(temp_dir, "exemple_test")
 testSt <- suppressWarnings(antaresRead::setSimulationPath(testSt, 1))
+
 # 
 # tar(tarfile = "ex_test.tgz",files = "ex_test",
 #     compression = "gzip")

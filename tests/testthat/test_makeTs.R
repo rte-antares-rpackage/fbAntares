@@ -31,9 +31,9 @@ test_that("make ts", {
                      firstDay = firstDay, seed = k, silent = TRUE, outputPath =  tempdir()))
     
     
-    frLoad <- suppressWarnings(readInputTS(load = "fr", timeStep = "daily", showProgress = FALSE))
-    windbe <- suppressWarnings(readInputTS(wind = c("be"), timeStep = "daily", showProgress = FALSE))
-    windde <- suppressWarnings(readInputTS(wind = c("de"), timeStep = "daily", showProgress = FALSE))
+    frLoad <- suppressWarnings(antaresRead::readInputTS(load = "fr", timeStep = "daily", showProgress = FALSE))
+    windbe <- suppressWarnings(antaresRead::readInputTS(wind = c("be"), timeStep = "daily", showProgress = FALSE))
+    windde <- suppressWarnings(antaresRead::readInputTS(wind = c("de"), timeStep = "daily", showProgress = FALSE))
     allDta <- data.table(frLoad, be = windbe[["wind"]],de = windde[["wind"]])
     allDta <- allDta[tsId == 1]
     
@@ -50,10 +50,10 @@ test_that("make ts", {
     
     
   }
-  expect_true(2%in%firstF)
-  expect_true(1%in%firstF)
-  expect_true(all(firstF%in%c(1, 2)))
-  expect_true(all(secondF == 6))
+  expect_true(4 %in% firstF)
+  expect_true(5 %in% firstF)
+  expect_true(all(firstF%in%c(4, 5)))
+  expect_true(all(secondF == 3))
   
   
   expect_error(suppressWarnings(createFBTS(opts = op5, probabilityMatrix = matProb, multiplier = "toto",

@@ -6,8 +6,8 @@
 \usage{
 plotNetPositionFB(data, dayType, hour, country1, country2,
   areaName = "cwe_at", fb_opts = antaresRead::simOptions(),
-  filteringEmptyDomains = FALSE, nbMaxPt = 10000, palette = "rainbow",
-  xlim = c(-8000, 8000), ylim = c(-8000, 8000))
+  filteringEmptyDomains = FALSE, nbMaxPt = 10000,
+  palette = "rainbow", xlim = c(-8000, 8000), ylim = c(-8000, 8000))
 }
 \arguments{
 \item{data}{\code{antaresDataList} Antares output data, imported with \link{readAntares}. It can be a filtered (time or loss
@@ -75,11 +75,20 @@ dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at"),
 plotNetPositionFB(fb_opts = opts,
          data = dta,
          dayType = 3, hour = c(0, 19),
-         country1 = "BE", country2 = "FR", areaName = "cwe_at")
+         country1 = "BE", country2 = "FR", areaName = "cwe_at",
+         xlim = c(-10000, 10000), ylim = c(-10000, 10000))
+         
+dta2 <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl"),
+                                links = c("be - de","be - fr","be - nl",
+                                "de - fr","de - nl"), mcYears = 1:2,
+                                select = c("LOLD", "UNSP. ENRG",
+                                "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
+                                opts = opts)
+                                
          
 # Change color palette and areaName
 plotNetPositionFB(fb_opts = opts,
-                 data = dta,
+                 data = dta2,
                  dayType = 3, hour = c(0, 19),
                  country1 = "BE", country2 = "FR", palette = "topo.colors",
                  areaName = "cwe")

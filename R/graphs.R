@@ -409,11 +409,20 @@ runAppError <- function(
 #' plotNetPositionFB(fb_opts = opts,
 #'          data = dta,
 #'          dayType = 3, hour = c(0, 19),
-#'          country1 = "BE", country2 = "FR", areaName = "cwe_at")
+#'          country1 = "BE", country2 = "FR", areaName = "cwe_at",
+#'          xlim = c(-10000, 10000), ylim = c(-10000, 10000))
+#'          
+#' dta2 <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl"),
+#'                                 links = c("be - de","be - fr","be - nl",
+#'                                 "de - fr","de - nl"), mcYears = 1:2,
+#'                                 select = c("LOLD", "UNSP. ENRG",
+#'                                 "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
+#'                                 opts = opts)
+#'                                 
 #'          
 #' # Change color palette and areaName
 #' plotNetPositionFB(fb_opts = opts,
-#'                  data = dta,
+#'                  data = dta2,
 #'                  dayType = 3, hour = c(0, 19),
 #'                  country1 = "BE", country2 = "FR", palette = "topo.colors",
 #'                  areaName = "cwe")
@@ -449,11 +458,11 @@ runAppError <- function(
 #' @importFrom grDevices topo.colors
 #' @export
 plotNetPositionFB <- function(data, dayType,
-                               hour, country1, country2, areaName = "cwe_at",
-                               fb_opts = antaresRead::simOptions(),
-                               filteringEmptyDomains = FALSE,
-                               nbMaxPt = 10000, palette = "rainbow",
-                               xlim = c(-8000, 8000), ylim = c(-8000, 8000)){
+                              hour, country1, country2, areaName = "cwe_at",
+                              fb_opts = antaresRead::simOptions(),
+                              filteringEmptyDomains = FALSE,
+                              nbMaxPt = 10000, palette = "rainbow",
+                              xlim = c(-8000, 8000), ylim = c(-8000, 8000)){
   
   
   if(!palette[1]%in%c("cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow")){
@@ -470,7 +479,7 @@ plotNetPositionFB <- function(data, dayType,
                   "data it's to use antaresRead. If straitment bug it's probably", 
                   "due to your data object"))
   }
-
+  
   
   
   
@@ -499,8 +508,8 @@ plotNetPositionFB <- function(data, dayType,
   
   namesToTest <- names(data$areas)[!names(data$areas)%in%idS]
   
-  ctry1 = country1
-  ctry2 = country2
+  ctry1 <- country1
+  ctry2 <- country2
   #.ctrlUserHour(opts)
   
   foldPath <- .mergeFlowBasedPath(fb_opts)
@@ -520,8 +529,11 @@ plotNetPositionFB <- function(data, dayType,
   }
   if("outFlowBased" %in% names(domaines)){
     setnames(domaines, "outFlowBased", "VERTDetails")
-    domaines$VERTDetails[[1]] <-     domaines$VERTDetails[[1]]$pointX
- }
+    for (i in 1:length(domaines$VERTDetails)) {
+      domaines$VERTDetails[[i]] <- domaines$VERTDetails[[i]]$pointX
+    }
+    
+  }
   
   
   
@@ -541,7 +553,7 @@ plotNetPositionFB <- function(data, dayType,
   mcYears <- unique(data$areas$mcYear)
   out <- out2 <- NULL
   
-  ipn <- .giveIpn(data, areaName = areaName)
+  ipn <- .giveIpn(data, areaName = areaConf$country[[1]])
   
   
   
@@ -719,15 +731,15 @@ plotNetPositionFB <- function(data, dayType,
   allCt <- names(links)
   allCt <- allCt[-which(allCt == "time")]
   allCt <- allCt[-which(allCt == "mcYear")]
-  ct <- unique(unlist(sapply(allCt, function(X)strsplit(X, ' - '))))
-  
+  # ct <- unique(unlist(sapply(allCt, function(X)strsplit(X, ' - '))))
+  ct <- tolower(areaName)
   sapply(ct, function(ctCons){
-    ct1 <- grep(ct[1], allCt)
+    ct1 <- grep(ctCons, allCt)
     ct1 <- allCt[ct1]
     ctPlus <- which(substr(ct1, 1, 2) == ctCons)
     pluS <- paste0(paste0("+", paste0("`", ct1[ctPlus], "`")), collapse = "")
     ctMoins <- which(substr(ct1, 1, 2) != ctCons)
-    moins <- paste0(paste0("-", paste0("`", ct1[ctMoins], "`")))
+    moins <- paste0(paste0("-", paste0("`", ct1[ctMoins], "`")), collapse = "")
     if(length(ctPlus) == 0){
       expEnd <- moins
     }else if(length(ctMoins) == 0){
@@ -786,7 +798,7 @@ plotNetPositionFB <- function(data, dayType,
         resdiff <- resdiff - dSel$VERTDetails[[1]][[col_vert[i]]]
       }
       points[[coldiff]] <- resdiff
-
+      
       res <- data.frame("ctry1" = points[[ctry1]],
                         "ctry2" = points[[ctry2]])
       
