@@ -111,7 +111,7 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
     setChartCursor(),
     addValueAxes(title = paste(ctry1, "(MW)"), position = "bottom", minimum = xlim[1], maximum = xlim[2]),
     addValueAxes(title =  paste(ctry2, "(MW)"), minimum = ylim[1], maximum = ylim[2]),
-    # setExport(enabled = TRUE),
+    setExport(enabled = export),
     setLegend(enabled = TRUE),
     plot(width = width, height = height)
   )

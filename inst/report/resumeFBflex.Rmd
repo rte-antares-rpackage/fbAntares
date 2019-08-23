@@ -30,7 +30,7 @@ vizModelReal <- function(data, combi, hour, dayType,
            ncol = 2,
            list = lapply(1:nrow(combi), function(X) {
              graphFlowBased2D(data, ctry1 = combi[X, 1], ctry2 = combi[X, 2], hour = hour,
-                              dayType = dayType, xlim = xlim, ylim = ylim, export = F)
+                              dayType = dayType, xlim = xlim, ylim = ylim, export = T)
            }), width = "100%", height = "1000px"
            )
   )
