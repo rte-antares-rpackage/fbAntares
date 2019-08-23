@@ -551,7 +551,7 @@ plotNetPositionFB <- function(data, dayType,
                               fb_opts = antaresRead::simOptions(),
                               filteringEmptyDomains = FALSE,
                               nbMaxPt = 10000, palette = "rainbow",
-                              xlim = c(-8000, 8000), ylim = c(-8000, 8000)){
+                              xlim = c(-12000, 12000), ylim = c(-12000, 12000)){
   
   
   if(!palette[1]%in%c("cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow")){
