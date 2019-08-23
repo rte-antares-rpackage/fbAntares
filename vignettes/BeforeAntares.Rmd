@@ -211,7 +211,7 @@ plotFB(hour = 5:6, dayType = 1, country1 = c("FR", "DE"),
 
 Reports in html format can also be generated within the shiny application. This solution can be use to facilitate the transmission and communication of the results. The function to generate html reports is ``generateReportFb()``
 <div style="text-align:center" markdown="1">
-<img src="report.png" alt="Drawing" style="width: 90%; height: 90%">
+<img src="report.PNG" alt="Drawing" style="width: 90%; height: 90%">
 </div>
 
 
