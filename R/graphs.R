@@ -282,7 +282,6 @@ generateReportFb <- function(
   dayType, output_file = NULL,
   countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")),
   fb_opts = NULL, allFB = NULL, xlim = c(-12000, 12000), ylim = c(-12000, 12000)){
-  ## NOTE : dans le generatereport, height est fixé à 1000px car il ne prend plus 100%
   Period <- idDayType <- VERTDetails <- VERTRawDetails <- NULL
   if(is.null(allFB)){
     allFB <- readRDS(paste0(fb_opts$path, "/domainesFB.RDS"))

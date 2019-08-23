@@ -25,15 +25,15 @@ library(shiny)
 vizModelReal <- function(data, combi, hour, dayType, 
                          xlim, ylim) {
   
-  column(12,
-         combineWidgets(
-           ncol = 2,
-           list = lapply(1:nrow(combi), function(X) {
-             graphFlowBased2D(data, ctry1 = combi[X, 1], ctry2 = combi[X, 2], hour = hour,
-                              dayType = dayType, xlim = xlim, ylim = ylim, export = T)
-           }), width = "100%", height = "1000px"
-           )
+  # column(12,
+  combineWidgets(
+    ncol = 2,
+    list = lapply(1:nrow(combi), function(X) {
+      graphFlowBased2D(data, ctry1 = combi[X, 1], ctry2 = combi[X, 2], hour = hour,
+                       dayType = dayType, xlim = xlim, ylim = ylim, export = F)
+    }), width = "100%", height = "100%"
   )
+  # )
   # plotFB(dayType = 1, hour = 1:4,country1 = country1, country2 = country2, 
   # fb_opts = fb_opts, areaName = "cwe_at", xlim = xlim, ylim = ylim)
   
