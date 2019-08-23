@@ -4,9 +4,9 @@
 \alias{createFBTS}
 \title{Creation of time series of typical days for Antares studies}
 \usage{
-createFBTS(opts, probabilityMatrix, multiplier, interSeasonBegin,
-  interSeasonEnd, firstDay, seed = NULL, silent = FALSE,
-  outputPath = getwd())
+createFBTS(opts, probabilityMatrix, multiplier, firstDay, seed = 123456,
+  silent = FALSE, outputPath = getwd(),
+  calendar = system.file("calendar/calendar.csv", package = "fbAntares"))
 }
 \arguments{
 \item{opts}{\code{list} of simulation parameters returned by the function 
@@ -26,12 +26,6 @@ Two columns:
 \item coef : mutiplier coefficient, for example the installed capacity.
 }}
 
-\item{interSeasonBegin}{\code{character or date}, date or vector of dates, YYYY-MM-DD, 
-begin of interseason}
-
-\item{interSeasonEnd}{\code{character or date}, date or vector of dates, YYYY-MM-DD, 
-end of interseason}
-
 \item{firstDay}{\code{numeric} Type of the first day of the study (between 1 and 7). 
 For example, if the first day is a
 Wednesday, you must specify firstDay = 3. The first day can be directly calculated
@@ -44,6 +38,10 @@ typical days. By default, the value is 123456}
 
 \item{outputPath}{\code{character}, path of the folder where the time series of 
 typical flow-based output file (ts.txt) will be written. The current directory is chosen by default.}
+
+\item{calendar}{\code{character}, path to a csv files with two columns,
+a column Date in the format month-day and a column class with the classes
+associated to the dates (summer, winter and interSeason).}
 }
 \description{
 This function defines for each studied day in an Antares study the most 
@@ -67,22 +65,22 @@ matProb <- setNamesProbabilityMatrix(matProb, c("FR_load", "DE_wind", "DE_solar"
                                    c("fr@load", "de@wind", "de@solar"))
 
 multiplier <- data.frame(variable = c("fr@load", "de@wind", "de@solar"),
-                         coef = c(1, 352250, 246403))
+                         coef = c(1, 71900, 61900))
 
 # Set the path to Antares study inputs 
-opts <- antaresRead::setSimulationPath("../../Pour Julien/MT_base_nucM2_2023/", simulation = 1)
+opts <- antaresRead::setSimulationPath("../../Pour Julien/blop/MT_base_nucM2_2023/", 
+simulation = 17)
 
 # calendar
 # first day identified based on the input data of the 
 # Antares study designated by opts
 firstDay <- identifyFirstDay(opts, secondArea = NULL) 
-interSeasonBegin <- c("2018-10-01", "2019-03-16")
-interSeasonEnd <- c("2018-10-31", "2019-05-15")
+# calendar in a csv file with all dates of one year and their classes
+calendar <- system.file("calendar/calendar.csv", package = "fbAntares")
 
 # Generate flow-based time series
 ts <- createFBTS(opts = opts, probabilityMatrix = matProb, multiplier = multiplier,
-                 interSeasonBegin = interSeasonBegin,
-                 interSeasonEnd = interSeasonEnd, firstDay = firstDay, outputPath = getwd())
+                 calendar = calendar, firstDay = firstDay, outputPath = getwd())
 }
                  
 }

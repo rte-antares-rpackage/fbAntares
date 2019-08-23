@@ -49,10 +49,10 @@
 #' which explains how your area work.
 #' @param areacsv \code{character} file name of the csv you give if you chose
 #' other for the areaName parameter.
-#' @param nbFaces \code{numeric}, standard shape parameters: number of sides to select. By default, the value is 36.
-#' @param nbLines \code{numeric}, number of halflines drawn for the distance computation, default 10 000
-#' @param maxiter \code{numeric}, maximum number of iteration on the optimization problem, default 10
-#' @param thresholdIndic \code{numeric}, minimum value of the validation indicator to stop, default 0.9
+#' @param nbFaces \code{numeric}, standard shape parameters: number of sides to select. By default, the value is 75
+#' @param nbLines \code{numeric}, number of halflines drawn for the distance computation, default 100 000
+#' @param maxiter \code{numeric}, maximum number of iteration on the optimization problem, default 15
+#' @param thresholdIndic \code{numeric}, minimum value of the validation indicator to stop, default 95
 #' the optimization problem
 #' @param quad \code{logical}, quadratic problem or linear, default FALSE
 #' @param seed \code{numeric}, value of the seed, default 123456
@@ -85,7 +85,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       dayType = "All", hour = "All", 
                       clusteringDayType = "All", clusteringHours = "All",
                       nbFaces = 75, verbose = 1,
-                      nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
+                      nbLines = 10000, maxiter = 15, thresholdIndic = 95, quad = F,
                       hubDrop = list(NL = c("BE", "DE", "FR", "AT")), 
                       fixFaces = NULL,
                       seed = 123456)
@@ -228,7 +228,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   if(reports){
     outputNameReports <- paste0(outputName, "/reports")
     dir.create(outputNameReports)
-    sapply(unique(flowbased$dayType), function(X){
+    sapply(unique(flowbased$idDayType), function(X){
       print(outputNameReports)
       generateReportFb(allFB = flowbased, dayType = X, output_file = outputNameReports)
     })

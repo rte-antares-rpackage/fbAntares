@@ -13,6 +13,8 @@
 #' (set to "100/100" for dynamic resize)
 #' @param height \code{character}, for rAmCharts only. Default to "410px" 
 #' (set to "100/100" for dynamic resize)
+#' @param export \code{logical} If you want the possibility to export your graphic
+#' if true in rmarkdown, can return a blank html
 #'
 #' @import rAmCharts
 #' @importFrom grDevices chull
@@ -20,7 +22,7 @@
 #' @noRd
 graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NULL, 
                              xlim = c(-12000, 12000), ylim = c(-12000, 12000),
-                             width = "420px", height = "410px")
+                             width = "420px", height = "410px", export = T)
 {
   
   Period <- idDayType <- VERTDetails <- VERTRawDetails <- NULL
@@ -101,7 +103,7 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
              bullet = 'circle', xField = names(out)[1],yField = names(out)[2],
              lineAlpha = 1, bullet = "bubble", bulletSize = 4, lineColor = "#FF0000",
              lineThickness = 1),
-    addGraph(title = "Real",balloonText =
+    addGraph(title = "Real", balloonText =
                paste0('<b>Real<br>', ctry1, '</b> :[[x]] <br><b>',ctry2, '</b> :[[y]]'),
              bullet = 'circle', xField = names(out)[3],yField = names(out)[4],
              lineAlpha = 1, bullet = "bubble", bulletSize = 4, lineColor = "#0000FF",
@@ -109,7 +111,7 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
     setChartCursor(),
     addValueAxes(title = paste(ctry1, "(MW)"), position = "bottom", minimum = xlim[1], maximum = xlim[2]),
     addValueAxes(title =  paste(ctry2, "(MW)"), minimum = ylim[1], maximum = ylim[2]),
-    setExport(enabled = TRUE),
+    # setExport(enabled = TRUE),
     setLegend(enabled = TRUE),
     plot(width = width, height = height)
   )
@@ -155,25 +157,29 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 #' @param areaName \code{character} The name of the area of your study, possible values are
 #' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
 #' which explains how your area work.
-#'
+#' @param xlim \code{numeric}, limits of x-axis
+#' @param ylim \code{numeric}, limits of y-axis
+#' @param export \code{logical} If you want the possibility to export your graphic
+#' (if true in rmarkdown, can return a blank html)
 #' @examples
 #'
 #' \dontrun{
 #'  fb_opts <- setFlowbasedPath(path = system.file("input/model/antaresInput/", package = "fbAntares"))
 #'  plotFB(dayType = 1, hour = 1, country1 = "FR", country2 = "NL", 
-#'  fb_opts = fb_opts, areaName = "cwe-at")
+#'  fb_opts = fb_opts, areaName = "cwe_at")
 #'  plotFB(dayType = 1, hour = 1:4,country1 = "FR",country2 = "NL", 
 #'  fb_opts = fb_opts, areaName = "cwe")
 #'  plotFB(dayType = 1, hour = 1:2, country1 = "DE", country2 = "AT", 
-#'  fb_opts = fb_opts, areaName = "cwe-at")
+#'  fb_opts = fb_opts, areaName = "cwe_at")
 #'  plotFB(dayType = 1, hour = 1, country1 = c("FR", "DE"), 
-#'      country2 = c("NL", "FR"), fb_opts = fb_opts, areaName = "cwe-at")
+#'      country2 = c("NL", "FR"), fb_opts = fb_opts, areaName = "cwe_at")
 #' }
 #'
 #'
 #' @export
 plotFB <- function(dayType, hour, country1, country2, 
-                   fb_opts = fbAntares::fbOptions(), areaName = "cwe-at"){
+                   fb_opts = fbAntares::fbOptions(), areaName = "cwe_at",
+                   xlim = c(-12000, 12000), ylim = c(-12000, 12000), export = T){
   hoursel <- hour
   dayTypesel <- dayType
   
@@ -194,10 +200,10 @@ plotFB <- function(dayType, hour, country1, country2,
   areaConf <- .getAreaName(areaName)
   
   nameCheck <- c(areaConf$country[[1]])
-  if(!country1 %in% nameCheck){
+  if(!all(country1 %in% nameCheck)){
     stop(paste0("country1 must be", paste(nameCheck, collapse = " ")))
   } 
-  if(!country2 %in% nameCheck){
+  if(!all(country2 %in% nameCheck)){
     stop(paste0("country2 must be", paste(nameCheck, collapse = " ")))
   } 
   
@@ -206,20 +212,21 @@ plotFB <- function(dayType, hour, country1, country2,
   }
   
   allCtry <- data.frame(country1 = country1, country2 = country2)
-  
+
   graphList <- sapply(hour, function(hoursel){
     sapply(dayType, function(dayTypesel){
       apply(allCtry, 1, function(countsel){
-        
+
         ctsel <- data.frame(t(countsel))
         tempData <- dta[Period == (hoursel) & idDayType == dayTypesel]
         if(length(tempData)==0) {
-          stop(paste0("Not available data for typical day ", 
+          stop(paste0("Not available data for typical day ",
                       dayTypesel, " hour ", hoursel))
         }
         graphFlowBased2D(tempData,
                          as.character(ctsel$country1), as.character(ctsel$country2)
-                         , dayType = dayTypesel, hour = hoursel)
+                         , dayType = dayTypesel, hour = hoursel, xlim = xlim,
+                         ylim = ylim)
       })
     })
   })
@@ -264,16 +271,18 @@ plotFB <- function(dayType, hour, country1, country2,
 #' #Generate report for the typical day 7 of a model (already designated by setFlowBasedPath)
 #' generateReportFb(dayType = 7, fb_opts = fbAntares::fbOptions())
 #' 
-#' #Generate a report for the typical day 7 of a PTDF file
-#' allFB <- computeFB(PTDF = "/path/PTDF_file.csv",reports = FALSE, dayType = 7)
-#' generateReportFb(dayType = 7, fb_opts = fbAntares::fbOptions(), allFB = allFB)
+#' #Generate a report for the typical day 2 of a PTDF file
+#' computeFB(PTDF = "/input/ptdfraw.csv", dayType = 1)
+#' domainesFB <- readRDS("antaresInput/domainesFB.rds")
+#' generateReportFb(dayType = 7, allFB = domainesFB, 
+#'   countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")))
 #' }
 #' @export
 generateReportFb <- function(
   dayType, output_file = NULL,
   countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")),
   fb_opts = NULL, allFB = NULL, xlim = c(-12000, 12000), ylim = c(-12000, 12000)){
-  
+  ## NOTE : dans le generatereport, height est fixé à 1000px car il ne prend plus 100%
   Period <- idDayType <- VERTDetails <- VERTRawDetails <- NULL
   if(is.null(allFB)){
     allFB <- readRDS(paste0(fb_opts$path, "/domainesFB.RDS"))
@@ -292,8 +301,9 @@ generateReportFb <- function(
   e$dta <- allFB[idDayType == dayType2]
   e$countries <- countries
   e$combi <- combi
-  
-  
+
+  e$xlim <- xlim
+  e$ylim <- ylim
   rmarkdown::render(system.file("/report/resumeFBflex.Rmd", package = "fbAntares"),
                     output_file = output_file,
                     params = list(set_title = paste0(
@@ -351,6 +361,86 @@ runAppError <- function(
                 launch.browser = TRUE)
 }
 
+
+#' @title Run a shiny application to visualise the flow-based typical domains and the Net Positions reached within 
+#' in an Antares simulation
+#' 
+#' @description
+#' Run a shiny application displaying, after running an Antares simulation, 
+#' how the domains have been used by the optimizer to fix the exchanges in the 
+#' CWE area. The user can in the application select a period of time on a 
+#' calendar, choose to only display some typical days and hours, change the 
+#' colors palette, filter unused domains... 
+#' (all the parameters of the function \link{plotNetPositionFB}). 
+#' It is possible to filter the output data beforehand to only display situations 
+#' with loss of load (see examples).
+#' 
+#'
+#' @param dta \code{antaresDataList} Antares output data, imported with \link{readAntares}. 
+#' It can be filtered (see examples).
+#' @param fb_opts \code{list} of simulation parameters returned by the function
+#'   \link{setSimulationPath} or flow-based model directory obtained with
+#'   \link{setFlowbasedPath}. By default, the value will be indicated by \code{antaresRead::simOptions()}
+#' @param country_list \code{character} Names of the countries used in the study
+#' @examples
+#'
+#' \dontrun{
+#' ## Select a study and import the data
+#' study <- "../../Pour Julien/blop/MT_base_nucM2_2023"
+#' opts <- antaresRead::setSimulationPath(study, 18)
+#' dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at"),
+#'          links = c("be - de","be - fr","be - nl","de - fr","de - nl", "at - de"), 
+#'          select = c("LOLD", "UNSP. ENRG", "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."), 
+#'          mcYears = 1, opts = opts)
+#' 
+#' ## Run the application
+#' runAppPosition(dta)
+#' 
+#' ## Filter the data on situations with unsupplied energy 
+#' # If you want to keep only timeId with LOLD!=0 you can't use : 
+#' # dta$areas <- dta$areas[LOLD!=0] otherwise some areas
+#' # Otherwise some areas are forgotten: the data must be filtered to keep 
+#' # all areas at specific timesteps.
+#'  
+#'  ## An exemple of authorized filter :
+#'  idC <- c(antaresRead::getIdCols(dta$areas))
+#'  idC <- idC[idC!="area"]
+#'  LOLD <- dta$areas[,lapply(.SD, sum), by = idC, .SDcols = "LOLD"]
+#'  LOLD <- LOLD[LOLD!=0]
+#'  LOLD[,LOLD := NULL]
+#'  
+#'  # Merge to filter data
+#'  dta$areas <- merge(dta$areas, LOLD, by =  idC)
+#'  ## End filter
+#'
+#'  runAppPosition(dta)
+#' }
+#'
+#' @import shiny manipulateWidget
+#'
+#' @export
+runAppPosition <- function(dta, fb_opts = antaresRead::simOptions(),
+                           country_list = c("fr", "be", "de", "nl", "at")){
+  
+  #.ctrlUserHour(opts)
+  
+  foldPath <- .mergeFlowBasedPath(fb_opts)
+  
+  countTryList <- toupper(country_list)
+  dayTyList <- unique(readRDS(paste0(foldPath,"domainesFB.RDS"))$idDayType)
+  rangeDate <- range(dta$areas$time)
+  rangeDate <- round(rangeDate, "day")
+  
+  G <- .GlobalEnv
+  assign("dta", dta, envir = G)
+  assign("countTryList", countTryList, envir = G)
+  assign("dayTyList", dayTyList, envir = G)
+  assign("rangeDate", rangeDate, envir = G)
+  assign("fb_opts", fb_opts, envir = G)
+  
+  shiny::runApp(system.file("shinyPosition", package = "fbAntares"),
+                launch.browser = TRUE)
+}
 
 
 #' @title Plot a flow-based typical domain and the Net Positions reached within in an Antares simulation
@@ -503,7 +593,8 @@ plotNetPositionFB <- function(data, dayType,
   idSNoAr <- idS[idS!="area"]
   
   if(length(unique(data$areas[, length(get("area")), by = idSNoAr]$V1)) != 1){
-    stop("All data by timeId-mcYear must have same length. If you have filtering your data, you must keep all areas by goup of timeId-mcYear")
+    stop(paste("All data by timeId-mcYear must have same length. If you have filtered your data", 
+               ", you must keep all areas by goup of timeId-mcYear"))
   }
   
   namesToTest <- names(data$areas)[!names(data$areas)%in%idS]

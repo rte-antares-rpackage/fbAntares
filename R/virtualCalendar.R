@@ -1,4 +1,5 @@
-.getVirtualCalendar <- function(dates, interSeasonBegin, interSeasonEnd, firstDay){
+.getVirtualCalendar <- function(
+  dates, interSeasonBegin, interSeasonEnd, firstDay){
   
   #Push interSeasonBegin and interSeasonEnd on virtual dates
   dates <- as.Date(dates)
@@ -96,4 +97,36 @@
        winterWe = winterWeekend,
        interSeasonWd = interSWeek,
        interSeasonWe = interSWeekend)
+}
+
+
+
+.getVirtualCalendarV2 <- function(
+  dates, calendar, firstDay) {
+  
+  dates <- data.table(time = dates)
+  dates[, monthday := gsub("[0-9]{4}-", "", time)]
+  calendar <- fread(calendar)
+  if ("Class" %in% colnames(calendar)) {
+    setnames(calendar, "Class", "class")
+  }
+  
+  if (!all(colnames(calendar) %in% c("class", "Date")) |
+      !all(c("class", "Date") %in% colnames(calendar))) {
+    stop(paste("The colnames of calendar should be Date and class, currently:",
+               paste(colnames(calendar), collapse = ", ")))
+  }
+  
+  calendar[, Date := gsub("[0-9]{4}-", "", Date)]
+  calendar <- merge(dates, calendar, by.x = "monthday", by.y = "Date")
+  calendar[, monthday := NULL]
+  
+  orderday <- seq(firstDay, length.out = 7)
+  orderday[orderday > 7] <- orderday[orderday > 7] - 7
+  calendar[, day := rep(orderday, length = nrow(calendar))]
+  calendar[day %in% 1:5, class := paste0(class, "Wd")]
+  calendar[day %in% 6:7, class := paste0(class, "We")]
+  calendar[, day := NULL]
+  calendar <- calendar[order(time)]
+  calendar
 }

@@ -23,16 +23,20 @@ library(shiny)
 ```{r Fonction plot}
 
 vizModelReal <- function(data, combi, hour, dayType, 
-                         xlim = xlim, ylim = ylim) {
+                         xlim, ylim) {
   
   column(12,
          combineWidgets(
            ncol = 2,
            list = lapply(1:nrow(combi), function(X) {
-             graphFlowBased2D(data, combi[X, 1], combi[X, 2], hour = hour,
-                              dayType = dayType)
-           }), height = "100%", width = "100%")
+             graphFlowBased2D(data, ctry1 = combi[X, 1], ctry2 = combi[X, 2], hour = hour,
+                              dayType = dayType, xlim = xlim, ylim = ylim, export = F)
+           }), width = "100%", height = "1000px"
+           )
   )
+  # plotFB(dayType = 1, hour = 1:4,country1 = country1, country2 = country2, 
+  # fb_opts = fb_opts, areaName = "cwe_at", xlim = xlim, ylim = ylim)
+  
 }
 
 ```
@@ -57,8 +61,8 @@ knitr::kable(data_render)
 ```{r}
 
 combineWidgets(
-  plot(amHist(x = data_error$error1, main = "Inf error", export = T, xlab = "Inf error")),
-  plot(amHist(x = data_error$error2, main = "Sup error", export = T, xlab = "Sup error"))
+  plot(amHist(x = data_error$error1, main = "Inf error", export = F, xlab = "Inf error")),
+  plot(amHist(x = data_error$error2, main = "Sup error", export = F, xlab = "Sup error"))
 )
 ```
 
@@ -91,7 +95,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -148,7 +152,7 @@ Row {data-height=650}
 
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 Hour 3 {data-navmenu="Hour"}
@@ -183,7 +187,7 @@ Row {data-height=650}
 
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -217,7 +221,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -250,7 +254,7 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -283,7 +287,7 @@ valueBox(paste0(round(data$error2, 1) , "%"), icon = "ion-ios-plus")
 Row {data-height=650}
 -----------------------------------------------------------------------
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -318,7 +322,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -354,7 +358,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -389,7 +393,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -423,7 +427,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -458,7 +462,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -492,7 +496,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -528,7 +532,7 @@ Row {data-height=650}
 
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -563,7 +567,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -598,7 +602,7 @@ Row {data-height=650}
 
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 Hour 16 {data-navmenu="Hour"}
@@ -630,7 +634,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -664,7 +668,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -699,7 +703,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -733,7 +737,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -768,7 +772,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 Hour 21 {data-navmenu="Hour"}
@@ -800,7 +804,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 Hour 22 {data-navmenu="Hour"}
@@ -834,7 +838,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -869,7 +873,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 
@@ -903,7 +907,7 @@ Row {data-height=650}
 -----------------------------------------------------------------------
 
 ```{r}
-vizModelReal(data, combi, hour, dayType)
+vizModelReal(data, combi, hour, dayType, xlim = xlim, ylim = ylim)
 ```
 
 

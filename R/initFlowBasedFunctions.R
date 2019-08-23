@@ -8,6 +8,7 @@
 #' @noRd
 .getWeight <- function(weigth, areaConf){
   weigth <- data.table::fread(weigth, sep = "\t", dec = ".")
+  names(weigth) <- gsub(" ", "", names(weigth))
   names(weigth) <- names(weigth)%>>%
     tolower()
   

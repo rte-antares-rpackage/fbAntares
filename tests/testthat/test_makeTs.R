@@ -22,12 +22,13 @@ test_that("make ts", {
   
   interSeasonBegin <- as.Date(c("2017-09-03", "2018-02-02"))
   interSeasonEnd <- as.Date(c("2017-10-04", "2018-05-02"))
-  
+  calendar <- system.file("calendar/calendar.csv", package = "fbAntares")
   firstF <- secondF <-  NULL
   for(k in 1:10)
   {
     ts <- suppressWarnings(createFBTS(opts = op5, probabilityMatrix = matProb, multiplier = multiplier,
-                     interSeasonBegin = interSeasonBegin, interSeasonEnd = interSeasonEnd,
+                     # interSeasonBegin = interSeasonBegin, interSeasonEnd = interSeasonEnd,
+                     calendar = calendar,
                      firstDay = firstDay, seed = k, silent = TRUE, outputPath =  tempdir()))
     
     
@@ -38,13 +39,13 @@ test_that("make ts", {
     allDta <- allDta[tsId == 1]
     
     dates <- allDta$time
-    calendar <- .getVirtualCalendar(dates, interSeasonBegin, interSeasonEnd, firstDay)
+    calendar2 <- .getVirtualCalendar(dates, interSeasonBegin, interSeasonEnd, firstDay)
     
     data1 <- allDta[180]
    
     firstF <- c(firstF, ts[ts$Date == data1$time]$`1`)
     
-    data2 <- allDta[7]
+    data2 <- allDta[1]
     
     secondF <- c(secondF, ts[ts$Date == data2$time]$`1`)
     
@@ -54,7 +55,7 @@ test_that("make ts", {
   expect_true(5 %in% firstF)
   expect_true(all(firstF%in%c(4, 5)))
   expect_true(all(secondF == 3))
-  
+
   
   expect_error(suppressWarnings(createFBTS(opts = op5, probabilityMatrix = matProb, multiplier = "toto",
                                     interSeasonBegin = interSeasonBegin, interSeasonEnd = interSeasonEnd,

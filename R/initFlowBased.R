@@ -231,7 +231,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
     tsDta <- sapply(allTs, function(ZZ){
       tsT <- tS[[ZZ]]
       tsT <- data.table(Id_day = tsT)
-      seM[Name == tpR$name][tsT, on="Id_day", allow.cartesian=TRUE]$vect_b
+      seM[Name == tpR$name][tsT, on="Id_day", allow.cartesian = TRUE]$vect_b
     })
     
     antaresEditObject::createCluster(area = "model_description_fb",

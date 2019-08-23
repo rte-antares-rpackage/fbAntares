@@ -23,10 +23,9 @@
 #' \item variable : Name of variable (ex: \code{"fr@wind"})
 #' \item coef : mutiplier coefficient, for example the installed capacity.
 #' }
-#' @param interSeasonBegin \code{character or date}, date or vector of dates, YYYY-MM-DD, 
-#' begin of interseason
-#' @param interSeasonEnd \code{character or date}, date or vector of dates, YYYY-MM-DD, 
-#' end of interseason
+#' @param calendar \code{character}, path to a csv files with two columns,
+#' a column Date in the format month-day and a column class with the classes
+#' associated to the dates (summer, winter and interSeason).
 #' @param firstDay \code{numeric} Type of the first day of the study (between 1 and 7). 
 #' For example, if the first day is a
 #' Wednesday, you must specify firstDay = 3. The first day can be directly calculated
@@ -50,30 +49,32 @@
 #'                                    c("fr@load", "de@wind", "de@solar"))
 #' 
 #' multiplier <- data.frame(variable = c("fr@load", "de@wind", "de@solar"),
-#'                          coef = c(1, 352250, 246403))
+#'                          coef = c(1, 71900, 61900))
 #' 
 #' # Set the path to Antares study inputs 
-#' opts <- antaresRead::setSimulationPath("../../Pour Julien/MT_base_nucM2_2023/", simulation = 1)
+#' opts <- antaresRead::setSimulationPath("../../Pour Julien/blop/MT_base_nucM2_2023/", 
+#' simulation = 17)
 #' 
 #' # calendar
 #' # first day identified based on the input data of the 
 #' # Antares study designated by opts
 #' firstDay <- identifyFirstDay(opts, secondArea = NULL) 
-#' interSeasonBegin <- c("2018-10-01", "2019-03-16")
-#' interSeasonEnd <- c("2018-10-31", "2019-05-15")
+#' # calendar in a csv file with all dates of one year and their classes
+#' calendar <- system.file("calendar/calendar.csv", package = "fbAntares")
 #' 
 #' # Generate flow-based time series
 #' ts <- createFBTS(opts = opts, probabilityMatrix = matProb, multiplier = multiplier,
-#'                  interSeasonBegin = interSeasonBegin,
-#'                  interSeasonEnd = interSeasonEnd, firstDay = firstDay, outputPath = getwd())
+#'                  calendar = calendar, firstDay = firstDay, outputPath = getwd())
 #' }
 #'                  
 #' @import data.table
 #' @import pipeR
 #' @export
-createFBTS <- function(opts, probabilityMatrix, multiplier,
-                       interSeasonBegin, interSeasonEnd, 
-                       firstDay, seed = NULL, silent = FALSE, outputPath = getwd()){
+createFBTS <- function(
+  opts, probabilityMatrix, multiplier,
+  # interSeasonBegin, interSeasonEnd, 
+  firstDay, seed = 123456, silent = FALSE, outputPath = getwd(),
+  calendar = system.file("calendar/calendar.csv", package = "fbAntares")){
   
   
   
@@ -96,18 +97,18 @@ createFBTS <- function(opts, probabilityMatrix, multiplier,
   })%>>%invisible()
   
   #interSeasonBegin
-  interSeasonBegin <- as.Date(interSeasonBegin)
-  interSeasonEnd <- as.Date(interSeasonEnd)
+  # interSeasonBegin <- as.Date(interSeasonBegin)
+  # interSeasonEnd <- as.Date(interSeasonEnd)
   #firstDay
   if(!firstDay%in%1:7)stop("firstDay must be between 1 and 7")
-
-    
+  
+  
   #Seed
   set.seed(seed)
   #Name of climate variables
   sdC <- multiplier$variable
   sdC <- as.character(sdC)
-
+  
   
   #Copy proba data
   quantiles <- copy(probabilityMatrix[[2]])
@@ -154,7 +155,9 @@ createFBTS <- function(opts, probabilityMatrix, multiplier,
     names(reg) <- X[2]
     reg$timeStep <- "daily"
     reg$showProgress <- !silent
+    reg$opts <- opts
     TS <- do.call(antaresRead::readInputTS, reg)
+    TS[[names(reg)[1]]] <-    TS[[names(reg)[1]]] / 24
     TS <- .formatTs(TS)
     TS
   })
@@ -166,21 +169,21 @@ createFBTS <- function(opts, probabilityMatrix, multiplier,
   
   ##Creat virtual calendar
   dates <- unique(outTs$time)
-
   
-  calendar <- .getVirtualCalendar(dates, interSeasonBegin, interSeasonEnd, firstDay)
-  calendar <- rbindlist(sapply(names(calendar), function(X){
-    data.table(time = calendar[[X]], class = X)
-  }, simplify = FALSE))
+  # calendar <- .getVirtualCalendar(
+  # dates, interSeasonBegin, interSeasonEnd, firstDay)
+  # calendar <- rbindlist(sapply(names(calendar), function(X){
+  #   data.table(time = calendar[[X]], class = X)
+  # }, simplify = FALSE))
+  calendar <- .getVirtualCalendarV2(
+    dates = dates, calendar = calendar, firstDay = firstDay)
   outTs <- merge(outTs, calendar, by = "time")
-  
-  
   quantiles$quantiles <- gsub("Q", "", quantiles$quantiles)
   ##Use for test
   #outTs <- outTs[sample(1:nrow(outTs), 3000)]
   outTs <- data.table(outTs)
   #Compute typical day, first version (a bit slow) compute is done row/row
- 
+  
   names(quantiles) <- gsub("@", "__", names(quantiles))
   names(proba) <- gsub("@", "__", names(proba))
   

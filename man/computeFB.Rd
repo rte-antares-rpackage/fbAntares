@@ -9,7 +9,7 @@ computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   reports = TRUE, areaName = "cwe_at", areacsv = NULL,
   dayType = "All", hour = "All", clusteringDayType = "All",
   clusteringHours = "All", nbFaces = 75, verbose = 1,
-  nbLines = 10000, maxiter = 10, thresholdIndic = 90, quad = F,
+  nbLines = 10000, maxiter = 15, thresholdIndic = 95, quad = F,
   hubDrop = list(NL = c("BE", "DE", "FR", "AT")), fixFaces = NULL,
   seed = 123456)
 }
@@ -55,7 +55,7 @@ Typical days you want to choose for the faces selection.}
 \item{clusteringHours}{\code{numeric}, by default, the value is All. (optional) 
 Hours you want to choose for the faces selection.}
 
-\item{nbFaces}{\code{numeric}, standard shape parameters: number of sides to select. By default, the value is 36.}
+\item{nbFaces}{\code{numeric}, standard shape parameters: number of sides to select. By default, the value is 75}
 
 \item{verbose}{\code{numeric}, shows the logs in console. By default, the value is 1.
 \itemize{
@@ -64,11 +64,11 @@ Hours you want to choose for the faces selection.}
  \item 2 : Medium log
 }}
 
-\item{nbLines}{\code{numeric}, number of halflines drawn for the distance computation, default 10 000}
+\item{nbLines}{\code{numeric}, number of halflines drawn for the distance computation, default 100 000}
 
-\item{maxiter}{\code{numeric}, maximum number of iteration on the optimization problem, default 10}
+\item{maxiter}{\code{numeric}, maximum number of iteration on the optimization problem, default 15}
 
-\item{thresholdIndic}{\code{numeric}, minimum value of the validation indicator to stop, default 0.9
+\item{thresholdIndic}{\code{numeric}, minimum value of the validation indicator to stop, default 95
 the optimization problem}
 
 \item{quad}{\code{logical}, quadratic problem or linear, default FALSE}

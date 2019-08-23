@@ -46,8 +46,10 @@ plots for each hour of the real and modelled domains.
 #Generate report for the typical day 7 of a model (already designated by setFlowBasedPath)
 generateReportFb(dayType = 7, fb_opts = fbAntares::fbOptions())
 
-#Generate a report for the typical day 7 of a PTDF file
-allFB <- computeFB(PTDF = "/path/PTDF_file.csv",reports = FALSE, dayType = 7)
-generateReportFb(dayType = 7, fb_opts = fbAntares::fbOptions(), allFB = allFB)
+#Generate a report for the typical day 2 of a PTDF file
+computeFB(PTDF = "/input/ptdfraw.csv", dayType = 1)
+domainesFB <- readRDS("antaresInput/domainesFB.rds")
+generateReportFb(dayType = 7, allFB = domainesFB, 
+  countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")))
 }
 }
