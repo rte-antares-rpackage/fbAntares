@@ -2,12 +2,12 @@
 title: "Use antaresFlowbased to explore simulations results"
 output: rmarkdown::html_vignette
 vignette: >
-%\VignetteIndexEntry{fbAntares Part 2}
+  %\VignetteIndexEntry{fbAntares Part 2}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  ---
+---
   
-  ```{r setup, include=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 

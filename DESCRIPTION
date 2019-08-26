@@ -29,7 +29,8 @@ Imports:
   pipeR,
   plyr,
   antaresEditObject,
-  shiny
+  shiny,
+  DT
 RoxygenNote: 6.1.1
 Suggests: 
     testthat,
