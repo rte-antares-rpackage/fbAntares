@@ -4,7 +4,7 @@ test_that("make ts", {
   
   op5 <- suppressWarnings(antaresRead::setSimulationPath(testStudy2))
   
-  matProb <- readRDS(system.file("testdata/proba.RDS", package = "fbAntares"))
+  matProb <- readRDS(system.file("testdata/matProb.rds", package = "fbAntares"))
   
   setnames(matProb[[1]],"FR_load", "fr@load" )
   setnames(matProb[[2]],"FR_load", "fr@load" )
@@ -39,26 +39,28 @@ test_that("make ts", {
       wind = c("be"), timeStep = "daily", showProgress = FALSE))
     windde <- suppressWarnings(antaresRead::readInputTS(
       wind = c("de"), timeStep = "daily", showProgress = FALSE))
-    allDta <- data.table(frLoad, be = windbe[["wind"]],de = windde[["wind"]])
+    allDta <- data.table(frLoad, be = windbe[["wind"]], de = windde[["wind"]])
     allDta <- allDta[tsId == 1]
     
     dates <- allDta$time
     calendar2 <- .getVirtualCalendar(dates, interSeasonBegin, interSeasonEnd, firstDay)
     
-    data1 <- allDta[180]
+    data1 <- allDta[142]
     
     firstF <- c(firstF, ts[ts$Date == data1$time]$`1`)
     
-    data2 <- allDta[1]
+    data2 <- allDta[174]
     
     secondF <- c(secondF, ts[ts$Date == data2$time]$`1`)
-    print(secondF)
+    # print(secondF)
     
   }
-  expect_true(4 %in% firstF)
   expect_true(5 %in% firstF)
-  expect_true(all(firstF %in% c(4, 5)))
-  # expect_true(all(secondF == 1))
+  expect_true(6 %in% firstF)
+  expect_true(7 %in% firstF)
+  expect_true(all(firstF %in% c(5, 6, 7)))
+  #### A modifier, voir la matrice de proba
+  expect_true(all(secondF == 8))
   
   
   expect_error(suppressWarnings(
