@@ -5,10 +5,9 @@
 #' and return a list with statistics summary of this object
 #'
 #' @param ts \code{data.table} The output ts obtained with \link{createFBTS}
-#' @param interSeasonBegin \code{character or date}, date or vector of dates, YYYY-MM-DD, 
-#' begin of interseason
-#' @param interSeasonEnd \code{character or date}, date or vector of dates, YYYY-MM-DD, 
-#' end of interseason
+#' @param calendar \code{character}, path to a txt files with two columns,
+#' a column Date in the format month-day and a column class with the classes
+#' associated to the dates (summer, winter and interSeason).
 #' @param output \code{character}, the output of you want, either summary, 
 #' yearbyyear or all, default is summary, if you want the details check the example.
 #' 
@@ -16,18 +15,17 @@
 #' \dontrun{
 #' ts <- fread(system.file("testdata/antaresInput/ts.txt", package = "fbAntares"),
 #' header = T)
-#' interSeasonBegin <-  c("2028-10-01", "2029-03-16")
-#' interSeasonEnd <- c("2028-10-31", "2029-05-15")
-#' statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "summary")
-#' statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "yearbyyear")
-#' statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "all")
+#' calendar <- system.file("calendar/calendar.txt", package = "fbAntares")
+#' statsFBts <- getStatsFBts(ts, calendar, output = "summary")
+#' statsFBts <- getStatsFBts(ts, calendar, output = "yearbyyear")
+#' statsFBts <- getStatsFBts(ts, calendar, output = "all")
 #' }
 #' @importFrom stats median sd var
 #' @export
 
-getStatsFBts <- function(ts, interSeasonBegin =  c("2028-10-01", "2029-03-16"), 
-                         interSeasonEnd = c("2028-10-31", "2029-05-15"),
-                         output = "summary") {
+getStatsFBts <- function(
+    ts, calendar = system.file("calendar/calendar.txt", package = "fbAntares"),
+  output = "summary") {
   setDT(ts)
   minDate <- as.Date(ts[, min(Date)])
   firstDay <- wday(minDate)
@@ -37,12 +35,13 @@ getStatsFBts <- function(ts, interSeasonBegin =  c("2028-10-01", "2029-03-16"),
     firstDay <- firstDay - 1
   }
   dates <- unique(ts$Date)
-  calendar <- .getVirtualCalendar(dates, interSeasonBegin, interSeasonEnd, firstDay)
-  
+  # calendar <- .getVirtualCalendar(dates, interSeasonBegin, interSeasonEnd, firstDay)
+  calendar <- .getVirtualCalendarV2(
+    dates = dates, calendar = calendar, firstDay = firstDay)
   namesWe <- names(calendar)[grepl("We", names(calendar))]
   
   ts[, Date := as.Date(Date)]
-  calendar <- lapply(calendar, as.Date)
+  # calendar <- lapply(calendar, as.Date)
   
   .checkDayInTS(ts, calendar)
   

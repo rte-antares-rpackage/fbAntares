@@ -4,17 +4,15 @@
 \alias{getStatsFBts}
 \title{Return a list with statistics summary of the file ts.txt}
 \usage{
-getStatsFBts(ts, interSeasonBegin = c("2028-10-01", "2029-03-16"),
-  interSeasonEnd = c("2028-10-31", "2029-05-15"), output = "summary")
+getStatsFBts(ts, calendar = system.file("calendar/calendar.txt", package
+  = "fbAntares"), output = "summary")
 }
 \arguments{
 \item{ts}{\code{data.table} The output ts obtained with \link{createFBTS}}
 
-\item{interSeasonBegin}{\code{character or date}, date or vector of dates, YYYY-MM-DD, 
-begin of interseason}
-
-\item{interSeasonEnd}{\code{character or date}, date or vector of dates, YYYY-MM-DD, 
-end of interseason}
+\item{calendar}{\code{character}, path to a txt files with two columns,
+a column Date in the format month-day and a column class with the classes
+associated to the dates (summer, winter and interSeason).}
 
 \item{output}{\code{character}, the output of you want, either summary, 
 yearbyyear or all, default is summary, if you want the details check the example.}
@@ -27,10 +25,9 @@ and return a list with statistics summary of this object
 \dontrun{
 ts <- fread(system.file("testdata/antaresInput/ts.txt", package = "fbAntares"),
 header = T)
-interSeasonBegin <-  c("2028-10-01", "2029-03-16")
-interSeasonEnd <- c("2028-10-31", "2029-05-15")
-statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "summary")
-statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "yearbyyear")
-statsFBts <- getStatsFBts(ts, interSeasonBegin, interSeasonEnd, output = "all")
+calendar <- system.file("calendar/calendar.txt", package = "fbAntares")
+statsFBts <- getStatsFBts(ts, calendar, output = "summary")
+statsFBts <- getStatsFBts(ts, calendar, output = "yearbyyear")
+statsFBts <- getStatsFBts(ts, calendar, output = "all")
 }
 }

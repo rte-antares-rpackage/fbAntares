@@ -4,10 +4,14 @@
 \alias{getMaxImportExport}
 \title{Return a data.table with the maximum values of import and export}
 \usage{
-getMaxImportExport(domainesFB)
+getMaxImportExport(domainesFB, writecsv = F)
 }
 \arguments{
-\item{domainesFB}{\code{data.table} The output domainesFB obtained with \link{computeFB}}
+\item{domainesFB}{\code{data.table} The output domainesFB obtained 
+with \link{computeFB}}
+
+\item{writecsv}{\code{logical} TRUE if you want to save your results in a csv
+(default FALSE)}
 }
 \description{
 This function takes the object domainesFB, generated with \link{computeFB}

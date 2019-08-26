@@ -6,7 +6,7 @@
 \usage{
 createFBTS(opts, probabilityMatrix, multiplier, firstDay, seed = 123456,
   silent = FALSE, outputPath = getwd(),
-  calendar = system.file("calendar/calendar.csv", package = "fbAntares"))
+  calendar = system.file("calendar/calendar.txt", package = "fbAntares"))
 }
 \arguments{
 \item{opts}{\code{list} of simulation parameters returned by the function 
@@ -39,7 +39,7 @@ typical days. By default, the value is 123456}
 \item{outputPath}{\code{character}, path of the folder where the time series of 
 typical flow-based output file (ts.txt) will be written. The current directory is chosen by default.}
 
-\item{calendar}{\code{character}, path to a csv files with two columns,
+\item{calendar}{\code{character}, path to a txt files with two columns,
 a column Date in the format month-day and a column class with the classes
 associated to the dates (summer, winter and interSeason).}
 }
@@ -76,7 +76,7 @@ simulation = 17)
 # Antares study designated by opts
 firstDay <- identifyFirstDay(opts, secondArea = NULL) 
 # calendar in a csv file with all dates of one year and their classes
-calendar <- system.file("calendar/calendar.csv", package = "fbAntares")
+calendar <- system.file("calendar/calendar.txt", package = "fbAntares")
 
 # Generate flow-based time series
 ts <- createFBTS(opts = opts, probabilityMatrix = matProb, multiplier = multiplier,

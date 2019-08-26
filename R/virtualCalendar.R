@@ -120,13 +120,13 @@
   calendar[, Date := gsub("[0-9]{4}-", "", Date)]
   calendar <- merge(dates, calendar, by.x = "monthday", by.y = "Date")
   calendar[, monthday := NULL]
-  
+  calendar <- calendar[order(time)]
   orderday <- seq(firstDay, length.out = 7)
   orderday[orderday > 7] <- orderday[orderday > 7] - 7
   calendar[, day := rep(orderday, length = nrow(calendar))]
   calendar[day %in% 1:5, class := paste0(class, "Wd")]
   calendar[day %in% 6:7, class := paste0(class, "We")]
   calendar[, day := NULL]
-  calendar <- calendar[order(time)]
+  
   calendar
 }

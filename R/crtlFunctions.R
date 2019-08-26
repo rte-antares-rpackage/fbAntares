@@ -1,5 +1,5 @@
 .crtlgetNormalizedLines <- function(nbLines, dim) {
-  
+  ## Checking if the input arguments of getNormalizedLines are well chosen
   if (!(class(nbLines) %in% c("numeric", "integer", "double")) | 
       !(class(dim) %in% c("numeric", "integer", "double"))) {
     stop(paste("nbLines and dim should be numeric, currently :", class(nbLines), 
@@ -26,7 +26,7 @@
 }
 
 .crtlPtdf <- function(dt, dt2 = NULL) {
-  
+  ## Checking if the ptdf are well entered
   col_ptdf <- colnames(dt)[grep("ptdf", colnames(dt))]
   if(length(col_ptdf) == 0) {
     stop(paste("You should have ptdf columns to represent the polyhedron dimensions",
@@ -66,7 +66,7 @@
 }
 
 .crtlgetBestPolyhedron <- function(maxiter, thresholdIndic) {
-  
+  ## Checking if the arguments for getBestPolyhedron are clear
   if (trunc(maxiter) != maxiter) {
     warning(paste("You should put an integer value for maxiter, your value",
                   "has been truncated to", trunc(maxiter)))
@@ -89,6 +89,7 @@
 #'
 #' @noRd
 .fromBtoAntares <- function(face, col_ptdf, areaConf){
+  ## using of the areNames to write the constraints into Antares with the weight file
   B <- face[, .SD, .SDcols = col_ptdf]
   names(B) <- gsub("ptdf", "", names(B))
   nam <- as.character(1:nrow(B))
@@ -109,28 +110,6 @@
   coefAntares <- Reduce(cbind,   c(data.table(Name = paste0("FB", nam)), R))
   setnames(coefAntares, 'init', 'Name')
   coefAntares
-  
-  # if (areaConf == "cwe_at") {
-  #   coefAntares <- data.table(Name = paste0("FB", nam),
-  #                             BE.FR = round(B$BE - B$FR, 2),
-  #                             DE.FR = round(B$DE - B$FR, 2),
-  #                             DE.NL = round(B$DE, 2),
-  #                             BE.NL = round(B$BE, 2),
-  #                             BE.DE = round(B$BE - B$DE, 2),
-  #                             AT.DE = round(B$AT - B$DE, 2))
-  # } else if (areaConf == "cwe") {
-  #   coefAntares <- data.table(Name = paste0("FB", nam),
-  #                             BE.FR = round(B$BE - B$FR, 2),
-  #                             DE.FR = round(B$DE - B$FR, 2),
-  #                             DE.NL = round(B$DE, 2),
-  #                             BE.NL = round(B$BE, 2),
-  #                             BE.DE = round(B$BE - B$DE, 2))
-  # } else if (areaConf == "other") {
-  #   
-  # } else {
-  #   stop(paste("The value of areaConf must be one of the following :",
-  #              "cwe, cwe_at, other,", "currently :", areaConf))
-  # }
   
   
 }
@@ -213,26 +192,26 @@
 }
 
 .checkDayInTS <- function(ts, calendar) {
-  namesWe <- names(calendar)[grepl("We", names(calendar))]
-  namesWd <- names(calendar)[grepl("Wd", names(calendar))]
+  namesWe <- unique(calendar$class[grepl("We", calendar$class)])
+  namesWd <- unique(calendar$class[grepl("Wd", calendar$class)])
   
   namesWe <- c("summerWe", "winterWe", "interSeasonWe")
   namesWd <- c("summerWd", "winterWd", "interSeasonWd")
   
   uniqsummerWe <- unique(unlist(unname(unique(
-    ts[Date %in% calendar$summerWe, .SD, .SDcols = !"Date"]))))
+    ts[Date %in% calendar[class == "summerWe"]$time, .SD, .SDcols = !"Date"]))))
   uniqsummerWd <- unique(unlist(unname(unique(
-    ts[Date %in% calendar$summerWd, .SD, .SDcols = !"Date"]))))
+    ts[Date %in% calendar[class == "summerWd"]$time, .SD, .SDcols = !"Date"]))))
   
   uniqwinterWe <- unique(unlist(unname(unique(
-    ts[Date %in% calendar$winterWe, .SD, .SDcols = !"Date"]))))
+    ts[Date %in% calendar[class == "winterWe"]$time, .SD, .SDcols = !"Date"]))))
   uniqwinterWd <- unique(unlist(unname(unique(
-    ts[Date %in% calendar$winterWd, .SD, .SDcols = !"Date"]))))
+    ts[Date %in% calendar[class == "winterWd"]$time, .SD, .SDcols = !"Date"]))))
   
   uniqinterSeasonWe <- unique(unlist(unname(unique(
-    ts[Date %in% calendar$interSeasonWe, .SD, .SDcols = !"Date"]))))
+    ts[Date %in% calendar[class == "interSeasonWe"]$time, .SD, .SDcols = !"Date"]))))
   uniqinterSeasonWd <- unique(unlist(unname(unique(
-    ts[Date %in% calendar$interSeasonWd, .SD, .SDcols = !"Date"]))))
+    ts[Date %in% calendar[class == "interSeasonWd"]$time, .SD, .SDcols = !"Date"]))))
   
   if(!all(uniqsummerWe %in% "4")) {
     stop(paste("The summer weekend days can only have 4 as typical day value,",
@@ -247,22 +226,22 @@
   if(!all(uniqwinterWe %in% "8")) {
     stop(paste("The summer weekend days can only have 8 as typical day value,",
                "however some of them have the value(s) :", 
-               paste(winterWe, collapse = ", ")))
+               paste(uniqwinterWe, collapse = ", ")))
   }
   if(!all(uniqwinterWd %in% c("5", "6", "7"))) {
     stop(paste("The summer weekend days can only have 5, 6 or 7 as typical day value,",
                "however some of them have the value(s) :", 
-               paste(winterWd, collapse = ", ")))
+               paste(uniqwinterWd, collapse = ", ")))
   }
   if(!all(uniqinterSeasonWe %in% "12")) {
     stop(paste("The summer weekend days can only have 12 as typical day value,",
                "however some of them have the value(s) :", 
-               paste(interSeasonWe, collapse = ", ")))
+               paste(uniqinterSeasonWe, collapse = ", ")))
   }
   if(!all(uniqinterSeasonWd %in% c("9", "10", "11"))) {
     stop(paste("The summer weekend days can only have 9, 10 or 11 as typical day value,",
                "however some of them have the value(s) :", 
-               paste(interSeasonWd, collapse = ", ")))
+               paste(uniqinterSeasonWd, collapse = ", ")))
   }
   
 }

@@ -23,7 +23,7 @@
 #' \item variable : Name of variable (ex: \code{"fr@wind"})
 #' \item coef : mutiplier coefficient, for example the installed capacity.
 #' }
-#' @param calendar \code{character}, path to a csv files with two columns,
+#' @param calendar \code{character}, path to a txt files with two columns,
 #' a column Date in the format month-day and a column class with the classes
 #' associated to the dates (summer, winter and interSeason).
 #' @param firstDay \code{numeric} Type of the first day of the study (between 1 and 7). 
@@ -60,7 +60,7 @@
 #' # Antares study designated by opts
 #' firstDay <- identifyFirstDay(opts, secondArea = NULL) 
 #' # calendar in a csv file with all dates of one year and their classes
-#' calendar <- system.file("calendar/calendar.csv", package = "fbAntares")
+#' calendar <- system.file("calendar/calendar.txt", package = "fbAntares")
 #' 
 #' # Generate flow-based time series
 #' ts <- createFBTS(opts = opts, probabilityMatrix = matProb, multiplier = multiplier,
@@ -74,7 +74,7 @@ createFBTS <- function(
   opts, probabilityMatrix, multiplier,
   # interSeasonBegin, interSeasonEnd, 
   firstDay, seed = 123456, silent = FALSE, outputPath = getwd(),
-  calendar = system.file("calendar/calendar.csv", package = "fbAntares")){
+  calendar = system.file("calendar/calendar.txt", package = "fbAntares")){
   
   
   
@@ -117,7 +117,7 @@ createFBTS <- function(
   
   
   
-  ##Test data cohérency between multiplier and names of probabilityMatrix
+  ##Test data coherency between multiplier and names of probabilityMatrix
   if(!all(sdC%in%names(quantiles))){
     stop("all multiplier variables must be contain in probabilityMatrix columns names")
   }

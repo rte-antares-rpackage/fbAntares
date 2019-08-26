@@ -22,7 +22,7 @@ test_that("make ts", {
   
   interSeasonBegin <- as.Date(c("2017-09-03", "2018-02-02"))
   interSeasonEnd <- as.Date(c("2017-10-04", "2018-05-02"))
-  calendar <- system.file("calendar/calendar.csv", package = "fbAntares")
+  calendar <- system.file("calendar/calendar.txt", package = "fbAntares")
   firstF <- secondF <-  NULL
   for(k in 1:10)
   {

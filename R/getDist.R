@@ -95,14 +95,21 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
   .crtlBoolean(quad)
   # browser()
   A <- copy(A)
+  # Generation of the lines for the optimization
   dtLines <- .getNormalizedLines(nbLines = nbLines, dim = length(col_ptdf))
   
   ###########
-  maxRow <- unname(unlist(VERTRawDetails[, lapply(.SD, which.max), .SDcols = colnames(
-    VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
-  minRow <- unname(unlist(VERTRawDetails[, lapply(.SD, which.min), .SDcols = colnames(
-    VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
+  ## Saving of the extremas of A, i.e max import and export
+  ## of the real model in order to approach it in a better way with the
+  ## modelized one
+  maxRow <- unname(unlist(VERTRawDetails[, lapply(
+    .SD, which.max), .SDcols = colnames(
+      VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
+  minRow <- unname(unlist(VERTRawDetails[, lapply(
+    .SD, which.min), .SDcols = colnames(
+      VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
   
+  # On écrit les droites qui passent par ces extremas
   normvec <- sqrt(rowSums(VERTRawDetails[
     c(minRow, maxRow), .SD, .SDcols = colnames(
       VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]^2))
@@ -111,44 +118,40 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
     VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]/normvec
   setnames(Linesmerge, colnames(dtLines)[grep("Line", colnames(dtLines))])
   
+
+  # Adding of new lines (10% of the generated lines)
+  # noising of them to not have only equal lines
   Linesmerge <- rbindlist(lapply(1:(nbLines/(10*nrow(Linesmerge))), function(X) {
     Linesmerge + runif(nrow(Linesmerge))/100000
   }))
   
   dtLines <- merge(dtLines, Linesmerge, by = colnames(Linesmerge), all = T)
   
-  
-  
-  ###########
-  # dtLines <- merge(dtLines, B[, .SD, .SDcols = colnames(B)[grep("ptdf", colnames(B))]][
-  #   (nrow(B)-nrow(fixFaces)+1):nrow(B)], all = T,
-  #   by.y = colnames(B)[grep("ptdf", colnames(B))], 
-  #   by.x = colnames(dtLines)[grep("Line", colnames(dtLines))])
-  
+  # Computation of the intersectionss between lines and real domain
   fixPlan <- .getIntersecPoints(dtLines, A)
   PLANOUT <- copy(B)
-  
+  # Ordering of fixPlan
   fixPlan <- fixPlan[order(Line_Coo_X1, Line_Coo_X2)]
+  # Computation of the intersections between lines and modelized domain
   movingPlan <- .getIntersecPoints(dtLines, PLANOUT)
   movingPlan <- movingPlan[order(Line_Coo_X1, Line_Coo_X2)]
   indic0 <- 0
   for(k in 1:maxiter) {
+    ## Call of optimization function
     newram <- .getDmatdvec(fixPlan, movingPlan, PLANOUT, col_ptdf, quad, fixFaces)
-    # newram[(length(newram)-nrow(fixFaces)+1):length(newram)] <- 0
     for (i in 1:nrow(PLANOUT)) {
-      
+      ## If a face is intersected with lines, we change its ram value
       if(newram[i] != 0) {
         PLANOUT$ram[i] <- newram[i]
       }
     }
-    # print(movingPlan[Line_Coo_X4 == -1])
-    # print(tail(unique(movingPlan[order(Face), Face])))
+    # Value of volume intra inter
     indic <- evalInter(PLANOUT, A)[1, 1]
     
     if (verbose > 1) {
       print(paste("Iteration", k, "indic :", indic))
     }
-    
+    # stopping criteria
     if (indic > indic0) {
       indic0 <- indic
       bestRam <- newram
@@ -173,23 +176,27 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
 .getDmatdvec <- function(fixPlan, movingPlan, PLANOUT, col_ptdf, quad, fixFaces) {
   
   Face <- NULL
-  
+  ## Optimization part, creation of the matrices needed in the program
   dvec <- rep(0, length(PLANOUT$Face))
   Dmat <- rep(0, length(PLANOUT$Face))
   for(DD  in unique(PLANOUT$Face)){
     Fb <- PLANOUT[Face == DD]
+    # face by face, we check which are concerned in fixPlan and movingPlan
     RO <- which(movingPlan$Face == DD)
     movingPlan2 <- movingPlan[RO]
     fixPlan2 <- fixPlan[RO]
     colnames(fixPlan2)[grep("^X[1-9]", colnames(fixPlan2))]
+    # intersection points
     ak <- as.matrix(fixPlan2[, .SD, .SDcols = colnames(fixPlan2)[
       grep("^X[1-9]", colnames(fixPlan2))]])
+    # normal to hyperplanes
     Nai <- as.matrix(fixPlan2[, .SD, .SDcols = col_ptdf])
     # bk <- as.matrix(movingPlan2[, .SD, .SDcols = colnames(fixPlan2)[
     #   grep("^X[1-9]", colnames(movingPlan2))]])
     
     
     if(length(RO)>1){
+      # same procedure with movingPlan
       colnames(movingPlan2)[
         grep("^Line_Coo_X[1-9]", colnames(fixPlan2))]
       uk <- as.matrix(movingPlan2[, .SD, .SDcols = colnames(movingPlan2)[
@@ -207,6 +214,7 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
       
     }
   }
+  # Optimization launching
   .launchOptim(Dmat, dvec, quad, fixFaces, PLANOUT)
 }
 
@@ -214,6 +222,7 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
 .launchOptim <- function(Dmat, dvec, quad, fixFaces, PLANOUT) {
   
   if (quad) {
+    # quadratic program
     Dmat[Dmat == 0] <- 1
     Dmat <- diag(Dmat, nrow = length(Dmat))
     Amat <- diag(1, nrow = nrow(Dmat))
@@ -223,10 +232,11 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
                     Amat = Amat,
                     bvec = bvec)
   } else {
-    
+    # linear program
     Bdiag <- diag(Dmat, nrow =length(Dmat))
     if (!is.null(fixFaces)) {
       if (nrow(fixFaces) > 0) {
+        ## in order not to change the ram of the fix faces
         if (nrow(fixFaces) > 1) {
           diag(Bdiag[(ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag),
                      (ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag)]) <- 1
@@ -234,16 +244,16 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
           Bdiag[(ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag),
                 (ncol(Bdiag)-nrow(fixFaces)+1):ncol(Bdiag)] <- 1
         }
-
+        
         dvec[(length(dvec)-nrow(fixFaces)+1):length(dvec)] <- PLANOUT$ram[
           (nrow(PLANOUT)-nrow(fixFaces)+1):nrow(PLANOUT)] 
       }
     }
-    
+    ## Optimization launching
     res <- lp(direction = "min", objective.in = Dmat, const.mat = Bdiag, 
               const.rhs = dvec, const.dir = ">=")
   }
-  
+  ## new values of ram
   hbhEvol <- round(res$solution)
   hbhEvol
 }

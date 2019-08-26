@@ -6,12 +6,11 @@
 \usage{
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
-  reports = TRUE, areaName = "cwe_at", areacsv = NULL,
-  dayType = "All", hour = "All", clusteringDayType = "All",
-  clusteringHours = "All", nbFaces = 75, verbose = 1,
-  nbLines = 10000, maxiter = 15, thresholdIndic = 95, quad = F,
-  hubDrop = list(NL = c("BE", "DE", "FR", "AT")), fixFaces = NULL,
-  seed = 123456)
+  reports = TRUE, areaName = "cwe_at", dayType = "All",
+  hour = "All", clusteringDayType = "All", clusteringHours = "All",
+  nbFaces = 75, verbose = 1, nbLines = 10000, maxiter = 15,
+  thresholdIndic = 95, quad = F, hubDrop = list(NL = c("BE", "DE",
+  "FR", "AT")), fixFaces = NULL, seed = 123456)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 
@@ -39,11 +38,10 @@ By default, this leads to an example file (\code{"PTDF.csv"}, saved in the packa
 TRUE.}
 
 \item{areaName}{\code{character} The name of the area of your study, possible values are
-cwe_at (default), cwe and other. If you choose other, you have to give a csv file
-which explains how your area work.}
-
-\item{areacsv}{\code{character} file name of the csv you give if you chose
-other for the areaName parameter.}
+cwe_at (default), cwe and other. If you choose other, you have to modify the csv file
+of the package and use the examples to write how your area work.
+The actual csv file is in the folder areaName of the package if you want to
+modify it or understand how it is written.}
 
 \item{dayType}{\code{numeric}, by default, the value is All. (optional) Vector of id_days to compute.}
 

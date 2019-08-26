@@ -45,10 +45,11 @@
 #' If you give for example min and DE, there will be a fix face at the minimum import
 #' value of Germany.
 #' @param areaName \code{character} The name of the area of your study, possible values are
-#' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
-#' which explains how your area work.
-#' @param areacsv \code{character} file name of the csv you give if you chose
-#' other for the areaName parameter.
+#' cwe_at (default), cwe and other. If you choose other, you have to modify the csv file
+#' of the package and use the examples to write how your area work.
+#' The actual csv file is in the folder areaName of the package if you want to
+#' modify it or understand how it is written.
+
 #' @param nbFaces \code{numeric}, standard shape parameters: number of sides to select. By default, the value is 75
 #' @param nbLines \code{numeric}, number of halflines drawn for the distance computation, default 100 000
 #' @param maxiter \code{numeric}, maximum number of iteration on the optimization problem, default 15
@@ -81,7 +82,7 @@
 computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"),
                       outputName =  paste0(getwd(), "/antaresInput"),
                       reports = TRUE,
-                      areaName = "cwe_at", areacsv = NULL,
+                      areaName = "cwe_at",
                       dayType = "All", hour = "All", 
                       clusteringDayType = "All", clusteringHours = "All",
                       nbFaces = 75, verbose = 1,
@@ -100,39 +101,43 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   ######### OK
   PTDF <- .readPTDF(PTDF)
   
+  # In order to keep the raw ptdf in the output
   PTDFRaw <- copy(PTDF)
   .ctrlHubDrop(hubDrop = hubDrop, PTDF = PTDF)
+  # generate transformed ptf in order o get the vertices
   PTDF <- setDiffNotWantedPtdf(PTDF = PTDF, hubDrop = hubDrop)
   
   col_ptdf <- colnames(PTDF)[
     grep("ptdf", colnames(PTDF))]
   col_ptdfraw <- colnames(PTDFRaw)[
     grep("ptdf", colnames(PTDFRaw))]
-  # univ <- .univ(nb = 500000, bInf = -10000, bSup = 10000, 
-  #               col_ptdf = col_ptdf, seed = seed)
+
   
-  ##### début test
   if (!is.null(fixFaces)) { 
     if (nrow(fixFaces) > 0) {
+      # check if the argument fixFaces is well written
       .crtlFixFaces(fixFaces = fixFaces, col_ptdf = col_ptdf)
       
     }
+    # to have a total of faces equal to nbFaces
     nbCl <- nbFaces-nrow(fixFaces)
   } else {
     nbCl <- nbFaces
   }
-  ##### fin test
-  
+
+  ## Clustering on the ptdf lines to obtain the faces of the 
+  ## modelized polyhedra
   face <- giveBClassif(
     PTDF, nbClust = nbCl, fixFaces = fixFaces, col_ptdf = col_ptdf,
     clusteringDayType = clusteringDayType, clusteringHours = clusteringHours)
+  
   face <- round(face, 2)
+  # keep only the hours and daytype you want to return
   if(length(dayType) == 1) {
     if(dayType == "All"){
       dayType <- unique(PTDF$idDayType)
     }
   }
-  
   if(length(hour) == 1) {
     if(hour == "All"){
       # reports <- FALSE
@@ -140,7 +145,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     }
   }
   ##From B to antares
-  
+  # if cwe, cwe-at or other area
   areaConf <- .getAreaName(areaName)
   antaresFace <- .fromBtoAntares(face, col_ptdf, areaConf = areaConf)
   
@@ -161,18 +166,22 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     VERTRawDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
     setcolorder(VERTRawDetails, c("idDayType", "Period"))
     
+    # Creation of the modelized domain
     B <- copy(face)
+
+    ## Initialization of the rams to 1000 (arbitrary initialization)
     B[, c("ram", "idDayType", "Period") := list(1000, unique(A$idDayType), unique(A$Period))]
-    # B[, c("ram", "idDayType", "Period") := list(100, unique(A$idDayType), unique(A$Period))]
-    ####### début test
+
+    # Adding of fix faces if they exist
     if (!is.null(fixFaces)) {
       if (nrow(fixFaces) > 0) {
         dtFixRam <- .getFixRams(fixFaces, VERTRawDetails)
         B[(nrow(B)-nrow(dtFixRam)+1):nrow(B), ram := abs(dtFixRam$ram)]
       }
     }
-    ####### fin test
+    
     setcolorder(B, colnames(A))
+    ## Finalization of modelized domain
     res <- getBestPolyhedron(
       A = A, B = B, nbLines = nbLines, maxiter = maxiter, 
       thresholdIndic = thresholdIndic, quad = quad, verbose = verbose, 
@@ -183,7 +192,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     if(verbose >= 2) {
       print(error)
     }
-    
+    ## Creation of the output, we use all objects we need
     PTDFRawDetails <- PTDFRaw[Period == combi[X, hour] & idDayType == combi[X, dayType],
                               .SD, .SDcols = c("idDayType", "Period", col_ptdfraw, "ram")]
     VERTDetails <- getVertices(res)
@@ -191,7 +200,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     VERTDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
     setcolorder(VERTDetails, c("idDayType", "Period"))
     
-    
+    ## Final data.table
     out <- data.table(Period = combi[X, hour], idDayType = combi[X, dayType],
                       PTDFDetails = list(res), PTDFRawDetails = list(PTDFRawDetails),
                       VERTDetails = list(VERTDetails), VERTRawDetails = list(VERTRawDetails),
@@ -199,12 +208,11 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       error1 = error[1, 2], error2 = error[1, 3])
   }, simplify = F))
   
-  ######### OK
+
   
-  
-  ######### OK
-  
+
   ##Output
+  # Writting of the second member
   allFaces <- rbindlist(sapply(1:nrow(combi), function(X){
     
     nam <- 1:nrow(antaresFace)
@@ -221,11 +229,13 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   
   
   allFaces$vect_b <- round(allFaces$vect_b, 0)
+  ## Writting of all the objects needed in the antares model
   dir.create(outputName)
   write.table(antaresFace, paste0(outputName, "/weight.txt"), row.names = FALSE, sep = "\t", dec = ".")
   saveRDS(flowbased, paste0(outputName, "/domainesFB.RDS"))
   write.table(allFaces, paste0(outputName, "/second_member.txt"), row.names = FALSE, sep = "\t", dec = ".")
   if(reports){
+    # If you want to generate a report
     outputNameReports <- paste0(outputName, "/reports")
     dir.create(outputNameReports)
     sapply(unique(flowbased$idDayType), function(X){
@@ -254,7 +264,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   }
   if (!all(c("Date", "Period", "ram", "idDayType") %in% names(PTDF)) |
       length(grep("ptdf", colnames(PTDF))) < 2) {
-    stop("Your columns chould contain at least Date, Period, ram and idDayType 
+    stop("Your columns should contain at least Date, Period, ram and idDayType 
          and at least two ptdf name (ex ptdfFR)")
   }
   PTDF

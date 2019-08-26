@@ -5,7 +5,10 @@
 #' and return a data.table with the maximum values of import and export by
 #' period and typical day.
 #'
-#' @param domainesFB \code{data.table} The output domainesFB obtained with \link{computeFB}
+#' @param domainesFB \code{data.table} The output domainesFB obtained 
+#' with \link{computeFB}
+#' @param writecsv \code{logical} TRUE if you want to save your results in a csv
+#' (default FALSE)
 #' 
 #' @examples
 #' \dontrun{
@@ -14,7 +17,7 @@
 #' }
 #' @export
 
-getMaxImportExport <- function(domainesFB) {
+getMaxImportExport <- function(domainesFB, writecsv = F) {
   
   namesVert <- colnames(domainesFB[, VERTDetails][[1]])
   dtmaxModel <- rbindlist(lapply(1:nrow(domainesFB), function(X) {
@@ -39,19 +42,22 @@ getMaxImportExport <- function(domainesFB) {
     
   }))
   
-  colnames(dtmaxModel) <- paste0("ValueMaxModel", colnames(dtmaxModel))
-  colnames(dtminModel) <- paste0("ValueMinModel", colnames(dtminModel))
-  colnames(dtmaxReal) <- paste0("ValueMaxReal", colnames(dtmaxReal))
-  colnames(dtminReal) <- paste0("ValueMinReal", colnames(dtminReal))
+  colnames(dtmaxModel) <- paste0("ExportMaxModel", colnames(dtmaxModel))
+  colnames(dtminModel) <- paste0("ImportMinModel", colnames(dtminModel))
+  colnames(dtmaxReal) <- paste0("ExportMaxReal", colnames(dtmaxReal))
+  colnames(dtminReal) <- paste0("ImportMinReal", colnames(dtminReal))
   
   dtmaxDiff <- dtmaxModel-dtmaxReal
   dtminDiff <- dtminReal-dtminModel
   
-  colnames(dtmaxDiff) <- paste0("DiffMaxModelReal", colnames(dtmaxDiff))
-  colnames(dtminDiff) <- paste0("DiffMinModelReal", colnames(dtminDiff))
+  colnames(dtmaxDiff) <- paste0("DiffExportModelReal", colnames(dtmaxDiff))
+  colnames(dtminDiff) <- paste0("DiffImportModelReal", colnames(dtminDiff))
   
   dtAll <- cbind(domainesFB[, .SD, .SDcols = c("idDayType", "Period")],
                  dtmaxModel, dtmaxReal, dtmaxDiff, dtminModel, dtminReal, dtminDiff)
   dtAll <- dtAll[, lapply(.SD, round, digits = 0)]
+  if (writecsv) {
+    fwrite(paste0(Sys.Date(), "_maxImportExport.csv"))
+  }
   return(dtAll)
 }

@@ -13,6 +13,8 @@ giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf,
                          clusteringDayType, clusteringHours)
 {
   addFixFaces <- zone <- Ind <- NULL
+  # select only the hours and idDayType you want to use to obtain the
+  # final faces
   if(length(clusteringDayType) == 1) {
     if (clusteringDayType == "All") {
       clusteringDayType <- unique(PTDF$idDayType)
@@ -23,6 +25,7 @@ giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf,
       clusteringHours <- unique(PTDF$Period)
     }
   }
+  # keep only column to cluster
   PTDFKm <- PTDF[Period %in% clusteringHours & idDayType %in% clusteringDayType,
                  .SD, .SDcols = colnames(PTDF)[grep("ptdf", colnames(PTDF))]]
   
@@ -30,8 +33,11 @@ giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf,
   PTDFKmCare <- PTDFKm^2
   PTDFKmCare <- rowSums(PTDFKmCare)
   PTDFKm <- PTDFKm / sqrt(PTDFKmCare)
+  # in order not to overload the ram
+  # if not too much lines -> CAH, else -> kmeans + CAH
   if (nrow(PTDFKm)^2 < 2^28) {
-    res <- cutree(hclust(dist(PTDFKm, method = "euclidean"), method = "ward.D"), nbClust)
+    res <- cutree(hclust(dist(PTDFKm, method = "euclidean"), 
+                         method = "ward.D"), nbClust)
   } else {
     
     resKm <- kmeans(PTDFKm, centers = 5000, nstart = 20)
@@ -45,20 +51,21 @@ giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf,
     dtres <- dtres[order(Ind)]
     res <- dtres$res
   }
-  
+  # keep the centers of the clusters as faces for the modelized polyhedra
   PTDFKm$clust <- res
   centers <- PTDFKm[,lapply(.SD, mean), by = "clust"]
-  centers <- centers[, .SD, .SDcols = colnames(centers)[grep("ptdf", colnames(centers))]]
+  centers <- centers[, .SD, .SDcols = colnames(centers)[
+    grep("ptdf", colnames(centers))]]
   
   
-  
-  ##### Début test modif
+  # adding of the fix faces if they exist
   addFixFaces <- function(centers, fixFaces) {
     centers <- rbindlist(list(centers, rbindlist(lapply(1:nrow(fixFaces), function(X) {
-      
+      # which area has the fix face
       ptdfnotnull <- col_ptdf[grepl(fixFaces[X, zone], col_ptdf)]
       ptdfnull <- col_ptdf[!grepl(fixFaces[X, zone], col_ptdf)]
       func <- fixFaces[X, func]
+      # is it max import or export
       valfunc <- ifelse(func == "min", -1, 1)
       
       dt <- read.table(text = "", col.names = c(ptdfnotnull, ptdfnull))
@@ -74,18 +81,5 @@ giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf,
     }
   }
   centers
-  ##### Fin test modif
-  
-  # affectRow <- function(centers, valueVect)
-  # {
-  #   conCernRow <- which.min(colSums((t(as.matrix(centers[, .SD, .SDcols = paste0(
-  #     "ptdf", c("BE", "DE", "FR", "AT"))])) - c(valueVect))^2))
-  #   centers[conCernRow,  paste0(
-  #     "ptdf", c("BE", "DE", "FR", "AT")) := as.list(valueVect)]
-  # }
-  # affectRow(centers, c(-1,0,0,0))
-  # affectRow(centers, c(0,-1,0,0))
-  # affectRow(centers, c(0,0,-1,0))
-  # affectRow(centers, c(0,1,0,0))
-  # centers[, paste0("ptdf", c("BE", "DE", "FR", "AT"))]
+
 }

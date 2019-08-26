@@ -3,12 +3,16 @@
   ## Output : data.table with lines details (with norm == 1)
   
   normvec <- NULL
-  
+  # control function
   .crtlgetNormalizedLines(nbLines = nbLines, dim = dim)
   dtLines <- data.table(Line_Coo_X1 = rnorm(n = nbLines))
+  
+  # We generate the lines using normal distribution with dimension equal
+  # to the number of ptdf
   for (i in 1:dim) {
     dtLines[, paste0("Line_Coo_X", i) := rnorm(n = nbLines)]
   }
+  # lines normalization
   dtLines[, normvec := sqrt(rowSums(dtLines[, 1:dim]^2))]
   for (i in 1:dim) {
     dtLines[, paste0("Line_Coo_X", i) := get(paste0("Line_Coo_X", i))/normvec]
@@ -26,27 +30,27 @@
   ##  PLAN : data.table containing ptdf and ram of a polyhedron
   ## Output : data.table containing the intersections of the lines and the polyhedron
   
-  ## Voir si on adapte la fonction pour pouvoir l'utiliser sur plusieurs polyhèdres
-  ## d'un coup (pas intéressant je pense)
+
   Face <- NULL
   .crtldtFormat(dtLines)
   .crtldtFormat(PLAN)
   
   PLAN[, Face := 1:nrow(PLAN)]
-  # Passage en matrice des coordonnées des vecteurs directeurs des droites
+  # transformation of the coordinates of the directory vectors of the lines into
+  # matrices
   matLines <- as.matrix(dtLines[, .SD, .SDcols = colnames(dtLines)[
     grep("Line_Coo_X", colnames(dtLines))]], nrow = nrow(dtLines))
-  # On récupère les colonnes ptdf
-  # col_ptdf <- colnames(PLAN)[grep("ptdf", colnames(PLAN))]
+  
+  # getting ptdf colnames
   col_ptdf <-  .crtlPtdf(PLAN)
   ptdf <- matrix(unname(unlist(
     PLAN[, .SD, .SDcols = col_ptdf])), nrow = length(col_ptdf), byrow = T)
   ram <- unname(unlist(PLAN[, .SD, .SDcols = "ram"]))
   
-  # Valeur du produit scalaire dans la formule pour trouver le lambda
+  # value of the scalar product in the optimization formula
   denom <- matLines %*% ptdf
   
-  ######## Test sur le centre
+  ######## Test on the center
   if (!is.null(center)) {
     center <- as.matrix(center)
     center <- matrix(center, nrow = ncol(ptdf), ncol = 4, byrow = T)
@@ -59,13 +63,16 @@
   if (!is.null(center)) {
     lambda <- lambda - t(denom2)
   }
-  # surcharge de ram si tout d'un coup
+  
+  # in order to have an orientation of the vectors
   lambda[lambda<0] <- 10000000
   
+  # writting of the intersection points
   Points <- apply(lambda, 1, function(X)which.min(abs(X)))
   lambdaout<- apply(lambda, 1, function(X)min(abs(X)))
   
   Points <- data.table(Face = Points)
+  # lambda is the euclidian distance to the origin
   Points$lambda <- lambdaout
   center <- unique(center)
   for(i in 1:nrow(ptdf)) {
@@ -78,7 +85,7 @@
     }
     
   }
-  
+  # finally we get in output the intersection points in data.table format 
   Points <- merge(Points, PLAN, by = "Face")
   Points$distOrig <- abs(Points$lambda)
   Points

@@ -14,25 +14,26 @@ library(fbAntares)
 library(manipulateWidget)
 library(rAmCharts)
 library(pipeR)
+library(DT)
 ```
-
-``fbAntares`` allows to model **flow-based** domains into adequacy studies using the software *Antares*, with the following main functionalities: 
-
+  
+fbAntares`` allows to model **flow-based** domains into adequacy studies using the software *Antares*, with the following main functionalities: 
+  
 **1. Preparation of the input of an Antares study to include a modelling a flow-based in the CWE-AT area**
-
+  
 - Projection of flow-based domains on a fix basis so as to be able to describe them in Antares with binding constraints.
 - Construction of probabilistic flow-based time series respecting the correlations with other inputs of the study (e.g. load, wind power generation, solar generation).
 - Automatic filling of the inputs of the Antares study 
-
+  
 **2. Post-processing and visualisation of Antares’ results**
-
+  
 - Visualisation of the net-positions of the countries of the CWE area along with the limits imposed by the flow-based domains
-
-
+  
+  
 This vignette describe the first set of functionnalities : the preparation of the inputs for the Antares study.
-
+  
 ## 1 - Summary
-
+  
 ```{r, eval=FALSE}
 
 #Convert domains from PTDF file, save the output in the directory "model1"
@@ -41,15 +42,19 @@ computeFB(PTDF = system.file("/input/ptdf/ptdfraw.csv", package = "fbAntares"), 
 #Generate reports from the output of computeFB
 domainesFB <- readRDS("D:/model1/domainesFB.rds")
 for (day in domainesFB$idDayType) {
-  generateReportFb(dayType = day allFB = domainesFB)
+generateReportFb(dayType = day allFB = domainesFB)
 }
+
+# To check on the modelization results
+getMaxImportExport(domainesFB)
+
 #Set antares study path
 antaresRead::setSimulationPath("D:/exemple_test", 0)
 
 #Create flow-based time series considering their correlations with other inputs of an Antares Study, save the output in the directory "model1"
 calendar <- system.file("calendar/calendar.csv", package = "fbAntares")
 createFBTS(probabilityMatrix = probabilityMatrix, multiplier = multiplier,
-           calendar = calendar, firstDay = firstDay, outputPath = "D:/model1")
+calendar = calendar, firstDay = firstDay, outputPath = "D:/model1")
 
 
 #Set setFlowbased directory path
@@ -67,6 +72,8 @@ initFlowBased(scenario = rep(1:200, times = 5))
 
 ## 2 - Projection of domains
 
+### a - Function presentation
+
 The function ``computeFB()`` converts flow-based domains (e.g. historical flow-based domains of some "typical representative days") into an Antares model with fixed PTDF. It uses the main following parameters :
 
 * ``PTDF`` : PTDF file path
@@ -77,11 +84,11 @@ The function ``computeFB()`` converts flow-based domains (e.g. historical flow-b
 * ``Date`` : Id of typical day (integer)
 * ``Period`` : Hour (integer from 1 to 24), period i corresponds to the hourly time-step [i-1 ; i]
 *  ptdf columns, for example :
-  * ``ptdfBE``
-  * ``ptdfDE``
-  * ``ptdfFR``
-  * ``ptdfNL``
-  * ``ptdfAT``
+* ``ptdfBE``
+* ``ptdfDE``
+* ``ptdfFR``
+* ``ptdfNL``
+* ``ptdfAT``
 * ``ram`` : margin
 * ``Class`` : class of typical day (for example WinterSe)
 * ``idDayType`` : id of the typical day
@@ -93,8 +100,14 @@ One can also set the following optionnal arguments of the function :
 * ``dayType`` : subset of typical days to process
 * ``hour`` : subset of hours to process
 * ``nbFaces`` : number of binding constraints in the final Antares model (by default : 75).
+* ``areaName``  The name of the area of your study, possible values are
+cwe_at (default), cwe and other. If you choose other, you have to modify the csv file
+of the package and use the examples to write how your area work.
+* ``fixFaces`` (data.table) If you want to have fixFaces in your modelized domains, the fixFaces can only be the maximum of import (func = "min") or maximum of export (func = "max")
+* ``hubDrop`` list of hubs in the ptdf, with the ones which should
+sustracted to the others as the names of the arrays which themself contain the ones which be sustracted
 
-And the arguments related to the optimization problem (see the help of the function for more information ?computeFB)
+And more, including tuning arguments for the optimization problem, see ?computeFB for more details.
 
 
 The function creates a directory with the following files :
@@ -103,9 +116,47 @@ The function creates a directory with the following files :
 * ``second_member.txt`` : RAM for the antares model (second member of the binding constraints - variable over the typical days and hours)
 * ``domainesFB.RDS`` : Information about the modeled domains (points, errors , accuracy of the model,...)
 
+```{r eval = FALSE}
+## Example of computeFB with cwe_at
+computeFB(PTDF = system.file("/input/ptdf/ptdfraw.csv", package = "fbAntares"),
+          reports = FALSE, areaName = "cwe_at", 
+          hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
+          nbFaces = 75, dayType = 1,
+          fixFaces = data.table(func = "min", zone = "BE"))
+
+## Another example with more arguments and faces clustering only on most important hours
+computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv",
+                             package = "fbAntares"),
+          reports = FALSE, areaName = "cwe_at", 
+          hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
+          nbFaces = 75, dayType = 1, 
+          clusteringHours = c(7:10, 17:19), nbLines = 50000,
+          maxiter = 20, thresholdIndic = 95, 
+          fixFaces = data.table(func = "min", zone = "BE"))
+
+```
+
+### b - Validation of domains results
+
+The function ``getMaxImportExport()`` returns a data.table and a csv if you want to.
+The result is the difference between the maximum of imports and exports between the modelized domain and the real domain for the different areas
+
+```{r}
+#Generate reports from the output of computeFB
+domainesFB <- readRDS(system.file("/input/model/antaresInput/domainesFB.RDS", package = "fbAntares"))
+
+# To check on the modelization results
+maxImportExport <- getMaxImportExport(domainesFB, writecsv = F)
+
+# for a good visualisation in this vignette :
+DT::datatable(maxImportExport, options = list(scrollX = TRUE))
+
+```
 
 
 ## 3 - Creation of flow-based time series
+
+### a - Presentation of the function
 
 The previous function - ``computeFB()`` - converts the typical flow-based days in a format suited for Antares.
 
@@ -136,7 +187,8 @@ An example of the use of ``createFBTS()`` is given below.
 
 # rename columns of the probability matrix
 
-matProb <- setNamesProbabilityMatrix(probabilityMatrix, c("FR_load", "DE_wind", "DE_solar"),
+matProb <- setNamesProbabilityMatrix(probabilityMatrix, 
+                                     c("FR_load", "DE_wind", "DE_solar"),
                                      c("fr@load", "de@wind", "de@solar"))
 
 # set multipliers
@@ -153,6 +205,22 @@ ts <- createFBTS(opts = antaresStudy, probabilityMatrix = probabilityMatrix,
                  multiplier = multiplier, calendar = calendar,
                  firstDay = firstDay, outputPath = "D:/model1")
 
+
+```
+
+### b - Validation of the results
+
+``getStatsFBts()`` gives detailed informations about the time series generated with the previous function ``createFBTS()``. You just have to give in input the object ts generated with ``createFBTS()``, a calendar with the csv format (like the one available in "/calendar/" in the package fbAntares) and an output ("summary", "yearbyyear" or "all")
+
+```{r}
+ts <- fread(system.file("testdata/antaresInput/ts.txt", 
+                        package = "fbAntares"), header = T)
+
+statsFBts <- getStatsFBts(ts, calendar = system.file("calendar/calendar.csv", 
+                                        package = "fbAntares"), output = "summary")
+
+# for visualization in the vignette :
+datatable(statsFBts, options = list(scrollX = TRUE))
 
 ```
 
