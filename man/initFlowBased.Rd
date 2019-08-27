@@ -108,7 +108,7 @@ The folder designed by by fb_opts is a flow-based model. It must include the fol
 \dontrun{
 
  antaresRead::setSimulationPath("D:/Users/titorobe/Desktop/antaresStudy",1)
- antaresFlowbased::setFlowbasedPath(model = "D:/Users/titorobe/Desktop/FBModel")
+ fbAntares::setFlowbasedPath(model = "D:/Users/titorobe/Desktop/FBModel")
  initFlowBased()
  }
  
