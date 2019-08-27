@@ -97,7 +97,7 @@
 #' \dontrun{
 #' 
 #'  antaresRead::setSimulationPath("D:/Users/titorobe/Desktop/antaresStudy",1)
-#'  antaresFlowbased::setFlowbasedPath(model = "D:/Users/titorobe/Desktop/FBModel")
+#'  fbAntares::setFlowbasedPath(model = "D:/Users/titorobe/Desktop/FBModel")
 #'  initFlowBased()
 #'  }
 #'  
@@ -114,7 +114,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   
   
   #Ctrl study version
-  if(opts$antaresVersion < 610)stop("Your studie must be in version 6.1 or more")
+  if(opts$antaresVersion < 610) stop("Your study must be in version 6.1 or more")
   
   
   #.ctrlSolver()
@@ -140,7 +140,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   
   #Copy files in flowbased study
   userFolder <- paste0(opts$studyPath, "/user")
-  if(!dir.exists(userFolder))dir.create(userFolder)
+  if(!dir.exists(userFolder)) dir.create(userFolder)
   
   userFolder <- paste0(userFolder, "/flowbased")
   if(!dir.exists(userFolder))dir.create(userFolder)
@@ -187,6 +187,16 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   #Supress building constains "_fb"
   .supressOldBindingConstraints(opts)
   
+  ############################################
+  # Fix infinite capacities
+  
+  linksToInfinite <- strsplit("%", x = tolower(names(W)[names(W) != "name"]))
+  
+  lapply(linksToInfinite, function(link) {
+    antaresEditObject::editLink(from = link[1], to = link[2], 
+                                transmission_capacities = "infinite")
+  })
+  
   #Delete and re-create model_description_fb area
   .deleteOldAreaAndCreatNew(opts)
   suppressWarnings(opts <- setSimulationPath(opts$studyPath, "input"))
@@ -219,7 +229,6 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   #Prepare second member data
   allTs <- names(tS)
   allTs <- allTs[allTs!="Date"]
-  
   
   #For eatch weight, create cluster thrm
   sapply(1:nrow(W), function(X){
