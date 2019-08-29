@@ -28,7 +28,9 @@ Imports:
   antaresRead,
   pipeR,
   plyr,
+  magrittr,
   antaresEditObject,
+  shinyWidgets,
   shiny,
   DT
 RoxygenNote: 6.1.1
