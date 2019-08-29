@@ -102,8 +102,7 @@
 #'  }
 #'  
 #'  
-#' @import data.table antaresRead plyr antaresEditObject
-#' 
+#' @import data.table antaresRead plyr antaresEditObject magrittr
 #' @export
 initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
                           opts = antaresRead::simOptions(), 
