@@ -1,5 +1,5 @@
 library(shiny)
-library(antaresFlowbased)
+library(fbAntares)
 library(DT)
 library(data.table)
 library(rAmCharts)
@@ -23,7 +23,7 @@ get_plot_output_list <- function(dta, input_n, ylim, xlim, combi) {
     plot_output_object <- renderCombineWidgets({
       combineWidgets(
         list = lapply(1:nrow(combi), function(X) {
-          graphFlowBased2D(flowbased = dta, ctry1 = combi[X, 1], ctry2 = combi[X, 2], 
+          fbAntares:::graphFlowBased2D(flowbased = dta, ctry1 = combi[X, 1], ctry2 = combi[X, 2], 
                            hour = dta$Period[i], dayType = dta$idDayType[i], 
                            xlim = xlim, ylim = ylim)
         })
