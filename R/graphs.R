@@ -212,11 +212,11 @@ plotFB <- function(dayType, hour, country1, country2,
   }
   
   allCtry <- data.frame(country1 = country1, country2 = country2)
-
+  
   graphList <- sapply(hour, function(hoursel){
     sapply(dayType, function(dayTypesel){
       apply(allCtry, 1, function(countsel){
-
+        
         ctsel <- data.frame(t(countsel))
         tempData <- dta[Period == (hoursel) & idDayType == dayTypesel]
         if(length(tempData)==0) {
@@ -249,7 +249,7 @@ plotFB <- function(dayType, hour, country1, country2,
 #'
 #' @param fb_opts \code{list} of flowbased parameters (directory of the flow-based input) 
 #' returned by the function \link{setFlowbasedPath}. By default, the value is 
-#' indicated by \code{antaresFlowbased::fbOptions()}
+#' indicated by \code{fbAntares::fbOptions()}
 #' @param output_file \code{character}, output directory of the html reports. 
 #' By default, the value is \code{NULL}, the reports will be written in the current directory.
 #' @param countries \code{list, character} a list of couples of countries to choose the axises for the projection
@@ -300,7 +300,7 @@ generateReportFb <- function(
   e$dta <- allFB[idDayType == dayType2]
   e$countries <- countries
   e$combi <- combi
-
+  
   e$xlim <- xlim
   e$ylim <- ylim
   rmarkdown::render(system.file("/report/resumeFBflex.Rmd", package = "fbAntares"),
@@ -393,7 +393,7 @@ runAppError <- function(
 #'          mcYears = 1, opts = opts)
 #' 
 #' ## Run the application
-#' runAppPosition(dta)
+#' runAppPosition(dta, country_list = c("fr", "be", "de", "nl", "at"))
 #' 
 #' ## Filter the data on situations with unsupplied energy 
 #' # If you want to keep only timeId with LOLD!=0 you can't use : 
@@ -419,24 +419,24 @@ runAppError <- function(
 #'
 #' @export
 runAppPosition <- function(dta, fb_opts = antaresRead::simOptions(),
-                           country_list = c("fr", "be", "de", "nl", "at")){
+                           country_list = c("fr", "be", "de", "nl", "at"),
+                           areaName = "cwe_at"){
   
   #.ctrlUserHour(opts)
   
   foldPath <- .mergeFlowBasedPath(fb_opts)
-  
   countTryList <- toupper(country_list)
   dayTyList <- unique(readRDS(paste0(foldPath,"domainesFB.RDS"))$idDayType)
   rangeDate <- range(dta$areas$time)
   rangeDate <- round(rangeDate, "day")
-  
+
   G <- .GlobalEnv
   assign("dta", dta, envir = G)
   assign("countTryList", countTryList, envir = G)
   assign("dayTyList", dayTyList, envir = G)
   assign("rangeDate", rangeDate, envir = G)
   assign("fb_opts", fb_opts, envir = G)
-  
+  assign("areaName", areaName, envir = G)
   shiny::runApp(system.file("shinyPosition", package = "fbAntares"),
                 launch.browser = TRUE)
 }
@@ -542,6 +542,29 @@ runAppPosition <- function(dta, fb_opts = antaresRead::simOptions(),
 #'          country1 = "AT", country2 = "DE", areaName = "cwe_at",
 #'          filteringEmptyDomains = TRUE,
 #'          xlim = c(-12000, 12000), ylim = c(-12000, 12000))
+#'          
+#'          
+#'  
+#' #### Example with the virtual area zz_flowbased
+#' ## If you use , with the function \link{computeFB}
+#' study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
+#'
+#' opts <- antaresRead::setSimulationPath(study, 5)
+#' 
+#' dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at", "zz_flowbased"),
+#'                                 links = c("be - zz_flowbased", 
+#'                                 "fr - zz_flowbased", "nl - zz_flowbased",
+#'                                 "de - zz_flowbased", "at - zz_flowbased"), mcYears = 1:2,
+#'                                 select = c("LOLD", "UNSP. ENRG",
+#'                                 "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
+#'                                 opts = opts)                
+#'          
+#' plotNetPositionFB(fb_opts = opts,
+#'          data = dta,
+#'          dayType = 6, hour = c(0, 19),
+#'          country1 = "BE", country2 = "FR", areaName = "cwe_at",
+#'          xlim = c(-10000, 10000), ylim = c(-10000, 10000))
+#'          
 #' }
 #'
 #' @importFrom grDevices topo.colors
@@ -552,7 +575,7 @@ plotNetPositionFB <- function(data, dayType,
                               filteringEmptyDomains = FALSE,
                               nbMaxPt = 10000, palette = "rainbow",
                               xlim = c(-12000, 12000), ylim = c(-12000, 12000)){
-  
+  # browser()
   
   if(!palette[1]%in%c("cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow")){
     stop('Palette must be in : "cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow"')

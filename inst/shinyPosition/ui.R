@@ -28,7 +28,7 @@ shinyUI(fluidPage(
                           checkboxInput("dAll", "All", FALSE),
                           conditionalPanel("!input.dAll", {
                             selectInput("d", "dayType", dayTyList, multiple = TRUE, 
-                                        selected = 4)
+                                        selected = dayTyList[1])
                           
                           }))
     ),
@@ -51,11 +51,13 @@ shinyUI(fluidPage(
   
   
   column(6,  align="center",
-         column(6,selectInput("ctry1G1", "Frist country, graph 1", countTryList)),
+         column(6,selectInput("ctry1G1", "Frist country, graph 1", countTryList, 
+                              selected = countTryList[1])),
          column(6, selectInput("ctry2G1", "Second country, graph 1", countTryList, 
                                selected = countTryList[2]))),
   column(6,   align="center",  
-         column(6,selectInput("ctry1G2", "Frist country, graph 2", countTryList)),
+         column(6,selectInput("ctry1G2", "Frist country, graph 2", countTryList, 
+                              selected = countTryList[1])),
          column(6,selectInput("ctry2G2", "Second country, graph 2", countTryList, 
                               selected = countTryList[2]))),
   

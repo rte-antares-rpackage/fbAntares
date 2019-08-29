@@ -25,11 +25,17 @@ shinyServer(function(input, output, session) {
   
   selectData <- reactive({
  
+
     if(!is.null(input$dateR)){
 
     out <- dta
     
     dateS <- input$dateR
+    #### check if it's the best way
+    if ("POSIXct" %in% class(dta$areas$time)) {
+      dateS <- as.POSIXct(dateS, tz = "UTC")
+    }
+    
     dateS[2] <-   dateS[2] + 1
     
     out$areas <- dta$areas[time >= dateS[1] & time < dateS[2]]
@@ -62,11 +68,12 @@ shinyServer(function(input, output, session) {
   output$poVi <- renderCombineWidgets({
     input$go
     isolate({
-    plotNetPositionFB(fb_opts = fb_opts,
+      fbAntares::plotNetPositionFB(fb_opts = fb_opts,
               data = selectData(),
               dayType = convertD(), hour = convertH(),
               country1 = input$ctry1G1, country2 = input$ctry2G1, 
               filteringEmptyDomains = input$filteringEmptyDomains,
+              areaName = areaName,
               palette = input$col)
     })
   })
@@ -74,11 +81,12 @@ shinyServer(function(input, output, session) {
   output$poVi2 <- renderCombineWidgets({
     input$go
     isolate({
-    plotNetPositionFB(fb_opts = fb_opts,
+    fbAntares::plotNetPositionFB(fb_opts = fb_opts,
                 data = selectData(),
                 dayType = convertD(), hour = convertH(),
                 country1 = input$ctry1G2, country2 = input$ctry2G2, 
                 filteringEmptyDomains = input$filteringEmptyDomains,
+                areaName = areaName,
                 palette = input$col)
     })
   })
