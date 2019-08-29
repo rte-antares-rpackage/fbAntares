@@ -184,7 +184,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
     if (any(opts$areaList == "zz_flowbased")) {
       antaresEditObject::removeArea(name = "zz_flowbased")
     }
-    antaresEditObject::createArea(name = "zz_flowbased")
+    antaresEditObject::createArea(name = "zz_flowbased", localization = c(0, 1))
     sapply(areas, function(area) {
       antaresEditObject::createLink(
         from = area, to = "zz_flowbased",

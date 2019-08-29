@@ -3,7 +3,8 @@ library(fbAntares)
 test_that("computeFB",{
   suppressWarnings(allFB <- computeFB(
     PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"),
-    dayType = 2, hour = 1, reports = FALSE, outputName = tempdir()))
+    dayType = 2, hour = 1, reports = FALSE, outputName = tempdir(),
+    nbLines = 10000, maxiter = 3))
   
   expect_true(file.exists(paste0(allFB, "/second_member.txt")))
   expect_true(file.exists(paste0(allFB, "/weight.txt")))
@@ -14,7 +15,8 @@ test_that("computeFB",{
     dayType = 2, hour = 1, reports = FALSE, outputName = tempdir(),
     fixFaces = data.table(func = c("min", "min", "max", "min"), 
                           zone = c("BE", "FR", "DE", "DE")),
-    verbose = 2, virtualFBarea = F, thresholdIndic = 90))
+    verbose = 2, virtualFBarea = F, thresholdIndic = 90,
+    nbLines = 10000))
   
   expect_true(file.exists(paste0(allFB2, "/second_member.txt")))
   expect_true(file.exists(paste0(allFB2, "/weight.txt")))
@@ -29,7 +31,8 @@ test_that("computeFB",{
     dayType = 2, hour = 1, reports = FALSE, outputName = tempdir(),
     fixFaces = data.table(func = c("min", "min", "max", "min"), 
                           zone = c("BE", "FR", "DE", "DE")),
-    verbose = 2, virtualFBarea = T))
+    verbose = 2, virtualFBarea = T, thresholdIndic = 85,
+    nbLines = 10000))
   
   expect_true(file.exists(paste0(allFB3, "/second_member.txt")))
   expect_true(file.exists(paste0(allFB3, "/weight.txt")))

@@ -17,6 +17,10 @@ It can be filtered (see examples).}
 \link{setFlowbasedPath}. By default, the value will be indicated by \code{antaresRead::simOptions()}}
 
 \item{country_list}{\code{character} Names of the countries used in the study}
+
+\item{areaName}{\code{character} The name of the area of your study, possible values are
+cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+which explains how your area work.}
 }
 \description{
 Run a shiny application displaying, after running an Antares simulation, 

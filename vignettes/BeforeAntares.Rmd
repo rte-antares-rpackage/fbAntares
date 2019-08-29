@@ -106,6 +106,7 @@ of the package and use the examples to write how your area work.
 * ``fixFaces`` (data.table) If you want to have fixFaces in your modelized domains, the fixFaces can only be the maximum of import (func = "min") or maximum of export (func = "max")
 * ``hubDrop`` list of hubs in the ptdf, with the ones which should
 sustracted to the others as the names of the arrays which themself contain the ones which be sustracted
+* ``virtualFBarea`` logical, TRUE if you want to use the virtual links between area, ie if you use a virtual area named zz_flowbased, linked with all the real areas you have in your data (for example be, de, fr, nl, at) instead of using the real links (at - de, be - fr, be - nl...) which are used if you choose virtualFBarea = FALSE
 
 And more, including tuning arguments for the optimization problem, see ?computeFB for more details.
 
@@ -136,7 +137,12 @@ computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv",
 
 ```
 
-### b - Validation of domains results
+### b - The using of the virtual area
+
+In order to get a better understanding of the flowbased, RTE chose to change the representation of the links between the flowbased areas. Instead of using the real links (at - de, be - nl, be - fr...), RTE chose to link all the areas to a virtual one named zz_flowbased. To create a study in this ne format, the only thing to do for the user of the package *fbAntares* is to put the argument virtualFBarea = TRUE. Then, the file weight.txt for the constraints is written with the virtual area. The using of all the other functions are unchanged, the user just needs to change the values of areas and links when he calls the package *antaresRead*.
+
+
+### c - Validation of domains results
 
 The function ``getMaxImportExport()`` returns a data.table and a csv if you want to.
 The result is the difference between the maximum of imports and exports between the modelized domain and the real domain for the different areas

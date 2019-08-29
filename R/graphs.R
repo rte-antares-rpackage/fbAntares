@@ -381,6 +381,9 @@ runAppError <- function(
 #'   \link{setSimulationPath} or flow-based model directory obtained with
 #'   \link{setFlowbasedPath}. By default, the value will be indicated by \code{antaresRead::simOptions()}
 #' @param country_list \code{character} Names of the countries used in the study
+#' @param areaName \code{character} The name of the area of your study, possible values are
+#' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
+#' which explains how your area work.
 #' @examples
 #'
 #' \dontrun{
