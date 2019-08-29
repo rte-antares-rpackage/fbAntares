@@ -90,6 +90,8 @@
 #' @noRd
 .fromBtoAntares <- function(face, col_ptdf, areaConf){
   ## using of the areNames to write the constraints into Antares with the weight file
+  
+  
   B <- face[, .SD, .SDcols = col_ptdf]
   names(B) <- gsub("ptdf", "", names(B))
   nam <- as.character(1:nrow(B))
@@ -111,7 +113,22 @@
   setnames(coefAntares, 'init', 'Name')
   coefAntares
   
+}
+
+
+.fromBtoAntaresvirtualFBarea <- function(face, col_ptdf) {
+  B <- face[, .SD, .SDcols = col_ptdf]
   
+  colnames(B) <- paste0(gsub("ptdf", "", colnames(B)), ".ZZ_flowbased")
+  nam <- as.character(1:nrow(B))
+  maxnchar <- max(nchar(nam))
+  nam <- ifelse(nchar(nam)==1, paste0(0, nam), nam)
+  if(maxnchar == 3) {
+    nam <- ifelse(nchar(nam)==2, paste0(0, nam), nam)
+  }
+  B[, Name := paste0("FB", nam)]
+  setcolorder(B, "Name")
+  B
 }
 
 .ctrlHubDrop <- function(hubDrop, PTDF) {

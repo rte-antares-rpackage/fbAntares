@@ -43,8 +43,8 @@ testSt <- suppressWarnings(antaresRead::setSimulationPath(testSt, 1))
 #     compression = "gzip")
 
 
-###Init adq
-opts3 <- list()
-opts3$studyPath <- system.file("testdata/adq/antaresStudy37", package = "fbAntares")
-
-if(opts3$studyPath== "") opts3$studyPath <- system.file("inst/testdata/adq/antaresStudy37", package = "fbAntares")
+# ###Init adq
+# opts3 <- list()
+# opts3$studyPath <- system.file("testdata/adq/antaresStudy37", package = "fbAntares")
+# 
+# if(opts3$studyPath== "") opts3$studyPath <- system.file("inst/testdata/adq/antaresStudy37", package = "fbAntares")

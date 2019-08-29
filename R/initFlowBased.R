@@ -25,7 +25,7 @@
 #'}
 #' @param fb_opts \code{list} of flowbased parameters (flow-based model directory) 
 #' returned by the function \link{setFlowbasedPath}. 
-#' By default, the value is indicated by \code{antaresFlowbased::fbOptions()}
+#' By default, the value is indicated by \code{fbAntares::fbOptions()}
 #' @param opts \code{list} of simulation parameters returned by the function 
 #' \link{setSimulationPath}, Antares study. By default, the value is 
 #' indicated by \code{antaresRead::simOptions()}
@@ -131,6 +131,8 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   #Load weight.txt
   W <- .getWeight(paste0(fb_opts, "/weight.txt"), areaConf = areaConf)
   
+  # to know if it's in the new format (with virtual area) or not
+  virtualFBarea <- any(grepl("zz_flowbased", tolower(names(W))))
   #Load second_member.txt
   seM <- .getSecondMember(paste0(fb_opts, "/second_member.txt"))
   
@@ -172,7 +174,24 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   }
   
   
-  
+  if (virtualFBarea) {
+    ## suppressLink if VirtualFBarea
+    areas <- gsub(".zz_flowbased", "", names(W)[grep(".zz_flowbased", names(W))])
+    .suppressOldLinks(areas = areas, opts = opts)
+    
+    ## Creation of the new area zz_flowbased and the new links
+    ##### #TODO Choisir une couleur
+    if (any(opts$areaList == "zz_flowbased")) {
+      antaresEditObject::removeArea(name = "zz_flowbased")
+    }
+    antaresEditObject::createArea(name = "zz_flowbased")
+    sapply(areas, function(area) {
+      antaresEditObject::createLink(
+        from = area, to = "zz_flowbased",
+        propertiesLink = propertiesLinkOptions(hurdles_cost = FALSE))
+    }) %>% invisible()
+    
+  }
   
   ##Test ready-made
   rediM <- antaresEditObject::readIniFile(paste0(
@@ -184,7 +203,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
     
   }
   
-  #Supress building constains "_fb"
+  #Supress binding constains "_fb"
   .supressOldBindingConstraints(opts)
   
   ############################################
@@ -195,7 +214,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   lapply(linksToInfinite, function(link) {
     antaresEditObject::editLink(from = link[1], to = link[2], 
                                 transmission_capacities = "infinite")
-  })
+  }) %>% invisible
   
   #Delete and re-create model_description_fb area
   .deleteOldAreaAndCreatNew(opts)
@@ -214,7 +233,8 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   paramS <- list(general = list(date = daT, model = modelName))
   
   ##Write param of user folder
-  antaresEditObject::writeIni(paramS, paste0(userFolder, "/infos.ini"), overwrite = TRUE)
+  antaresEditObject::writeIni(
+    listData = paramS, pathIni = paste0(userFolder, "/infos.ini"), overwrite = TRUE)
   
   
   cat("Study ready for flow-based simulations")
@@ -230,7 +250,7 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
   allTs <- names(tS)
   allTs <- allTs[allTs!="Date"]
   
-  #For eatch weight, create cluster thrm
+  #For each weight, create cluster thrm
   sapply(1:nrow(W), function(X){
     tpR <- W[X]
     clusterName <- paste0(tpR$name, "_fb")
@@ -244,12 +264,12 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
     })
     
     antaresEditObject::createCluster(area = "model_description_fb",
-                  cluster_name = clusterName,
-                  unitcount = 1L,
-                  group = "other",
-                  nominalcapacity = nomCap,
-                  prepro_modulation = modulation,
-                  time_series = tsDta, opts = opts)
+                                     cluster_name = clusterName,
+                                     unitcount = 1L,
+                                     group = "other",
+                                     nominalcapacity = nomCap,
+                                     prepro_modulation = modulation,
+                                     time_series = tsDta, opts = opts)
   })
   
   #Update general setting
@@ -312,11 +332,11 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
     names(coefficients) <- tolower(names(coefficients))
     coefficients <- c(coefficients, ctV)
     antaresEditObject::createBindingConstraint(name = ctName,
-                            values = NULL,
-                            timeStep = timeStep,
-                            operator = "less",
-                            coefficients = coefficients,
-                            opts = opts, overwrite = TRUE)
+                                               values = NULL,
+                                               timeStep = timeStep,
+                                               operator = "less",
+                                               coefficients = coefficients,
+                                               opts = opts, overwrite = TRUE)
     NULL
   })
   
@@ -355,4 +375,25 @@ initFlowBased <- function(fb_opts = fbAntares::fbOptions()$path,
             "second_member.txt, ts.txt and weight.txt"))
   }
   
+}
+
+
+.suppressOldLinks <- function(areas, opts) {
+  ## recup areas in weights
+  
+  ## Writing of the links to match with the currents we have to delete
+  gridAreas <- expand.grid(areas, areas, stringsAsFactors = F)
+  setDT(gridAreas)
+  gridAreas <- gridAreas[!which(Var1 == Var2)]
+  # Writing of the links
+  possibleLinks <- sapply(1:nrow(gridAreas), function(X) {
+    paste(gridAreas[X, 1], gridAreas[X, 2], sep = " - ")
+  })
+  ## matching with the links of antares
+  links <- opts$linkList[grep(paste0(possibleLinks, collapse = "|"), opts$linkList)]
+  links <- strsplit(links, " - ")
+  ## suppression of the links
+  invisible(lapply(links, function(link) {
+    antaresEditObject::removeLink(from = link[1], to = link[2])
+  }))
 }

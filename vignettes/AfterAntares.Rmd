@@ -1,5 +1,5 @@
 ---
-title: "Use antaresFlowbased to explore simulations results"
+title: "Use fbAntares to explore simulations results"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{fbAntares Part 2}

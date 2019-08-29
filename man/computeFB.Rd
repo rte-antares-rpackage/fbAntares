@@ -8,9 +8,9 @@ computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
   reports = TRUE, areaName = "cwe_at", dayType = "All",
   hour = "All", clusteringDayType = "All", clusteringHours = "All",
-  nbFaces = 75, verbose = 1, nbLines = 10000, maxiter = 15,
+  nbFaces = 75, verbose = 1, nbLines = 1e+05, maxiter = 15,
   thresholdIndic = 95, quad = F, hubDrop = list(NL = c("BE", "DE",
-  "FR", "AT")), fixFaces = NULL, seed = 123456)
+  "FR", "AT")), fixFaces = NULL, virtualFBarea = F, seed = 123456)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 
@@ -81,6 +81,9 @@ data.table(func = c("min", "min", "max", "min"), zone = c("BE", "FR", "DE", "DE"
 func is the direction of the fix faces and zone is the area of this direction.
 If you give for example min and DE, there will be a fix face at the minimum import
 value of Germany.}
+
+\item{virtualFBarea}{\code{logical} If you want to use the new area format or not
+default is FALSE}
 
 \item{seed}{\code{numeric}, value of the seed, default 123456}
 }

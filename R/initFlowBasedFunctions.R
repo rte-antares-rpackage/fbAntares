@@ -1,24 +1,27 @@
-#' Load weigth file
+#' Load weight file
 #'
-#' @param weigth \code{character} path
+#' @param weight \code{character} path
 #' @param areaConf \code{data.table} area conf
 #'
-#' @return weigth \code{data.table} weigth file
+#' @return weight \code{data.table} weight file
 #'
 #' @noRd
-.getWeight <- function(weigth, areaConf){
-  weigth <- data.table::fread(weigth, sep = "\t", dec = ".")
-  names(weigth) <- gsub(" ", "", names(weigth))
-  names(weigth) <- names(weigth)%>>%
+.getWeight <- function(weight, areaConf){
+  weight <- data.table::fread(weight, sep = "\t", dec = ".")
+  names(weight) <- gsub(" ", "", names(weight))
+  names(weight) <- names(weight)%>>%
     tolower()
   
   ##New version
   nameCheck <- c("name", areaConf$links[[1]])
-  if(any(!names(weigth) %in% nameCheck)){
-    stop(paste0("Names of weigth.txt must be name ", paste(nameCheck, collapse = " ")))
+  any(grepl("zz_flowbased", tolower(names(weight))))
+  #### Modif new version virtual area
+  if (!any(grepl("zz_flowbased", tolower(names(weight))))) {
+    if(any(!names(weight) %in% nameCheck)){
+      stop(paste0("Names of weight.txt must be name ", paste(nameCheck, collapse = " ")))
+    }
   }
-  
-  recontructName <- 1:nrow(weigth)
+  recontructName <- 1:nrow(weight)
   recontructName <- as.character(recontructName)
   maxnchar <- max(nchar(recontructName))
   recontructName <- ifelse(nchar(recontructName)==1, paste0(0, recontructName), recontructName)
@@ -29,14 +32,14 @@
   #                          recontructName)
   recontructName <- paste0("FB", recontructName)
   
-  if(any(recontructName != weigth$name)){
-    stop(paste0("name column of weigth.txt must contain in order : ", 
+  if(any(recontructName != weight$name)){
+    stop(paste0("name column of weight.txt must contain in order : ", 
                 paste0(recontructName, collapse = ","),
-                " ||  actualy : ", paste0( weigth$name, collapse = ",")))
+                " ||  actualy : ", paste0( weight$name, collapse = ",")))
   }
   
-  names(weigth) <- gsub(x=names(weigth), pattern =  "[.]", replacement = "%")
-  weigth
+  names(weight) <- gsub(x=names(weight), pattern =  "[.]", replacement = "%")
+  weight
 }
 
 

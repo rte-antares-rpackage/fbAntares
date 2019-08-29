@@ -6,7 +6,7 @@
 in an Antares simulation}
 \usage{
 runAppPosition(dta, fb_opts = antaresRead::simOptions(),
-  country_list = c("fr", "be", "de", "nl", "at"))
+  country_list = c("fr", "be", "de", "nl", "at"), areaName = "cwe_at")
 }
 \arguments{
 \item{dta}{\code{antaresDataList} Antares output data, imported with \link{readAntares}. 
@@ -40,7 +40,7 @@ dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at"),
          mcYears = 1, opts = opts)
 
 ## Run the application
-runAppPosition(dta)
+runAppPosition(dta, country_list = c("fr", "be", "de", "nl", "at"))
 
 ## Filter the data on situations with unsupplied energy 
 # If you want to keep only timeId with LOLD!=0 you can't use : 

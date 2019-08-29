@@ -120,6 +120,29 @@ plotNetPositionFB(fb_opts = opts,
          country1 = "AT", country2 = "DE", areaName = "cwe_at",
          filteringEmptyDomains = TRUE,
          xlim = c(-12000, 12000), ylim = c(-12000, 12000))
+         
+         
+ 
+#### Example with the virtual area zz_flowbased
+## If you use , with the function \\link{computeFB}
+study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
+
+opts <- antaresRead::setSimulationPath(study, 5)
+
+dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at", "zz_flowbased"),
+                                links = c("be - zz_flowbased", 
+                                "fr - zz_flowbased", "nl - zz_flowbased",
+                                "de - zz_flowbased", "at - zz_flowbased"), mcYears = 1:2,
+                                select = c("LOLD", "UNSP. ENRG",
+                                "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
+                                opts = opts)                
+         
+plotNetPositionFB(fb_opts = opts,
+         data = dta,
+         dayType = 6, hour = c(0, 19),
+         country1 = "BE", country2 = "FR", areaName = "cwe_at",
+         xlim = c(-10000, 10000), ylim = c(-10000, 10000))
+         
 }
 
 }

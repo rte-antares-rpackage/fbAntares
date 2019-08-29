@@ -21,7 +21,7 @@ of the flowbased domains (ex : list(c("BE", "FR"), c("BE", "NL"))) or an array o
 
 \item{fb_opts}{\code{list} of flowbased parameters (directory of the flow-based input) 
 returned by the function \link{setFlowbasedPath}. By default, the value is 
-indicated by \code{antaresFlowbased::fbOptions()}}
+indicated by \code{fbAntares::fbOptions()}}
 
 \item{allFB}{\code{data.table}, table of flow-based domains (real and modelled) 
 returned by the function \link{computeFB}. By default, the value is \code{NULL}: 

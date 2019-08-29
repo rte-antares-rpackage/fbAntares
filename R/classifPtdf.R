@@ -60,7 +60,9 @@ giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf,
   
   # adding of the fix faces if they exist
   addFixFaces <- function(centers, fixFaces) {
+    # browser()
     centers <- rbindlist(list(centers, rbindlist(lapply(1:nrow(fixFaces), function(X) {
+      # browser()
       # which area has the fix face
       ptdfnotnull <- col_ptdf[grepl(fixFaces[X, zone], col_ptdf)]
       ptdfnull <- col_ptdf[!grepl(fixFaces[X, zone], col_ptdf)]

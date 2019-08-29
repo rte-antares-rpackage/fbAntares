@@ -49,7 +49,8 @@
 #' of the package and use the examples to write how your area work.
 #' The actual csv file is in the folder areaName of the package if you want to
 #' modify it or understand how it is written.
-
+#' @param virtualFBarea \code{logical} If you want to use the new area format or not
+#' default is FALSE
 #' @param nbFaces \code{numeric}, standard shape parameters: number of sides to select. By default, the value is 75
 #' @param nbLines \code{numeric}, number of halflines drawn for the distance computation, default 100 000
 #' @param maxiter \code{numeric}, maximum number of iteration on the optimization problem, default 15
@@ -86,9 +87,9 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       dayType = "All", hour = "All", 
                       clusteringDayType = "All", clusteringHours = "All",
                       nbFaces = 75, verbose = 1,
-                      nbLines = 10000, maxiter = 15, thresholdIndic = 95, quad = F,
+                      nbLines = 100000, maxiter = 15, thresholdIndic = 95, quad = F,
                       hubDrop = list(NL = c("BE", "DE", "FR", "AT")), 
-                      fixFaces = NULL,
+                      fixFaces = NULL, virtualFBarea = F,
                       seed = 123456)
 {
   if (!is.null(seed)) {
@@ -96,7 +97,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   }
   PTDFDetails <- Face <- ram <- outFlowbased <- generateReportFb <- idDayType <- Period <- NULL
   # pb <- txtProgressBar(style = 3)
-  
+  # browser()
   
   ######### OK
   PTDF <- .readPTDF(PTDF)
@@ -126,12 +127,15 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   }
 
   ## Clustering on the ptdf lines to obtain the faces of the 
-  ## modelized polyhedra
+  
+  ###### changement
   face <- giveBClassif(
-    PTDF, nbClust = nbCl, fixFaces = fixFaces, col_ptdf = col_ptdf,
+    PTDFRaw, nbClust = nbCl, fixFaces = fixFaces, col_ptdf = col_ptdfraw,
     clusteringDayType = clusteringDayType, clusteringHours = clusteringHours)
   
   face <- round(face, 2)
+  faceraw <- copy(face)
+  face <- setDiffNotWantedPtdf(PTDF = face, hubDrop = hubDrop)
   # keep only the hours and daytype you want to return
   if(length(dayType) == 1) {
     if(dayType == "All"){
@@ -147,7 +151,13 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   ##From B to antares
   # if cwe, cwe-at or other area
   areaConf <- .getAreaName(areaName)
-  antaresFace <- .fromBtoAntares(face, col_ptdf, areaConf = areaConf)
+  if (virtualFBarea) {
+    antaresFace <- .fromBtoAntaresvirtualFBarea(
+      face = faceraw, col_ptdf = col_ptdfraw)
+    
+  } else {
+    antaresFace <- .fromBtoAntares(face, col_ptdf, areaConf = areaConf)
+  }
   
   combi <- data.table(expand.grid(hour, dayType))
   names(combi) <- c("hour", "dayType")

@@ -11,7 +11,7 @@ initFlowBased(fb_opts = fbAntares::fbOptions()$path,
 \arguments{
 \item{fb_opts}{\code{list} of flowbased parameters (flow-based model directory) 
 returned by the function \link{setFlowbasedPath}. 
-By default, the value is indicated by \code{antaresFlowbased::fbOptions()}}
+By default, the value is indicated by \code{fbAntares::fbOptions()}}
 
 \item{opts}{\code{list} of simulation parameters returned by the function 
 \link{setSimulationPath}, Antares study. By default, the value is 
