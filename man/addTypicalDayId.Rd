@@ -30,6 +30,22 @@ data <- addTypicalDayId(data)
 data <- readAntares(areas = "all", links = "all", clusters = "all" ,mcYears = 1:2)
 data <- addTypicalDayId(data)
 
+#' #### Example with the virtual area zz_flowbased
+## If you gave virtualFBarea = TRUE in the function \\link{computeFB},
+## the areas and links are built with a virtual area on the center.
+study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
+
+opts <- antaresRead::setSimulationPath(study, 5)
+
+data <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at", "zz_flowbased"),
+                                links = c("be - zz_flowbased", 
+                                "fr - zz_flowbased", "nl - zz_flowbased",
+                                "de - zz_flowbased", "at - zz_flowbased"), mcYears = 1:2,
+                                select = c("LOLD", "UNSP. ENRG",
+                                "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
+                                opts = opts)           
+
+data <- addTypicalDayId(data)
 }
 
 }

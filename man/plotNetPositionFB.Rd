@@ -124,7 +124,8 @@ plotNetPositionFB(fb_opts = opts,
          
  
 #### Example with the virtual area zz_flowbased
-## If you use , with the function \\link{computeFB}
+## If you gave virtualFBarea = TRUE in the function \\link{computeFB},
+## the areas and links are built with a virtual area on the center.
 study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
 
 opts <- antaresRead::setSimulationPath(study, 5)
