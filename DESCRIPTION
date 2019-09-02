@@ -10,7 +10,10 @@ Authors@R: c(
     person("Marion", "LI", , "marion.li@rte-france.com", role = c("aut", "ctb")),
     person("RTE", role = "cph")
     )
-Description: Run FlowBased Simulations on Antares.
+Description: Run FlowBased Simulations on Antares. This package takes in input the ptdf of
+the typical days generated with the package fbClust. Then, it creates input in order to
+run flowbased simulations on Antares. Finally, it allows to make graphics with the results
+of Antares simulations.
 URL: https://github.com/rte-antares-rpackage/fbAntares
 License: GPL (>= 2) | file LICENSE 
 Encoding: UTF-8
