@@ -78,7 +78,8 @@ by itself the domains which are not used.
 }
 \examples{
 \dontrun{
-# Choose an ANtares study and import its output
+# Choose an Antares study and import its output
+# Change the study path for the path of a study you have on your computer
 study <- "../../Pour Julien/blop/MT_base_nucM2_2023"
 
 opts <- antaresRead::setSimulationPath(study, 17)
@@ -144,6 +145,8 @@ plotNetPositionFB(fb_opts = opts,
 #### Example with the virtual area zz_flowbased
 ## If you gave virtualFBarea = TRUE in the function \\link{computeFB},
 ## the areas and links are built with a virtual area on the center.
+
+# Change the study path for the path of a study you have on your computer
 study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
 
 opts <- antaresRead::setSimulationPath(study, 5)

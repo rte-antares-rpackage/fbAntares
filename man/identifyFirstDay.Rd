@@ -16,7 +16,7 @@ By default, the value is indicated by \code{antaresRead::simOptions()}.}
 the type of first day. By default, France (\code{"fr"}) is chosen.}
 
 \item{secondArea}{\code{character} name of additional area(s) to use to check 
-the first day. By default, the value is 
+the first day. By default, the value is
 \code{c("fr", "de", "be", "nl")} (France, Germany, Belgium, the Netherlands). 
 It can be \code{NULL} but the first day will be
 determined with less certainty.}
@@ -31,6 +31,7 @@ The type of first day is represented
 \examples{
 \dontrun{
 # Identification of the first day of an Antares study where areas fr, be, de, nl exist
+# Change the study path for the path of a study you have on your computer
 opts <- setSimulationPath("pathToAntaresStudy")
 identifyFirstDay(opts)
 }

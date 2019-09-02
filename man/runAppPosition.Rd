@@ -38,7 +38,9 @@ with loss of load (see examples).
 
 \dontrun{
 ## Select a study and import the data
+# Change the study path for the path of a study you have on your computer
 study <- "../../Pour Julien/blop/MT_base_nucM2_2023"
+
 opts <- antaresRead::setSimulationPath(study, 18)
 dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at"),
          links = c("be - de","be - fr","be - nl","de - fr","de - nl", "at - de"), 

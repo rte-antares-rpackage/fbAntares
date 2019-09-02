@@ -1,9 +1,10 @@
-#' @title Conversion of flow-based domains into an ANtares model with fixed PTDF
+#' @title Conversion of flow-based domains into an Antares model with fixed PTDF
 #' 
 #' @description 
 #' This function follows two steps: based on the list of flow-based domains 
 #' given in input, it will calculate a standard shape
-#' (selection of sides, k-medoid method) and will then project the real domains 
+#' (selection of sides, CAH or kmeans method depending on the sizeof the input) 
+#' and will then project the real domains 
 #' on this standard shape. The projection is 
 #' computed using an optimisation algorithm aiming at minimising the 
 #' volumetric error between the real domain and its projection.
@@ -84,7 +85,7 @@
 #' # Compute models for all days and hours of a PTDF file, with no reports 
 #' # automatically generated at the same time
 #' computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
-#' reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT"))
+#' reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT")))
 #' 
 #' # Example using more arguments like the fixFaces
 #' computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
@@ -94,7 +95,7 @@
 #' 
 #' # Example with the virtualFBarea
 #' computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
-#' reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT"),
+#' reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
 #' virtualFBarea = TRUE)
 #' 
 #' }

@@ -61,13 +61,15 @@ fbOptions()
 
 # Specify an available model
 getAvailableModel()
-setFlowbasedPath(model = "model2017")
+setFlowbasedPath(model = "antaresInputVirtualFBarea")
 
 # Specify a path
+# Change the model path for the path of a model you have on your computer
 setFlowbasedPath(path = system.file("testdata/antaresInput", package = "fbAntares"))
 
 # Specify a personnal model
-setFlowbasedPath(model = "C:/PATH/TO/INPUT")
+# Change the model name for the name of a model you have on your computer
+setFlowbasedPath(model = "mymodel")
 }
 
 }

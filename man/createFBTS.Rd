@@ -70,13 +70,14 @@ multiplier <- data.frame(variable = c("fr@load", "de@wind", "de@solar"),
                          coef = c(1, 71900, 61900))
 
 # Set the path to Antares study inputs 
+# Change it for the path of a study you have on your computer
 opts <- antaresRead::setSimulationPath("../../Pour Julien/blop/MT_base_nucM2_2023/", 
 simulation = 17)
 
 # calendar
 # first day identified based on the input data of the 
 # Antares study designated by opts
-firstDay <- identifyFirstDay(opts, secondArea = NULL) 
+firstDay <- identifyFirstDay(opts) 
 # calendar in a csv file with all dates of one year and their classes
 calendar <- system.file("calendar/calendar.txt", package = "fbAntares")
 

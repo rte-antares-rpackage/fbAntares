@@ -23,8 +23,9 @@
 #' 
 #' @examples
 #' \dontrun{
+#' # Change the study path for the path of a study you have on your computer
 #' study <- "../../Pour Julien/blop/MT_base_nucM2_2023"
-#' antaresRead::setSimulationPath(study, 17)
+#' opts <- antaresRead::setSimulationPath(study, 17)
 #' data <- antaresRead::readAntares(area = c("fr", "be", "de", "nl"), 
 #'   links = c("be - de","be - fr","be - nl", "de - fr","de - nl"), 
 #'   mcYears = 1)
@@ -41,6 +42,7 @@
 #'  inAreas = c("be", "de", "fr", "nl", "at"), newName = "_CWEAt")
 #' 
 #' ## Example with the virtual area
+#' # Change the study path for the path of a study you have on your computer
 #' study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
 #' opts <- antaresRead::setSimulationPath(study, 5)
 #' 
@@ -53,7 +55,7 @@
 #'              "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
 #'   opts = opts)
 #' 
-#' dta <- fbAntares::addNetPosition(
+#' dta <- addNetPosition(
 #' dta, opts, inAreas = c("be", "de", "fr", "nl", "at", "zz_flowbased"), 
 #' newName = "_CWEAtVirtual")
 #' 
