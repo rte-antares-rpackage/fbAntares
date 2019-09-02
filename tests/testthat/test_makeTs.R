@@ -27,7 +27,6 @@ test_that("make ts", {
   for(k in 1:3)
   {
     # in order to debug travis with the issue of waiting time
-    expect_true(TRUE)
     ts <- suppressWarnings(createFBTS(
       opts = op5, probabilityMatrix = matProb, multiplier = multiplier,
       # interSeasonBegin = interSeasonBegin, interSeasonEnd = interSeasonEnd,

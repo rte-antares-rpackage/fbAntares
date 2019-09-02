@@ -92,6 +92,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       fixFaces = NULL, virtualFBarea = F,
                       seed = 123456)
 {
+  browser()
   if (!is.null(seed)) {
     set.seed(seed)
   }

@@ -142,6 +142,18 @@ computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv",
 In order to get a better understanding of the flowbased, RTE chose to change the representation of the links between the flowbased areas. Instead of using the real links (at - de, be - nl, be - fr...), RTE chose to link all the areas to a virtual one named zz_flowbased. To create a study in this ne format, the only thing to do for the user of the package *fbAntares* is to put the argument virtualFBarea = TRUE. Then, the file weight.txt for the constraints is written with the virtual area. The use of all the other functions are unchanged, the user just needs to change the values of areas and links when he calls the package *antaresRead*.
 
 
+```{r eval = FALSE}
+## Example of computeFB with cwe_at and virtual area
+computeFB(PTDF = system.file("/input/ptdf/ptdfraw.csv", package = "fbAntares"),
+          reports = FALSE, areaName = "cwe_at", 
+          hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
+          nbFaces = 75, dayType = 1,
+          fixFaces = data.table(func = "min", zone = "BE"),
+          virtualFBarea = TRUE)
+```
+
+
+
 ### c - Validation of domains results
 
 The function ``getMaxImportExport()`` returns a data.table and a csv if you want to.

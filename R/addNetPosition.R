@@ -32,6 +32,22 @@
 #' data <- addNetPosition(data, opts,
 #'  inAreas = c("be", "de", "fr", "nl", "at"), newName = "_CWEAt")
 #' 
+#' ## Example with the virtual area
+#' study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
+#' opts <- antaresRead::setSimulationPath(study, 5)
+#' 
+#' dta <- antaresRead::readAntares(
+#'   areas = c("fr", "be", "de", "nl", "at", "zz_flowbased"),
+#'   links = c("be - zz_flowbased",
+#'             "fr - zz_flowbased", "nl - zz_flowbased",
+#'             "de - zz_flowbased", "at - zz_flowbased"), mcYears = 1:2,
+#'   select = c("LOLD", "UNSP. ENRG",
+#'              "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
+#'   opts = opts)
+#' 
+#' dta <- fbAntares::addNetPosition(
+#' dta, opts, inAreas = c("be", "de", "fr", "nl", "at", "zz_flowbased"), newName = "_CWEAt")
+#' 
 #' }
 #' 
 #' @export
