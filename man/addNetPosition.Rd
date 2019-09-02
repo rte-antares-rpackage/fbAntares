@@ -8,21 +8,29 @@ addNetPosition(data, opts = antaresRead::simOptions(),
   inAreas = c("be", "de", "fr", "nl", "at"), newName = "_CWEAt")
 }
 \arguments{
-\item{data}{\code{antaresDataList} read with readAntares, containing both areas and links tables.}
+\item{data}{\code{antaresDataList} read with readAntares, containing both 
+areas and links tables.}
 
-\item{opts}{\code{list} of simulation parameters returned by the function \link{setSimulationPath}: this represents the 
-directory of the Antares study. The default path is indicated by \code{antaresRead::simOptions()}.}
+\item{opts}{\code{list} of simulation parameters returned by the 
+function \link{setSimulationPath}: this represents the 
+directory of the Antares study. The default path is indicated by 
+\code{antaresRead::simOptions()}.}
 
-\item{inAreas}{\code{character} lists of areas belonging to the perimeter, whose exchanges are going to be taken into account in the balance
-calculation. All links connecting two areas in this list are taken into account, the links connected to only one area (or none) are ignored.
-By default, the list is c("be", "de", "fr", "nl").}
+\item{inAreas}{\code{character} lists of areas belonging to the perimeter, 
+whose exchanges are going to be taken into account in the balance
+calculation. All links connecting two areas in this list are taken 
+into account, the links connected to only one area (or none) are ignored.
+By default, the list is c("be", "de", "fr", "nl", "at").}
 
-\item{newName}{\code{character} Added suffix to the calculated column's name. By default, the value is "_CWE".}
+\item{newName}{\code{character} Added suffix to the calculated column's name. 
+By default, the value is "_CWEAt".}
 }
 \description{
-This function calculates the Net Position (the balance) of areas within a bigger group of areas, 
+This function calculates the Net Position (the balance)
+of areas within a bigger group of areas, 
 based on the exchanged flows in the indicated perimeter.
-By default, the function calculates the Net Position within the CWE area and creates a new column called Balance_CWE.
+By default, the function calculates the Net Position within 
+the CWE area and creates a new column called Balance_CWE.
 }
 \examples{
 \dontrun{
@@ -57,7 +65,8 @@ dta <- antaresRead::readAntares(
   opts = opts)
 
 dta <- fbAntares::addNetPosition(
-dta, opts, inAreas = c("be", "de", "fr", "nl", "at", "zz_flowbased"), newName = "_CWEAt")
+dta, opts, inAreas = c("be", "de", "fr", "nl", "at", "zz_flowbased"), 
+newName = "_CWEAtVirtual")
 
 }
 

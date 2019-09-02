@@ -2,7 +2,8 @@
 % Please edit documentation in R/graphs.R
 \name{runAppPosition}
 \alias{runAppPosition}
-\title{Run a shiny application to visualise the flow-based typical domains and the Net Positions reached within 
+\title{Run a shiny application to visualise the flow-based typical 
+domains and the Net Positions reached within 
 in an Antares simulation}
 \usage{
 runAppPosition(dta, fb_opts = antaresRead::simOptions(),
@@ -14,7 +15,8 @@ It can be filtered (see examples).}
 
 \item{fb_opts}{\code{list} of simulation parameters returned by the function
 \link{setSimulationPath} or flow-based model directory obtained with
-\link{setFlowbasedPath}. By default, the value will be indicated by \code{antaresRead::simOptions()}}
+\link{setFlowbasedPath}. By default, the value will be indicated by 
+\code{antaresRead::simOptions()}}
 
 \item{country_list}{\code{character} Names of the countries used in the study}
 

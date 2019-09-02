@@ -14,9 +14,10 @@ createFBTS(opts, probabilityMatrix, multiplier, firstDay, seed = 123456,
  By default, the value is \code{antaresRead::simOptions()}}
 
 \item{probabilityMatrix}{\code{list}, correlation between climatic factors and 
-flow-based typical days, such as returned by \code{flowBasedClustering::getProbability}. 
+flow-based typical days, such as returned by \code{fbClust::getProbability}. 
 The columns names must be renamed to match Antares' inputs, use the function
- \link{setNamesProbabilityMatrix}. Initial format is : area_variable (Ex: fr_load, de_solar ...)}
+ \link{setNamesProbabilityMatrix}. Initial format is : 
+ area_variable (Ex: fr_load, de_solar ...)}
 
 \item{multiplier}{\code{data.frame} enabling to convert load factors or normalised 
 values into production/consumption in MW. 
@@ -37,7 +38,8 @@ typical days. By default, the value is 123456}
 \item{silent}{\code{boolean}, non display of a progress bar. By default, the value is FALSE.}
 
 \item{outputPath}{\code{character}, path of the folder where the time series of 
-typical flow-based output file (ts.txt) will be written. The current directory is chosen by default.}
+typical flow-based output file (ts.txt) will be written. The current directory 
+is chosen by default.}
 
 \item{calendar}{\code{character}, path to a txt files with two columns,
 a column Date in the format month-day and a column class with the classes
@@ -48,7 +50,7 @@ This function defines for each studied day in an Antares study the most
 representative typical flow-based day, and finally creates daily time series.
 To establish this correlation, the inputs of the function must include 
 a probability matrix (calculated for each set of typical days with the package 
-\code{flowBasedClustering}) and the path to the Antares study to provide flow-based 
+\code{fbClust}) and the path to the Antares study to provide flow-based 
 domains with. The probability matrix
 will be used to compute a weighted draw among the possible typical days.
 }

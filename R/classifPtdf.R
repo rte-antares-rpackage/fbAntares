@@ -71,7 +71,7 @@ giveBClassif <- function(PTDF, nbClust = 75, fixFaces, col_ptdf,
         which(gsub("ptdf", "", col_ptdf) %in% fixFaces[X, zone])]
       ptdfnull <- col_ptdf[!(col_ptdf %in% ptdfnotnull)]
       func <- fixFaces[X, func]
-      # is it max import or export
+      # is it max import or export if import, func = "min", if export, func = "max"
       valfunc <- ifelse(func == "min", -1, 1)
       
       dt <- read.table(text = "", col.names = c(ptdfnotnull, ptdfnull))

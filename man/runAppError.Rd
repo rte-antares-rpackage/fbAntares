@@ -12,15 +12,19 @@ runAppError(fb_opts = fbAntares::fbOptions(), countries = list(c("BE",
 \link{setFlowbasedPath}: directory of the flow-based model to study.
 By default, the value is indicated by \code{fbAntares::fbOptions()}}
 
-\item{countries}{\code{list, character} a list of couples of countries to choose the axises for the projection
+\item{countries}{\code{list, character} a list of couples of countries to 
+choose the axises for the projection
 of the flowbased domains (ex : list(c("BE", "FR"), c("BE", "NL"))) or an array of countries
 (ex : c("FR", "NL", "AT")) to project the domains on all the countries combination 
 (here FR+NL, FR+AT and NL+AT)}
 }
 \description{
-Run a shiny application displaying the results of the conversion of real domains into Antares models. It will display for
-each typical day and each hour the volumetric errors of conversion (inf_error: forgotten points in the 
-model, sup_error: modelled points missing in the real domain) and dynamic plots of the real and modelled domains. Html reports
+Run a shiny application displaying the results of the conversion of real 
+domains into Antares models. It will display for
+each typical day and each hour the volumetric errors of conversion 
+(inf_error: forgotten points in the 
+model, sup_error: modelled points missing in the real domain) and 
+dynamic plots of the real and modelled domains. Html reports
 for each day can also be exported.
 }
 \examples{
