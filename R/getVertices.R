@@ -16,7 +16,9 @@ setDiffNotWantedPtdf <- function(PTDF, hubDrop = list(
 {
   # browser()
   .ctrlHubDrop(PTDF = PTDF, hubDrop = hubDrop)
+  print(hubDrop)
   for (X in names(hubDrop)) {
+    # if (X != "nodiff") {
     vec_ptdf <- hubDrop[[X]]
     col_X <- paste0("ptdf", X)
     # if (!all(col_X %in% colnames(PLAN))) {
@@ -30,6 +32,7 @@ setDiffNotWantedPtdf <- function(PTDF, hubDrop = list(
       }
     }
     PTDF[[col_X]] <- NULL
+    # }
   }
   return(PTDF)
 }

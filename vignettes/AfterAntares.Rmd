@@ -8,58 +8,57 @@ vignette: >
 ---
   
 ```{r setup, include=FALSE}
-  knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
-  
-  
+
+
+
 ``fbAntares`` allows to model **flow-based** domains into adequacy studies using the software *Antares*, with the following main functionalities: 
-  
+
 **1. Preparation of the input of an Antares study to include a modelling a flow-based in the CWE-AT area**
-  
-  - Projection of flow-based domains on a fix basis  so as to be able to describe them in Antares with binding constraints.
-  - Construction of probabilistic flow-based time series respecting the correlations with other inputs of the study (e.g. load, wind power generation, solar generation).
-  - Automatic filling of the inputs of the Antares study 
-  
+
+- Projection of flow-based domains on a fix basis  so as to be able to describe them in Antares with binding constraints.
+- Construction of probabilistic flow-based time series respecting the correlations with other inputs of the study (e.g. load, wind power generation, solar generation).
+- Automatic filling of the inputs of the Antares study 
+
 **2. Post-processing and visualisation of Antares’ results**
-  
-  - Application of the adequacy patch to re-balance the exchanges in the CWE-AT area in case of generation shortages
-  - Visualisation of the net-positions of the countries of the CWE-AT area along with the limits imposed by the flow-based domains
-  
-  
-  This vignette describes the second set of functionnalities : the post-processing of the simulation results.
-  
-  
-  ## 1 - Summary
-  
+
+- Application of the adequacy patch to re-balance the exchanges in the CWE-AT area in case of generation shortages
+- Visualisation of the net-positions of the countries of the CWE-AT area along with the limits imposed by the flow-based domains
+
+
+This vignette describes the second set of functionnalities : the post-processing of the simulation results.
+
+
+## 1 - Summary
+
+
 ```{r, eval=FALSE}
 
 # Set Antares study path and read the simulation results
 study <- "MyStuDy"
 opts <- antaresRead::setSimulationPath(study, 2)
-dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at"),
-links = c("be - de","be - fr","be - nl",
-"de - fr","de - nl", "at - de"), mcYears = 1:10,
-select = c("LOLD", "UNSP. ENRG",
-"DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
-opts = opts)
+dta <- antaresRead::readAntares(
+  areas = c("fr", "be", "de", "nl", "at"),
+  links = c("be - de","be - fr","be - nl",
+            "de - fr","de - nl", "at - de"), mcYears = 1:10,
+  select = c("LOLD", "UNSP. ENRG", 
+             "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
+  opts = opts)
 
 
 # Add to the results the time series of typical flow-based days
 dta <- addTypicalDayId(dta)
 
 
-# Apply the adequacy patch on the results
-dta_adq <- adqPatch(mcYears = "all", pre_filter = FALSE, strategic_reserve_be = NULL,
-strategic_reserve_de = NULL, opts = antaresRead::simOptions(),
-fb_opts = opts, select = NULL, keepOldColumns = TRUE)
 
 
 # Visualise the flow-based exchanges (position in the flow-based domains) 
 # Plot a domain and the matching output positions
 plotNetPositionFB(fb_opts = opts,
-data = dta, areaName = "cwe_at",
-dayType = 1, hour = c(0, 19),
-country1 = "BE", country2 = "FR")
+                  data = dta, areaName = "cwe_at",
+                  dayType = 1, hour = c(0, 19),
+                  country1 = "BE", country2 = "FR")
 
 # Run a shiny application to visualise the domains and matching output positions
 runAppPosition(dta)
@@ -67,7 +66,7 @@ runAppPosition(dta)
 
 # Add to the results a calculation of the net position of the countries within an area (by default, position in CWE)
 dta <- addNetPosition(data, opts = antaresRead::simOptions(), 
-inAreas = c("be",  "de", "fr", "nl", "at"), newName = "_CWEAt")
+                      inAreas = c("be",  "de", "fr", "nl", "at"), newName = "_CWEAt")
 
 
 ```
