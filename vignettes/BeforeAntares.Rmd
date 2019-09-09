@@ -30,7 +30,7 @@ fbAntares`` allows to model **flow-based** domains into adequacy studies using t
 - Visualisation of the net-positions of the countries of the CWE area along with the limits imposed by the flow-based domains
   
   
-This vignette describe the first set of functionnalities : the preparation of the inputs for the Antares study.
+This vignette describes the first set of functionnalities : the preparation of the inputs for the Antares study.
   
 ## 1 - Summary
   
@@ -101,14 +101,17 @@ One can also set the following optionnal arguments of the function :
 * ``hour`` : subset of hours to process
 * ``nbFaces`` : number of binding constraints in the final Antares model (by default : 75).
 * ``areaName``  The name of the area of your study, possible values are
-cwe_at (default), cwe and other. If you choose other, you have to modify the csv file
-of the package and use the examples to write how your area work.
+cwe_at (default), cwe and other. If you choose other, you have to modify the csv file of the package and use the examples to write how your area work.
+You can access to this file at the path "areaName/areaName.csv" in the package fbAntares. It contains four columns (area, links, country and antares) which are, for a given area (for example cwe_at), the links between the countries of this area (ex : at.de, be.fr...), the countries in this area (ex : AT, BE, FR...) and how those links are translated (ex : BE.FR|BE - FR, DE.FR|DE - FR, DE.NL|DE, BE.NL|BE, BE.DE|BE - DE,AT.DE|AT - BE) with the name of a link and the operation made to compute it.
+Rq : If you use the virtual flowbased area (param virtualFBarea = T), you don't have to change the areaName parameter.
 * ``fixFaces`` (data.table) If you want to have fixFaces in your modelized domains, the fixFaces can only be the maximum of import (func = "min") or maximum of export (func = "max")
 * ``hubDrop`` list of hubs in the ptdf, with the ones which should
 sustracted to the others as the names of the arrays which themself contain the ones which be sustracted
-* ``virtualFBarea`` logical, TRUE if you want to use the virtual links between area, ie if you use a virtual area named zz_flowbased, linked with all the real areas you have in your data (for example be, de, fr, nl, at) instead of using the real links (at - de, be - fr, be - nl...) which are used if you choose virtualFBarea = FALSE
+* ``virtualFBarea`` logical,
+- TRUE if you want to use the virtual links between area, ie if you use a virtual area named zz_flowbased, linked with all the real areas you have in your data (for example be, de, fr, nl, at).
+-FALSE if you use the real links (at - de, be - fr, be - nl...).
 
-And more, including tuning arguments for the optimization problem, see ?computeFB for more details.
+To learn more, including tuning arguments for the optimization problem, see ?computeFB for more details.
 
 
 The function creates a directory with the following files :
@@ -139,7 +142,28 @@ computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv",
 
 ### b - The using of the virtual area
 
-In order to get a better understanding of the flowbased, RTE chose to change the representation of the links between the flowbased areas. Instead of using the real links (at - de, be - nl, be - fr...), RTE chose to link all the areas to a virtual one named zz_flowbased. To create a study in this ne format, the only thing to do for the user of the package *fbAntares* is to put the argument virtualFBarea = TRUE. Then, the file weight.txt for the constraints is written with the virtual area. The use of all the other functions are unchanged, the user just needs to change the values of areas and links when he calls the package *antaresRead*.
+Two different representations of flow-based can be used in Antares simulations. 
+The historical one uses “real links” and translates the PTDF of the domain into a linear combination of exchanges. 
+For example, PTDF of France will apply on the exchanges between France and Belgium and the exchanges between France and Germany.
+An alternative representation consists in creating a virtual area named zz_flowbased to which all areas are connected. 
+In this case, this becomes the only link between each area and the other flow-based areas. It is a more pedagogic representation 
+because it illustrates perfectly the fact that France exchanges electricity with the entire flow-based area at once and there is 
+no differentiation between to exchanges with Belgium and those with Germany.
+
+To use this alternative modelling, set to TRUE the parameter virtualFBarea in the function computeFB. 
+The functions ``initFlowBased`` and the afterAntares funcitons will then adapt by themselves.
+
+
+```{r eval = FALSE}
+## Example of computeFB with cwe_at and virtual area
+computeFB(PTDF = system.file("/input/ptdf/ptdfraw.csv", package = "fbAntares"),
+          reports = FALSE, areaName = "cwe_at", 
+          hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
+          nbFaces = 75, dayType = 1,
+          fixFaces = data.table(func = "min", zone = "BE"),
+          virtualFBarea = TRUE)
+```
+
 
 
 ### c - Validation of domains results
@@ -166,13 +190,13 @@ DT::datatable(maxImportExport, options = list(scrollX = TRUE))
 
 The previous function - ``computeFB()`` - converts the typical flow-based days in a format suited for Antares.
 
-The next step consists in defining, for each day of each Monte-Carlo year, which typical flow-based day will be used to bound the exchanges within the CWE+ (or CWE) area. The function ``createFBTS()`` performs this task. Possible correlations between the flow-based shapes and external variables (e.g. load, wind power generation, solar generation) can be taken into account. Therefore, the function ``createFBTS()`` considers other inputs of the Antares study and the way they influence the occurences of the typical days.
+The next step consists in defining, for each day of each Monte-Carlo year, which typical flow-based day will be used to bound the exchanges within the CWE-AT (or CWE) area. The function ``createFBTS()`` performs this task. Possible correlations between the flow-based shapes and external variables (e.g. load, wind power generation, solar generation) can be taken into account. Therefore, the function ``createFBTS()`` considers several inputs.
 
 The main inputs of this function are :
 
 * ``probabilityMatrix`` : the probability matrix carry the information on the correlations between the typical days and external variables. They are calculated with the function ``getProbability()`` of the package ``fbClust``. The names of the columns of the probability matrix must correspond to inputs of the Antares study by respecting the following syntax ``area@variable`` (e.g. : ``fr@load``, ``de@solar``, ``be@wind``). If needed, the columns can be easily renamed with the function ``setNamesProbabilityMatrix()``.
 
-* ``multiplier`` : The probability matrix levels are usually computed on normalized data (e.g. load factor for RES generation). They can be rescale to the time series of the Antares study by using a multiplier.
+* ``multiplier`` : The probability matrix levels are usually computed on normalized data (e.g. load factor for RES generation). They can be rescale to the time series of the Antares study by using a multiplier. The multiplier is usually the installed capacity (in MW).
 
 * ``calendar`` and ``firstDay`` : defines the calendar, i.e. the the boundaries between the different seasons (winter, summer, interseason) and the week-end days. the ``firstDay`` can be automatically identified with the function ``identifyFirstDays()`` which will look for patterns in the load time series to identify which days are saturdays and sundays.
 
@@ -197,8 +221,7 @@ matProb <- setNamesProbabilityMatrix(probabilityMatrix,
                                      c("FR_load", "DE_wind", "DE_solar"),
                                      c("fr@load", "de@wind", "de@solar"))
 
-# set multipliers
-
+# set installed capacity for Wind (addition of onshore and offshore) and solar
 multiplier <- data.frame(variable = c("fr@load", "de@wind", "de@solar"),
                          coef = c(1, 71900, 61900))
 

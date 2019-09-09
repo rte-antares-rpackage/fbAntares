@@ -1,11 +1,14 @@
 #' @title Add a flow-based typical day id column
 #' 
-#' @description Add to an Antares output table a column indicating the id of the used flow-based typical day for each timestep.
-#' This information is read in the "user" directory file of the Antares study: it must be made sure that the data of the study is still
+#' @description Add to an Antares output table a column indicating the id of 
+#' the used flow-based typical day for each timestep.
+#' This information is read in the "user" directory file of the Antares study: 
+#' it must be made sure that the data of the study is still
 #' consistent with the output.
 #' 
 #' @param data \code{antaresdata} output data load by \link{readAntares}
-#' @param fb_opts \code{list} of simulation parameters returned by the function \link{setSimulationPath} or fb model 
+#' @param fb_opts \code{list} of simulation parameters returned by the function 
+#' \link{setSimulationPath} or fb model 
 #' localisation obtain with \link{setFlowbasedPath}. 
 #' The default value is indicated by \code{antaresRead::simOptions()}.
 #' 
@@ -13,18 +16,21 @@
 #' @examples
 #'
 #' \dontrun{
+#' # Change the study path for the path of a study you have on your computer
 #' study <- "../../Pour Julien/blop/MT_base_nucM2_2023"
 #' antaresRead::setSimulationPath(study, 17)
-#' data <- readAntares(mcYears = 1:2)
+#' data <- antaresRead::readAntares(mcYears = 1:2)
 #' data <- addTypicalDayId(data)
 #' 
 #' 
-#' data <- readAntares(areas = "all", links = "all", clusters = "all" ,mcYears = 1:2)
+#' data <- antaresRead::readAntares(areas = "all", links = "all", clusters = "all" ,mcYears = 1:2)
 #' data <- addTypicalDayId(data)
 #' 
 #' #' #### Example with the virtual area zz_flowbased
 #' ## If you gave virtualFBarea = TRUE in the function \link{computeFB},
 #' ## the areas and links are built with a virtual area on the center.
+#' 
+#' # Change the study path for the path of a study you have on your computer
 #' study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
 #'
 #' opts <- antaresRead::setSimulationPath(study, 5)

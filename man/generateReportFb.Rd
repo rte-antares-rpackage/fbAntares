@@ -14,7 +14,8 @@ generateReportFb(dayType, output_file = NULL, countries = list(c("BE",
 \item{output_file}{\code{character}, output directory of the html reports. 
 By default, the value is \code{NULL}, the reports will be written in the current directory.}
 
-\item{countries}{\code{list, character} a list of couples of countries to choose the axises for the projection
+\item{countries}{\code{list, character} a list of couples of countries 
+to choose the axises for the projection
 of the flowbased domains (ex : list(c("BE", "FR"), c("BE", "NL"))) or an array of countries
 (ex : c("FR", "NL", "AT")) to project the domains on all the countries combination 
 (here FR+NL, FR+AT and NL+AT)}

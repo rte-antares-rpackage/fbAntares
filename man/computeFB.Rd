@@ -2,7 +2,7 @@
 % Please edit documentation in R/computeFB.R
 \name{computeFB}
 \alias{computeFB}
-\title{Conversion of flow-based domains into an ANtares model with fixed PTDF}
+\title{Conversion of flow-based domains into an Antares model with fixed PTDF}
 \usage{
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
@@ -13,13 +13,15 @@ computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
   "FR", "AT")), fixFaces = NULL, virtualFBarea = F, seed = 123456)
 }
 \arguments{
-\item{PTDF}{\code{character}, path leading to the flow-based domains (PTDF description) list. 
+\item{PTDF}{\code{character}, path leading to the flow-based 
+domains (PTDF description) list. 
 By default, this leads to an example file (\code{"PTDF.csv"}, saved in the package).
  This must be a csv file containing the following columns (and column names): 
 \itemize{
  \item Id_day : numeric, name of each day. Default in example id_day between 1 and 12.
  \item Date : The date of the typical day 
- \item Period : numeric, hour of the day. Default in example period between 1 and 24 (1 is then between 00:00 and 01:00).
+ \item Period : numeric, hour of the day. Default in example period 
+ between 1 and 24 (1 is then between 00:00 and 01:00).
  \item ptdfBE : numeric, PTDF coefficient of Belgium.
  \item ptdfDE : numeric, PTDF coefficient of Germany. 
  \item ptdfFR : numeric, PTDF coefficient of France. 
@@ -31,11 +33,12 @@ By default, this leads to an example file (\code{"PTDF.csv"}, saved in the packa
  \item idDayType : numeric, name of each day. Default in example id_day between 1 and 12.
 }}
 
-\item{outputName}{\code{character}, path/name of the output directory. By default, the value is a created directory named 
+\item{outputName}{\code{character}, path/name of the output directory. 
+By default, the value is a created directory named 
 "antaresInput" in the current directory}
 
-\item{reports}{\code{boolean}, if TRUE, the function will write html reports (one per typical day). By default, the value is 
-TRUE.}
+\item{reports}{\code{boolean}, if TRUE, the function will write html reports 
+(one per typical day). By default, the value is TRUE.}
 
 \item{areaName}{\code{character} The name of the area of your study, possible values are
 cwe_at (default), cwe and other. If you choose other, you have to modify the csv file
@@ -43,9 +46,11 @@ of the package and use the examples to write how your area work.
 The actual csv file is in the folder areaName of the package if you want to
 modify it or understand how it is written.}
 
-\item{dayType}{\code{numeric}, by default, the value is All. (optional) Vector of id_days to compute.}
+\item{dayType}{\code{numeric}, by default, the value is All. 
+(optional) Vector of id_days to compute.}
 
-\item{hour}{\code{numeric}, by default, the value is All. (optional) vector of hours/periods to compute.}
+\item{hour}{\code{numeric}, by default, the value is All. 
+(optional) vector of hours/periods to compute.}
 
 \item{clusteringDayType}{\code{numeric}, by default, the value is All. (optional) 
 Typical days you want to choose for the faces selection.}
@@ -53,7 +58,8 @@ Typical days you want to choose for the faces selection.}
 \item{clusteringHours}{\code{numeric}, by default, the value is All. (optional) 
 Hours you want to choose for the faces selection.}
 
-\item{nbFaces}{\code{numeric}, standard shape parameters: number of sides to select. By default, the value is 75}
+\item{nbFaces}{\code{numeric}, standard shape parameters: 
+number of sides to select. By default, the value is 75}
 
 \item{verbose}{\code{numeric}, shows the logs in console. By default, the value is 1.
 \itemize{
@@ -62,21 +68,25 @@ Hours you want to choose for the faces selection.}
  \item 2 : Medium log
 }}
 
-\item{nbLines}{\code{numeric}, number of halflines drawn for the distance computation, default 100 000}
+\item{nbLines}{\code{numeric}, number of halflines drawn 
+for the distance computation, default 100 000}
 
-\item{maxiter}{\code{numeric}, maximum number of iteration on the optimization problem, default 15}
+\item{maxiter}{\code{numeric}, maximum number of iteration on 
+the optimization problem, default 15}
 
-\item{thresholdIndic}{\code{numeric}, minimum value of the validation indicator to stop, default 95
+\item{thresholdIndic}{\code{numeric}, minimum value of the validation 
+indicator to stop, default 95
 the optimization problem}
 
 \item{quad}{\code{logical}, quadratic problem or linear, default FALSE}
 
 \item{hubDrop}{\code{list}, list of hubs in the ptdf, with the ones which should
-sustracted to the others as the names of the arrays which themself contain the ones which
-be sustracted}
+sustracted to the others as the names of the arrays which themself 
+contain the ones which be sustracted}
 
-\item{fixFaces}{\code{data.table} data.table if you want to use fix faces for the creation
-of the flowbased models. If you want to do it, the data.table has the following form :
+\item{fixFaces}{\code{data.table} data.table if you want to use fix faces for 
+the creation of the flowbased models. If you want to do it, 
+the data.table has the following form :
 data.table(func = c("min", "min", "max", "min"), zone = c("BE", "FR", "DE", "DE")).
 func is the direction of the fix faces and zone is the area of this direction.
 If you give for example min and DE, there will be a fix face at the minimum import
@@ -88,11 +98,17 @@ default is FALSE}
 \item{seed}{\code{numeric}, value of the seed, default 123456}
 }
 \description{
-This function follows two steps: based on the list of flow-based domains given in input, it will calculate a standard shape
- (selection of sides, k-medoid method) and will then project the real domains on this standard shape. The projection is 
-computed using an optimisation algorithm aiming at minimising the volumetric error between the real domain and its projection.
- The function will then write in an output directory the standard shape (weights.txt), the projection result for each domain 
- (second_member.txt) and an RDS object storing information on the projection and the errors. Reports can be written represening the real and
+This function follows two steps: based on the list of flow-based domains 
+given in input, it will calculate a standard shape
+(selection of sides, CAH or kmeans method depending on the sizeof the input) 
+and will then project the real domains 
+on this standard shape. The projection is 
+computed using an optimisation algorithm aiming at minimising the 
+volumetric error between the real domain and its projection.
+The function will then write in an output directory the standard shape 
+(weights.txt), the projection result for each domain 
+(second_member.txt) and an RDS object storing information on the projection 
+and the errors. Reports can be written represening the real and
 modelled domains and the volumetric error between them.
 }
 \examples{
@@ -100,12 +116,18 @@ modelled domains and the volumetric error between them.
 # Compute models for all days and hours of a PTDF file, with no reports 
 # automatically generated at the same time
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
-reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT"))
+reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT")))
 
-# Example using more arguments
+# Example using more arguments like the fixFaces
 computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
 reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
 nbFaces = 75, dayType = 1, clusteringHours = c(7:10, 17:19), nbLines = 50000, 
 maxiter = 20, thresholdIndic = 95, fixFaces = data.table(func = "min", zone = "BE"))
+
+# Example with the virtualFBarea
+computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"), 
+reports = FALSE, areaName = "cwe_at", hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
+virtualFBarea = TRUE)
+
 }
 }

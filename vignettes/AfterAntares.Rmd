@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+
 ``fbAntares`` allows to model **flow-based** domains into adequacy studies using the software *Antares*, with the following main functionalities: 
 
 **1. Preparation of the input of an Antares study to include a modelling a flow-based in the CWE-AT area**
@@ -31,27 +32,25 @@ This vignette describes the second set of functionnalities : the post-processing
 
 ## 1 - Summary
 
+
 ```{r, eval=FALSE}
 
 # Set Antares study path and read the simulation results
 study <- "MyStuDy"
 opts <- antaresRead::setSimulationPath(study, 2)
-dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at"),
-                                links = c("be - de","be - fr","be - nl",
-                                          "de - fr","de - nl", "at - de"), mcYears = 1:10,
-                                select = c("LOLD", "UNSP. ENRG",
-                                           "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
-                                opts = opts)
+dta <- antaresRead::readAntares(
+  areas = c("fr", "be", "de", "nl", "at"),
+  links = c("be - de","be - fr","be - nl",
+            "de - fr","de - nl", "at - de"), mcYears = 1:10,
+  select = c("LOLD", "UNSP. ENRG", 
+             "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
+  opts = opts)
 
 
 # Add to the results the time series of typical flow-based days
 dta <- addTypicalDayId(dta)
 
 
-# Apply the adequacy patch on the results
-dta_adq <- adqPatch(mcYears = "all", pre_filter = FALSE, strategic_reserve_be = NULL,
-                    strategic_reserve_de = NULL, opts = antaresRead::simOptions(),
-                    fb_opts = opts, select = NULL, keepOldColumns = TRUE)
 
 
 # Visualise the flow-based exchanges (position in the flow-based domains) 
@@ -88,61 +87,38 @@ The function ``addTypicalDayId()`` adds to an Antares output table a column indi
 * ``fb_opts`` : flow-based model localisation, where the function will read the flow-based time-series to add to the results. It can be a flow-based model designed by ``setFlowbasedPath()``. By default, it will use the odel stored in the Antares study indicated by ``antaresRead::simOptions()``
 
 
-<!-- ## 3 - Application of the adequacy patch -->
-<!-- ## 3.1 - Why the adequacy patch? -->
-<!-- Although it is applied as a post-processing for Antares, the adequacy patch is in reality an integral part of the market coupling algorithm. -->
-
-<!-- This patch intervenes in case of unsupplied energy : the optimal situation will be the one reducing the maximum amount of unsupplied energy in the whole interconnected areas and this may lead to increasing the unsupplied energy in some areas (countries exporting while in loss of load situation for example). The aim of the patch is to move from the optimal situation at CWE perimeter to a solution splitting the effort in a « fair » way. -->
-
-<!-- This function is a post-processing of Antares results (optimisation algorithm), its aim is to re-compute the net positions (exports - imports) in the CWE area while :  -->
-
-<!-- * Respecting the flow-based domain limits -->
-<!-- * Having for each country imports proportionnal to the amount of unsupplied energy without exchanges -->
-
-<!-- Example : Area "fr" is exporting while having unsupplied energy. After the post-processing, it is exporting only the volume it can to reduce area "be" 's unsupplied energy without endangering its own safety.  -->
-
-<!-- <img src="ex_adq_patch.png" alt="Drawing" style="width: 100%; height: 100%"> -->
-
-
-<!-- ## 3.2 - Application of the adequacy patch -->
-<!-- ```{r, eval=FALSE} -->
-<!-- opts <- antaresRead::setSimulationPath("MyStuDy", 2) -->
-<!-- dta <- adqPatch(mcYears = "all", pre_filter = FALSE, strategic_reserve_be = NULL, -->
-<!--                 strategic_reserve_de = NULL, opts = antaresRead::simOptions(), -->
-<!--                 fb_opts = opts, select = NULL, keepOldColumns = TRUE) -->
-<!-- ## or -->
-<!-- dta <- adqPatch(fb_opts = opts) -->
-<!-- ``` -->
-
-<!-- The ``adqPatch()`` function applies a post-processing on an Antares study output. It loads the results of the study indicated by ``antaresRead::setSimulationPath()`` and selects the times with unsupplied energy to apply the patch optimisation algorithm described above. -->
-<!-- By default, the function returns the results for all the MC years : -->
-
-<!-- * areas be, de, fr and nl : BALANCE, LOLD, UNSP. ENRG, DTG MRG -->
-<!-- * links be - de, be - fr, be - nl, de - fr, de - nl :  FLOW LIN. -->
-
-<!-- It uses the following parameters : -->
-
-<!-- * ``mcYears`` : selection of MC years to apply the patch on. By default, the value is "all". -->
-<!-- * ``pre_filter`` : boolean,  if TRUE, the function selects (by reading annual results) the mcYears during which there is at least one hour of loss of load before applying the adequacy patch, the other years are not loaded and will not appear in the results of the function. By default, the value is FALSE. -->
-<!-- * ``strategic_reserve_be`` : name of the area representing the strategic reserve of be, by default NULL. -->
-<!-- * ``strategic_reserve_de`` : name of the area representing the strategic reserve of de, by default NULL. -->
-<!-- * ``select`` : names of additionnal output colums to have in the results (other than the ones quoted above). These columns are directly loaded from Antares, unchanged. -->
-<!-- * ``opts`` : Antares study, indicated by the function ``antaresRead::setSimulationPath()`` -->
-<!-- * ``fb_opts`` : simulation parameters returned by the function ``setSimulationPath()`` or flow-based model path obtained with the function ``setFlowbasedPath()``. By default, the value is indicated by ``antaresRead::simOptions()`` -->
-<!-- * ``keepOldColumns`` : boolean, if TRUE, the initial columns modified by the adequacy patch are also displayed after the post-processing. By default, the value is TRUE. -->
-
-
 
 ## 4 - Visualisation of the flow-based exchanges positions
 Preliminary step: load the simulation results.
 
+### a - The case with the old  format
+
 ```{r, eval=FALSE}
 opts <- antaresRead::setSimulationPath("MyStuDy", 2)
-dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl"),
-                                links = c("be - de","be - fr","be - nl","de - fr","de - nl"), 
-                                mcYears = 1:10,
-                                select = c("LOLD", "UNSP. ENRG",
-                                           "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."))
+dta <- antaresRead::readAntares(
+  areas = c("fr", "be", "de", "nl"),
+  links = c("be - de","be - fr","be - nl","de - fr","de - nl"), 
+  mcYears = 1:10,
+  select = c("LOLD", "UNSP. ENRG",
+             "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."))
+```
+
+
+### b - The case with the virtual area
+
+If you use the virtual area, the only differences are in the areas and the links. For the area you have to add a new area, *zz_flowbased* and for the links, you have to change them and them in links from the real areas to the virtual one.
+
+```{r, eval=FALSE}
+optsVirtual <- antaresRead::setSimulationPath("MyStuDy", 3)
+
+dtaVirtual <- antaresRead::readAntares(
+  areas = c("fr", "be", "de", "nl", "at", "zz_flowbased"),
+  links = c("be - zz_flowbased",
+            "fr - zz_flowbased", "nl - zz_flowbased",
+            "de - zz_flowbased", "at - zz_flowbased"), mcYears = 1:2,
+  select = c("LOLD", "UNSP. ENRG",
+             "DTG MRG", "UNSP. ENRG", "BALANCE", "FLOW LIN."),
+  opts = opts)
 ```
 
 ## 4.1 - Plot the net positions in CWE calculated by Antares and the used flow-based domains
@@ -226,6 +202,12 @@ plotNetPositionFB(fb_opts = opts,
                   dayType = "all", hour = c(19),
                   country1 = "BE", country2 = "FR", filteringEmptyDomains = TRUE)
 
+## or with the virtual fb area
+plotNetPositionFB(fb_opts = optsVirtual,
+                  data = dtaVirtual,
+                  dayType = "all", hour = c(19),
+                  country1 = "BE", country2 = "FR", filteringEmptyDomains = TRUE)
+
 ```
 <img src="GraphAfterAntaresSim3.png" alt="Drawing" style="width: 50%; height: 50%">
 
@@ -260,48 +242,4 @@ The function ``addNetPosition()`` adds to an Antares output table a column calcu
 * ``data`` :  Antares output table (loaded by the function ``antaresRead::readAntares()``), the function will add a column to this table
 * ``opts`` : simulation parameters returned by the function ``setSimulationPath()``: this represents the directory of the Antares study. The default path is indicated by ``antaresRead::simOptions()``.
 * ``inAreas`` :  lists of areas belonging to the perimeter, whose exchanges are going to be taken into account in the balance calculation. All links connecting two areas in this list are taken into account, the links connected to only one area (or none) are ignored. By default, the list is c("be", "de", "fr", "nl"), the calculation is carried out on the CWE perimeter.
-* ``newName`` : suffix added to the calculated column name. By default, it is "_CWE".
-
-
-<!-- ## 6 - Post-processing : adequacy patch in h5 format -->
-<!-- The funtion ``adqH5()`` enables to apply the adequacy patch on a simulation in h5 format and returns the results in the same format. The plot functions and application can be used on an h5 file. -->
-
-<!-- ```{r, eval=FALSE} -->
-<!-- ## Select the Antares simulation -->
-<!-- # Select the output in a classic format -->
-<!-- opts <- antaresRead::setSimulationPath("MyStuDy",2) -->
-<!-- # Write the study in h5 format -->
-<!-- antaresRead::writeAntaresH5() -->
-<!-- # Select the simulation now in an h5 file -->
-<!-- opts <- antaresRead::setSimulationPath("MyNewStudy",1) -->
-
-
-<!-- ## Select the flow-based model to use. The function setFlowbasedPath can also be used -->
-<!-- fb_opts = antaresRead::setSimulationPath("MyOldStudy", 2) -->
-
-
-<!-- ## Apply the adequacy patch -->
-<!-- adqH5(opts = opts, fb_opts = fb_opts, -->
-<!--       strategic_reserve_be = NULL, strategic_reserve_de = NULL) -->
-
-
-<!-- ## Set alias for an easy read of the file afterwards -->
-<!-- setAlias("adqPatch", "Alias for adqPatch", c("LOLD_ADQPatch", -->
-<!--                                              "UNSP. ENRG_ADQPatch", "DTG MRG_ADQPatch", -->
-<!--                                              "UNSP. ENRG_ADQPatch", "BALANCE_ADQPatch", -->
-<!--                                              "FLOW LIN._ADQPatch", -->
-<!--                                              "areas", "links")) -->
-<!-- ## Read the results of the patch with alias -->
-<!-- readAntares(select = "adqPatch", opts = opts, mcYears = 1) -->
-
-<!-- ``` -->
-
-<!-- The function has only a few parameters : -->
-
-<!-- * ``opts`` : the designation of the Antares simulation, it must indicate an output in h5 format. These parameters are returned by the function ``setSimulationPath()``. The default path is indicated by ``antaresRead::simOptions()``. -->
-<!-- * ``fb_opts`` : the flow-based model to use. Simulation parameters returned by the function setSimulationPath or flow-based model path obtained with the function ``setFlowbasedPath()``. By default, the value is indicated by ``antaresRead::simOptions()`` -->
-<!-- * ``strategic_reserve_be`` : name of the area representing the strategic reserve of be, by default NULL. -->
-<!-- * ``strategic_reserve_de`` : name of the area representing the strategic reserve of de, by default NULL. -->
-
-<!-- In the h5 file, all the columns are automatically kept, including the columns of results before adequacy patch (parameter keepOldColumn in the function ``adqPatch()`` to TRUE). It is furthermost impossible to select only a few MC years to apply the patch on, or to use the pre-filter parameter.  -->
-
+* ``newName`` : suffix added to the calculated column name. By default, it is "_CWEAt".

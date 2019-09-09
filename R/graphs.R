@@ -5,8 +5,8 @@
 #' @param ctry2 \code{character}, country in Y
 #' @param hour \code{numeric}, hour default is NULL, if NULL the function takes the first
 #' line of flowbased, have to be of length 1
-#' @param dayType \code{numeric}, dayType default is NULL, if NULL the function takes the first
-#' line of flowbased, have to be of length 1
+#' @param dayType \code{numeric}, dayType default is NULL, if NULL the function 
+#' takes the first line of flowbased, have to be of length 1
 #' @param xlim \code{numeric}, limits of x-axis
 #' @param ylim \code{numeric}, limits of y-axis
 #' @param width \code{character}, for rAmCharts only. Default to "420px" 
@@ -86,7 +86,8 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
   }
   
   out <- cbind.data.frame(dtModel, dtReal)
-  colnames(out) <- c(paste0("Model", ctry1), paste0("Model", ctry2),  paste0("Real", ctry1),  paste0("Real", ctry2))
+  colnames(out) <- c(paste0("Model", ctry1), paste0("Model", ctry2), 
+                     paste0("Real", ctry1),  paste0("Real", ctry2))
   
   out <- round(out, 2)
   
@@ -109,7 +110,8 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
              lineAlpha = 1, bullet = "bubble", bulletSize = 4, lineColor = "#0000FF",
              lineThickness = 1,  dashLength = 7),
     setChartCursor(),
-    addValueAxes(title = paste(ctry1, "(MW)"), position = "bottom", minimum = xlim[1], maximum = xlim[2]),
+    addValueAxes(title = paste(ctry1, "(MW)"), position = "bottom", minimum = xlim[1],
+                 maximum = xlim[2]),
     addValueAxes(title =  paste(ctry2, "(MW)"), minimum = ylim[1], maximum = ylim[2]),
     setExport(enabled = export),
     setLegend(enabled = TRUE),
@@ -146,13 +148,16 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 #' @title Plot typical flow-based domains
 #' 
 #' @description 
-#' This function enables to plot one or several typical flow-based domains, in 2 dimensions (the axis being 2 countries).
+#' This function enables to plot one or several typical flow-based domains, 
+#' in 2 dimensions (the axis being 2 countries).
 #'
-#' @param hour \code{numeric}, hour(s) (can be from 0 to 23 or from 1 to 24 depending on the data of the flow-based model)
+#' @param hour \code{numeric}, hour(s) (can be from 0 to 23 or from 1 to 24 
+#' depending on the data of the flow-based model)
 #' @param dayType \code{numeric}, numerical id of the typical day(s)
 #' @param country1 \code{character}, name of the country (axis X)
 #' @param country2 \code{character}, name of the country (axis Y)
-#' @param fb_opts \code{list} of flowbased parameters returned by the function \link{setFlowbasedPath} : directory of the flow-based
+#' @param fb_opts \code{list} of flowbased parameters returned by the function 
+#' \link{setFlowbasedPath} : directory of the flow-based
 #' model. By default, the value is indicated by \code{fbAntares::fbOptions()}
 #' @param areaName \code{character} The name of the area of your study, possible values are
 #' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
@@ -164,7 +169,8 @@ graphFlowBased2D <- function(flowbased, ctry1, ctry2, hour = NULL, dayType = NUL
 #' @examples
 #'
 #' \dontrun{
-#'  fb_opts <- setFlowbasedPath(path = system.file("input/model/antaresInput/", package = "fbAntares"))
+#'  fb_opts <- setFlowbasedPath(path = system.file("input/model/antaresInput/", 
+#'  package = "fbAntares"))
 #'  plotFB(dayType = 1, hour = 1, country1 = "FR", country2 = "NL", 
 #'  fb_opts = fb_opts, areaName = "cwe_at")
 #'  plotFB(dayType = 1, hour = 1:4,country1 = "FR",country2 = "NL", 
@@ -252,7 +258,8 @@ plotFB <- function(dayType, hour, country1, country2,
 #' indicated by \code{fbAntares::fbOptions()}
 #' @param output_file \code{character}, output directory of the html reports. 
 #' By default, the value is \code{NULL}, the reports will be written in the current directory.
-#' @param countries \code{list, character} a list of couples of countries to choose the axises for the projection
+#' @param countries \code{list, character} a list of couples of countries 
+#' to choose the axises for the projection
 #' of the flowbased domains (ex : list(c("BE", "FR"), c("BE", "NL"))) or an array of countries
 #' (ex : c("FR", "NL", "AT")) to project the domains on all the countries combination 
 #' (here FR+NL, FR+AT and NL+AT)
@@ -318,16 +325,20 @@ generateReportFb <- function(
 #' @title Run a shiny application to visualize the real and modelled flow-based domains
 #' 
 #' @description 
-#' Run a shiny application displaying the results of the conversion of real domains into Antares models. It will display for
-#' each typical day and each hour the volumetric errors of conversion (inf_error: forgotten points in the 
-#' model, sup_error: modelled points missing in the real domain) and dynamic plots of the real and modelled domains. Html reports
+#' Run a shiny application displaying the results of the conversion of real 
+#' domains into Antares models. It will display for
+#' each typical day and each hour the volumetric errors of conversion 
+#' (inf_error: forgotten points in the 
+#' model, sup_error: modelled points missing in the real domain) and 
+#' dynamic plots of the real and modelled domains. Html reports
 #' for each day can also be exported.
 #'
 #' 
 #' @param fb_opts \code{list} of flow-based parameters returned by the function 
 #' \link{setFlowbasedPath}: directory of the flow-based model to study.
 #' By default, the value is indicated by \code{fbAntares::fbOptions()}
-#' @param countries \code{list, character} a list of couples of countries to choose the axises for the projection
+#' @param countries \code{list, character} a list of couples of countries to 
+#' choose the axises for the projection
 #' of the flowbased domains (ex : list(c("BE", "FR"), c("BE", "NL"))) or an array of countries
 #' (ex : c("FR", "NL", "AT")) to project the domains on all the countries combination 
 #' (here FR+NL, FR+AT and NL+AT)
@@ -361,7 +372,8 @@ runAppError <- function(
 }
 
 
-#' @title Run a shiny application to visualise the flow-based typical domains and the Net Positions reached within 
+#' @title Run a shiny application to visualise the flow-based typical 
+#' domains and the Net Positions reached within 
 #' in an Antares simulation
 #' 
 #' @description
@@ -379,7 +391,8 @@ runAppError <- function(
 #' It can be filtered (see examples).
 #' @param fb_opts \code{list} of simulation parameters returned by the function
 #'   \link{setSimulationPath} or flow-based model directory obtained with
-#'   \link{setFlowbasedPath}. By default, the value will be indicated by \code{antaresRead::simOptions()}
+#'   \link{setFlowbasedPath}. By default, the value will be indicated by 
+#'   \code{antaresRead::simOptions()}
 #' @param country_list \code{character} Names of the countries used in the study
 #' @param areaName \code{character} The name of the area of your study, possible values are
 #' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
@@ -388,7 +401,9 @@ runAppError <- function(
 #'
 #' \dontrun{
 #' ## Select a study and import the data
+#' # Change the study path for the path of a study you have on your computer
 #' study <- "../../Pour Julien/blop/MT_base_nucM2_2023"
+#' 
 #' opts <- antaresRead::setSimulationPath(study, 18)
 #' dta <- antaresRead::readAntares(areas = c("fr", "be", "de", "nl", "at"),
 #'          links = c("be - de","be - fr","be - nl","de - fr","de - nl", "at - de"), 
@@ -445,47 +460,66 @@ runAppPosition <- function(dta, fb_opts = antaresRead::simOptions(),
 }
 
 
-#' @title Plot a flow-based typical domain and the Net Positions reached within in an Antares simulation
+#' @title Plot a flow-based typical domain and the Net Positions reached 
+#' within in an Antares simulation
 #' 
 #' @description 
-#' This function is used after running an Antares simulation to visualize how the domains have been used by the optimizer to
-#' fix the exchanges in the CWE area. The user chooses one (or several) domain (typical day + hour) and the function will then
-#' filter the given Antares output data to only keep the times when this domain has been used and calculate the Net Position, 
-#' inside the CWE area, of the 2 countries chosen as axis. A plot gathers then the domain(s) and the points representing the 
-#' Net Positions in the same color. The user can choose whether to plot Net Positions before and/or after applying the adequacy 
+#' This function is used after running an Antares simulation to visualize 
+#' how the domains have been used by the optimizer to
+#' fix the exchanges in the CWE area. The user chooses one (or several) 
+#' domain (typical day + hour) and the function will then
+#' filter the given Antares output data to only keep the times when this 
+#' domain has been used and calculate the Net Position, 
+#' inside the CWE area, of the 2 countries chosen as axis. A plot gathers 
+#' then the domain(s) and the points representing the 
+#' Net Positions in the same color. The user can choose whether to plot 
+#' Net Positions before and/or after applying the adequacy 
 #' patch.
 #' 
 #' @details 
-#' The Antares output data must respect the \code{antaresDataList} format (imported with \link{readAntares}). But it can be
-#' filtered (see examples) to only keep days presenting unsupplied energy or a specific timeline.
-#' In that case, choose the value \code{'all'} for the parameters \code{dayType} and/or \code{hour} and set the parameter
-#' \code{filteringEmptyDomains} as TRUE. The function will then filter by itself the domains which are not used.
+#' The Antares output data must respect the \code{antaresDataList} 
+#' format (imported with \link{readAntares}). But it can be
+#' filtered (see examples) to only keep days presenting unsupplied 
+#' energy or a specific timeline.
+#' In that case, choose the value \code{'all'} for the parameters 
+#' \code{dayType} and/or \code{hour} and set the parameter
+#' \code{filteringEmptyDomains} as TRUE. The function will then filter 
+#' by itself the domains which are not used.
 #' 
 #'
 #' @param fb_opts \code{list} of simulation parameters returned by the function
 #'   \link{setSimulationPath} or flow-based model directory obtained with
-#'   \link{setFlowbasedPath}. By default, the value will be indicated by \code{antaresRead::simOptions()}
-#' @param data \code{antaresDataList} Antares output data, imported with \link{readAntares}. It can be a filtered (time or loss
+#'   \link{setFlowbasedPath}. By default, the value will be indicated by 
+#'   \code{antaresRead::simOptions()}
+#' @param data \code{antaresDataList} Antares output data, imported with 
+#' \link{readAntares}. It can be a filtered (time or loss
 #' of load) antaresDataList.
-#' @param dayType \code{numeric}: typical day to plot. The value can also be 'all', for example if the \code{data} has been 
+#' @param dayType \code{numeric}: typical day to plot. The value can also 
+#' be 'all', for example if the \code{data} has been 
 #' filtered.
-#' @param hour \code{numeric} : hour to plot(format : 0:23, in accordance with Antares output). The value can also be 'all'.
+#' @param hour \code{numeric} : hour to plot(format : 0:23, in accordance 
+#' with Antares output). The value can also be 'all'.
 #' @param country1 \code{character} : first country, axis X
 #' @param country2 \code{character} : second country, axis Y
 #' @param areaName \code{character} The name of the area of your study, possible values are
 #' cwe_at (default), cwe and other. If you choose other, you have to give a csv file
 #' which explains how your area work.
-#' @param filteringEmptyDomains \code{boolean}, if TRUE, the function will only plot the domains for which it can find values
-#' in \code{data} in accordance with \code{dayType} and \code{hour}. By default, it is FALSE.
-#' @param nbMaxPt \code{numeric} : maximum number of points plotted on the graph. It can be increased (which increases computation
+#' @param filteringEmptyDomains \code{boolean}, if TRUE, the function 
+#' will only plot the domains for which it can find values
+#' in \code{data} in accordance with \code{dayType} and \code{hour}. 
+#' By default, it is FALSE.
+#' @param nbMaxPt \code{numeric} : maximum number of points plotted on 
+#' the graph. It can be increased (which increases computation
 #' time). By default, the value is 10000.
-#' @param palette \code{character} color range, by default the palette is "rainbow". Are vailable : 
+#' @param palette \code{character} color range, by default the palette is 
+#' "rainbow". Are vailable : 
 #' "cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow".
 #' @param xlim \code{numeric}, limits of x-axis
 #' @param ylim \code{numeric}, limits of y-axis
 #' @examples
 #' \dontrun{
-#' # Choose an ANtares study and import its output
+#' # Choose an Antares study and import its output
+#' # Change the study path for the path of a study you have on your computer
 #' study <- "../../Pour Julien/blop/MT_base_nucM2_2023"
 #'
 #' opts <- antaresRead::setSimulationPath(study, 17)
@@ -551,6 +585,8 @@ runAppPosition <- function(dta, fb_opts = antaresRead::simOptions(),
 #' #### Example with the virtual area zz_flowbased
 #' ## If you gave virtualFBarea = TRUE in the function \link{computeFB},
 #' ## the areas and links are built with a virtual area on the center.
+#' 
+#' # Change the study path for the path of a study you have on your computer
 #' study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
 #'
 #' opts <- antaresRead::setSimulationPath(study, 5)
@@ -582,7 +618,8 @@ plotNetPositionFB <- function(data, dayType,
   # browser()
   
   if(!palette[1]%in%c("cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow")){
-    stop('Palette must be in : "cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow"')
+    stop(paste('Palette must be in : "cm.colors", "topo.colors", "terrain.colors"', 
+               '"heat.colors", "rainbow"'))
   }
   
   
@@ -632,7 +669,8 @@ plotNetPositionFB <- function(data, dayType,
   foldPath <- .mergeFlowBasedPath(fb_opts)
   secondM <- fread(paste0(foldPath, "second_member.txt"))
   if(!file.exists(paste0(foldPath, "scenario.txt"))){
-    stop(paste0("The file scenario.txt is missing. Please either: add it to your flow-based model directory and use setFlowBasedPath(path = 'pathToDirectory') or
+    stop(paste0("The file scenario.txt is missing. Please either: add it to your", 
+    "flow-based model directory and use setFlowBasedPath(path = 'pathToDirectory') or
                 use setFlowBasedPath(path = 'pathToAntaresStudy/user/flowbased')"))
   }
   scenario <- fread(paste0(foldPath, "scenario.txt"))
@@ -720,7 +758,8 @@ plotNetPositionFB <- function(data, dayType,
   if(nbpt > nbMaxPt){
     stop(paste0("You try to draw ", nbpt, " points but you can't draw more than ", 
                 nbMaxPt, " points. You can change this limit with nbMaxPt argument", 
-                "but be carefull, your graph can be impossible to draw if you have soo much points."))
+                "but be carefull, your graph can be impossible to draw" 
+                ,"if you have soo much points."))
   }
   
   
@@ -975,7 +1014,8 @@ plotNetPositionFB <- function(data, dayType,
     stop("fb_opts must be obtain with setSimulationPath or setFlowbasedPath function")
   }
   if(!file.exists(paste0(foldPath, "second_member.txt"))){
-    stop("Impossible to found second_member.txt file, you can specify fb_opts with setSimulationPath or setFlowbasedPath function")
+    stop(paste("Impossible to found second_member.txt file, you can specify", 
+               "fb_opts with setSimulationPath or setFlowbasedPath function"))
   }
   
   foldPath

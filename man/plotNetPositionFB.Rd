@@ -2,7 +2,8 @@
 % Please edit documentation in R/graphs.R
 \name{plotNetPositionFB}
 \alias{plotNetPositionFB}
-\title{Plot a flow-based typical domain and the Net Positions reached within in an Antares simulation}
+\title{Plot a flow-based typical domain and the Net Positions reached 
+within in an Antares simulation}
 \usage{
 plotNetPositionFB(data, dayType, hour, country1, country2,
   areaName = "cwe_at", fb_opts = antaresRead::simOptions(),
@@ -11,13 +12,16 @@ plotNetPositionFB(data, dayType, hour, country1, country2,
   12000))
 }
 \arguments{
-\item{data}{\code{antaresDataList} Antares output data, imported with \link{readAntares}. It can be a filtered (time or loss
+\item{data}{\code{antaresDataList} Antares output data, imported with 
+\link{readAntares}. It can be a filtered (time or loss
 of load) antaresDataList.}
 
-\item{dayType}{\code{numeric}: typical day to plot. The value can also be 'all', for example if the \code{data} has been 
+\item{dayType}{\code{numeric}: typical day to plot. The value can also 
+be 'all', for example if the \code{data} has been 
 filtered.}
 
-\item{hour}{\code{numeric} : hour to plot(format : 0:23, in accordance with Antares output). The value can also be 'all'.}
+\item{hour}{\code{numeric} : hour to plot(format : 0:23, in accordance 
+with Antares output). The value can also be 'all'.}
 
 \item{country1}{\code{character} : first country, axis X}
 
@@ -29,15 +33,20 @@ which explains how your area work.}
 
 \item{fb_opts}{\code{list} of simulation parameters returned by the function
 \link{setSimulationPath} or flow-based model directory obtained with
-\link{setFlowbasedPath}. By default, the value will be indicated by \code{antaresRead::simOptions()}}
+\link{setFlowbasedPath}. By default, the value will be indicated by 
+\code{antaresRead::simOptions()}}
 
-\item{filteringEmptyDomains}{\code{boolean}, if TRUE, the function will only plot the domains for which it can find values
-in \code{data} in accordance with \code{dayType} and \code{hour}. By default, it is FALSE.}
+\item{filteringEmptyDomains}{\code{boolean}, if TRUE, the function 
+will only plot the domains for which it can find values
+in \code{data} in accordance with \code{dayType} and \code{hour}. 
+By default, it is FALSE.}
 
-\item{nbMaxPt}{\code{numeric} : maximum number of points plotted on the graph. It can be increased (which increases computation
+\item{nbMaxPt}{\code{numeric} : maximum number of points plotted on 
+the graph. It can be increased (which increases computation
 time). By default, the value is 10000.}
 
-\item{palette}{\code{character} color range, by default the palette is "rainbow". Are vailable : 
+\item{palette}{\code{character} color range, by default the palette is 
+"rainbow". Are vailable : 
 "cm.colors", "topo.colors", "terrain.colors", "heat.colors", "rainbow".}
 
 \item{xlim}{\code{numeric}, limits of x-axis}
@@ -45,22 +54,32 @@ time). By default, the value is 10000.}
 \item{ylim}{\code{numeric}, limits of y-axis}
 }
 \description{
-This function is used after running an Antares simulation to visualize how the domains have been used by the optimizer to
-fix the exchanges in the CWE area. The user chooses one (or several) domain (typical day + hour) and the function will then
-filter the given Antares output data to only keep the times when this domain has been used and calculate the Net Position, 
-inside the CWE area, of the 2 countries chosen as axis. A plot gathers then the domain(s) and the points representing the 
-Net Positions in the same color. The user can choose whether to plot Net Positions before and/or after applying the adequacy 
+This function is used after running an Antares simulation to visualize 
+how the domains have been used by the optimizer to
+fix the exchanges in the CWE area. The user chooses one (or several) 
+domain (typical day + hour) and the function will then
+filter the given Antares output data to only keep the times when this 
+domain has been used and calculate the Net Position, 
+inside the CWE area, of the 2 countries chosen as axis. A plot gathers 
+then the domain(s) and the points representing the 
+Net Positions in the same color. The user can choose whether to plot 
+Net Positions before and/or after applying the adequacy 
 patch.
 }
 \details{
-The Antares output data must respect the \code{antaresDataList} format (imported with \link{readAntares}). But it can be
-filtered (see examples) to only keep days presenting unsupplied energy or a specific timeline.
-In that case, choose the value \code{'all'} for the parameters \code{dayType} and/or \code{hour} and set the parameter
-\code{filteringEmptyDomains} as TRUE. The function will then filter by itself the domains which are not used.
+The Antares output data must respect the \code{antaresDataList} 
+format (imported with \link{readAntares}). But it can be
+filtered (see examples) to only keep days presenting unsupplied 
+energy or a specific timeline.
+In that case, choose the value \code{'all'} for the parameters 
+\code{dayType} and/or \code{hour} and set the parameter
+\code{filteringEmptyDomains} as TRUE. The function will then filter 
+by itself the domains which are not used.
 }
 \examples{
 \dontrun{
-# Choose an ANtares study and import its output
+# Choose an Antares study and import its output
+# Change the study path for the path of a study you have on your computer
 study <- "../../Pour Julien/blop/MT_base_nucM2_2023"
 
 opts <- antaresRead::setSimulationPath(study, 17)
@@ -126,6 +145,8 @@ plotNetPositionFB(fb_opts = opts,
 #### Example with the virtual area zz_flowbased
 ## If you gave virtualFBarea = TRUE in the function \\link{computeFB},
 ## the areas and links are built with a virtual area on the center.
+
+# Change the study path for the path of a study you have on your computer
 study <- "../Etude Antares/BP19_costs18_FB18_2023Virtual/"
 
 opts <- antaresRead::setSimulationPath(study, 5)

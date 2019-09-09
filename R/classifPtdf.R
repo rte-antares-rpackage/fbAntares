@@ -9,10 +9,11 @@
 #' @importFrom utils read.table
 #' @noRd
 #' 
-giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf, 
+giveBClassif <- function(PTDF, nbClust = 75, fixFaces, col_ptdf, 
                          clusteringDayType, clusteringHours)
 {
   addFixFaces <- zone <- Ind <- NULL
+  # browser()
   # select only the hours and idDayType you want to use to obtain the
   # final faces
   if(length(clusteringDayType) == 1) {
@@ -64,10 +65,13 @@ giveBClassif <- function(PTDF, nbClust = 36, fixFaces, col_ptdf,
     centers <- rbindlist(list(centers, rbindlist(lapply(1:nrow(fixFaces), function(X) {
       # browser()
       # which area has the fix face
-      ptdfnotnull <- col_ptdf[grepl(fixFaces[X, zone], col_ptdf)]
-      ptdfnull <- col_ptdf[!grepl(fixFaces[X, zone], col_ptdf)]
+      # ptdfnotnull <- col_ptdf[grepl(fixFaces[X, zone], col_ptdf)]
+      # ptdfnull <- col_ptdf[!grepl(fixFaces[X, zone], col_ptdf)]
+      ptdfnotnull <- col_ptdf[
+        which(gsub("ptdf", "", col_ptdf) %in% fixFaces[X, zone])]
+      ptdfnull <- col_ptdf[!(col_ptdf %in% ptdfnotnull)]
       func <- fixFaces[X, func]
-      # is it max import or export
+      # is it max import or export if import, func = "min", if export, func = "max"
       valfunc <- ifelse(func == "min", -1, 1)
       
       dt <- read.table(text = "", col.names = c(ptdfnotnull, ptdfnull))

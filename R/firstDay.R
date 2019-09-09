@@ -1,21 +1,27 @@
 #' @title Identify the type of the first day of a study
 #' 
 #' @description 
-#' This function identifies the nature of the first day of a study, by reading the input load data of the study designated by
-#'  \code{opts} (calculation of the mean profile of each day to identify the weekend). The type of first day is represented
+#' This function identifies the nature of the first day of a study, by 
+#' reading the input load data of the study designated by
+#' \code{opts} (calculation of the mean profile of each day to identify the weekend). 
+#' The type of first day is represented
 #'  by a number : 1 = Monday, 2 = Tuesday, ..., 7 = Sunday.
 #'
-#' @param opts \code{list} of simulation parameters returned by the function \link{setSimulationPath} : path of the Antares study. 
+#' @param opts \code{list} of simulation parameters returned by the function 
+#' \link{setSimulationPath} : path of the Antares study. 
 #' By default, the value is indicated by \code{antaresRead::simOptions()}.
-#' @param firstArea \code{character} name of the area(s) to use to calculate the type of first day. By default, 
-#' France (\code{"fr"}) is chosen.
-#' @param secondArea \code{character} name of additional area(s) to use to check the first day. By default, the value is 
-#' \code{c("fr", "de", "be", "nl")} (France, Germany, Belgium, the Netherlands). It can be \code{NULL} but the first day will be
+#' @param firstArea \code{character} name of the area(s) to use to calculate 
+#' the type of first day. By default, France (\code{"fr"}) is chosen.
+#' @param secondArea \code{character} name of additional area(s) to use to check 
+#' the first day. By default, the value is
+#' \code{c("fr", "de", "be", "nl")} (France, Germany, Belgium, the Netherlands). 
+#' It can be \code{NULL} but the first day will be
 #' determined with less certainty.
 #'
 #' @examples
 #' \dontrun{
 #' # Identification of the first day of an Antares study where areas fr, be, de, nl exist
+#' # Change the study path for the path of a study you have on your computer
 #' opts <- setSimulationPath("pathToAntaresStudy")
 #' identifyFirstDay(opts)
 #' }
@@ -96,7 +102,8 @@ identifyFirstDay <- function(opts, firstArea = "fr", secondArea = c("fr", "de", 
 .giveMean7 <- function(area, opts)
 {
   mod7 <- value <- NULL
-  LOAD <- antaresRead::readInputTS(load = area, timeStep = "daily", opts = opts, showProgress = FALSE)
+  LOAD <- suppressWarnings(antaresRead::readInputTS(
+    load = area, timeStep = "daily", opts = opts, showProgress = FALSE))
   if(nrow(LOAD) == 0)stop(paste0("No data found for ", paste0(area, collapse = ";")))
   outTS <- dcast(LOAD, time~area+tsId, value.var = "load")
   meanByDay <- data.table(date = outTS$time, value =  rowMeans(outTS[, .SD, .SDcols = 2:ncol(outTS)]))

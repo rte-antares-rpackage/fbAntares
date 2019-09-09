@@ -133,14 +133,17 @@
 
 .ctrlHubDrop <- function(hubDrop, PTDF) {
   col_ptdf <- colnames(PTDF)[grep("ptdf", colnames(PTDF))]
-  if (!grepl("ptdf", names(hubDrop))) {
-    ptdf_hubDrop <- c(paste0("ptdf", names(hubDrop)))
+  for (X in 1:length(hubDrop)) {
+    if (!grepl("ptdf", names(hubDrop)[X])) {
+      names(hubDrop)[X] <- paste0("ptdf", names(hubDrop)[X])
+    }
   }
-  ptdf_hubDrop <- c(ptdf_hubDrop, sapply(names(hubDrop), function(X) {
+  ptdf_hubDrop <- names(hubDrop)
+  ptdf_hubDrop <- c(ptdf_hubDrop, unname(unlist(sapply(names(hubDrop), function(X) {
     sapply(1:length(hubDrop[[X]]), function(i) {
       paste0("ptdf", hubDrop[[X]][i])
     })
-  }))
+  }))))
   
   if (!all(ptdf_hubDrop %in% col_ptdf)) {
     warning(paste(paste(
