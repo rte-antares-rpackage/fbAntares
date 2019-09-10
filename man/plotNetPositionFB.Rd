@@ -7,9 +7,8 @@ within in an Antares simulation}
 \usage{
 plotNetPositionFB(data, dayType, hour, country1, country2,
   areaName = "cwe_at", fb_opts = antaresRead::simOptions(),
-  filteringEmptyDomains = FALSE, nbMaxPt = 10000,
-  palette = "rainbow", xlim = c(-12000, 12000), ylim = c(-12000,
-  12000))
+  filteringEmptyDomains = FALSE, nbMaxPt = 10000, palette = "rainbow",
+  xlim = c(-12000, 12000), ylim = c(-12000, 12000))
 }
 \arguments{
 \item{data}{\code{antaresDataList} Antares output data, imported with 

@@ -4,8 +4,7 @@
 \alias{setDiffNotWantedPtdf}
 \title{Compute facets equations}
 \usage{
-setDiffNotWantedPtdf(PTDF, hubDrop = list(NL = c("BE", "DE", "FR",
-  "AT")))
+setDiffNotWantedPtdf(PTDF, hubDrop = list(NL = c("BE", "DE", "FR", "AT")))
 }
 \arguments{
 \item{PTDF}{{data.table}}

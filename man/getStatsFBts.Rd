@@ -4,8 +4,8 @@
 \alias{getStatsFBts}
 \title{Return a list with statistics summary of the file ts.txt}
 \usage{
-getStatsFBts(ts, calendar = system.file("calendar/calendar.txt", package
-  = "fbAntares"), output = "summary")
+getStatsFBts(ts, calendar = system.file("calendar/calendar.txt", package =
+  "fbAntares"), output = "summary")
 }
 \arguments{
 \item{ts}{\code{data.table} The output ts obtained with \link{createFBTS}}

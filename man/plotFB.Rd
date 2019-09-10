@@ -4,9 +4,9 @@
 \alias{plotFB}
 \title{Plot typical flow-based domains}
 \usage{
-plotFB(dayType, hour, country1, country2,
-  fb_opts = fbAntares::fbOptions(), areaName = "cwe_at",
-  xlim = c(-12000, 12000), ylim = c(-12000, 12000), export = T)
+plotFB(dayType, hour, country1, country2, fb_opts = fbAntares::fbOptions(),
+  areaName = "cwe_at", xlim = c(-12000, 12000), ylim = c(-12000, 12000),
+  export = T)
 }
 \arguments{
 \item{dayType}{\code{numeric}, numerical id of the typical day(s)}

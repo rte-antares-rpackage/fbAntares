@@ -111,7 +111,7 @@ The folder designed by by fb_opts is a flow-based model. It must include the fol
  
  opts <- antaresRead::setSimulationPath(
  "../Etude Antares/BP19_costs18_FB18_2023_75FacesClusteringHeuresdePointePasEte/")
- path <- setFlowbasedPath(path = "../RÃ©sultats test 20 aoÃ»t/Test75FacesClusteringHeuresdePointePasEte/")
+ path <- setFlowbasedPath(path = "../Résultats test 20 août/Test75FacesClusteringHeuresdePointePasEte/")
  initFlowBased(fb_opts = path$path, opts = opts, scenarios = rep(1:200, times = 5), 
  areaName = "cwe_at")
  
