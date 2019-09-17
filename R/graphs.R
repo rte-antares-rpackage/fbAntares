@@ -929,7 +929,7 @@ plotNetPositionFB <- function(data, dayType,
         
         ipntp <- ipn[which(hour(ipn$time)  == HH  & ipn$mcYear == mcy)]
         
-        dateSel <- unlist(ts[,.SD, .SDcols = (scenario[mcy]$simulation+1)] == DD)
+        dateSel <- unlist(ts[,.SD, .SDcols = as.character(scenario[mcy]$simulation)] == DD)
         dateSel <- ts$Date[dateSel]
         daysel <- substr(dateSel, 6, 10)
         
