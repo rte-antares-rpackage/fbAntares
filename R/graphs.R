@@ -720,7 +720,8 @@ plotNetPositionFB <- function(data, dayType,
                                 ctry1 = ctry1,
                                 ctry2 = ctry2,
                                 ts = ts, 
-                                domaines = domaines)
+                                domaines = domaines,
+                                scenario = scenario)
   
   
   ##Remove domains on out
@@ -919,7 +920,7 @@ plotNetPositionFB <- function(data, dayType,
   ipn
 }
 
-.constructDataForGraph <- function(hour, dayType, mcYears, ipn, ctry1, ctry2, ts, domaines){
+.constructDataForGraph <- function(hour, dayType, mcYears, ipn, ctry1, ctry2, ts, domaines, scenario){
   out <-  sapply(hour, function(HH){
     sapply(dayType, function(DD){
       ######
@@ -928,7 +929,7 @@ plotNetPositionFB <- function(data, dayType,
         
         ipntp <- ipn[which(hour(ipn$time)  == HH  & ipn$mcYear == mcy)]
         
-        dateSel <- unlist(ts[,.SD, .SDcols = as.character(mcy)] == DD)
+        dateSel <- unlist(ts[,.SD, .SDcols = scenario[mcy]$simulation] == DD)
         dateSel <- ts$Date[dateSel]
         daysel <- substr(dateSel, 6, 10)
         
