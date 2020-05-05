@@ -4,8 +4,12 @@
 \alias{addNetPosition}
 \title{addNetPosition}
 \usage{
-addNetPosition(data, opts = antaresRead::simOptions(), inAreas = c("be",
-  "de", "fr", "nl", "at"), newName = "_CWEAt")
+addNetPosition(
+  data,
+  opts = antaresRead::simOptions(),
+  inAreas = c("be", "de", "fr", "nl", "at"),
+  newName = "_CWEAt"
+)
 }
 \arguments{
 \item{data}{\code{antaresDataList} read with readAntares, containing both 

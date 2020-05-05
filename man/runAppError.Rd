@@ -4,8 +4,10 @@
 \alias{runAppError}
 \title{Run a shiny application to visualize the real and modelled flow-based domains}
 \usage{
-runAppError(fb_opts = fbAntares::fbOptions(), countries = list(c("BE",
-  "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")))
+runAppError(
+  fb_opts = fbAntares::fbOptions(),
+  countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT"))
+)
 }
 \arguments{
 \item{fb_opts}{\code{list} of flow-based parameters returned by the function 

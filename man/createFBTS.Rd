@@ -4,9 +4,16 @@
 \alias{createFBTS}
 \title{Creation of time series of typical days for Antares studies}
 \usage{
-createFBTS(opts, probabilityMatrix, multiplier, firstDay, seed = 123456,
-  silent = FALSE, outputPath = getwd(),
-  calendar = system.file("calendar/calendar.txt", package = "fbAntares"))
+createFBTS(
+  opts,
+  probabilityMatrix,
+  multiplier,
+  firstDay,
+  seed = 123456,
+  silent = FALSE,
+  outputPath = getwd(),
+  calendar = system.file("calendar/calendar.txt", package = "fbAntares")
+)
 }
 \arguments{
 \item{opts}{\code{list} of simulation parameters returned by the function 

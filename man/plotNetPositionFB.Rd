@@ -5,10 +5,20 @@
 \title{Plot a flow-based typical domain and the Net Positions reached 
 within in an Antares simulation}
 \usage{
-plotNetPositionFB(data, dayType, hour, country1, country2,
-  areaName = "cwe_at", fb_opts = antaresRead::simOptions(),
-  filteringEmptyDomains = FALSE, nbMaxPt = 10000, palette = "rainbow",
-  xlim = c(-12000, 12000), ylim = c(-12000, 12000))
+plotNetPositionFB(
+  data,
+  dayType,
+  hour,
+  country1,
+  country2,
+  areaName = "cwe_at",
+  fb_opts = antaresRead::simOptions(),
+  filteringEmptyDomains = FALSE,
+  nbMaxPt = 10000,
+  palette = "rainbow",
+  xlim = c(-12000, 12000),
+  ylim = c(-12000, 12000)
+)
 }
 \arguments{
 \item{data}{\code{antaresDataList} Antares output data, imported with 
@@ -142,7 +152,7 @@ plotNetPositionFB(fb_opts = opts,
          
  
 #### Example with the virtual area zz_flowbased
-## If you gave virtualFBarea = TRUE in the function \\link{computeFB},
+## If you gave virtualFBarea = TRUE in the function \link{computeFB},
 ## the areas and links are built with a virtual area on the center.
 
 # Change the study path for the path of a study you have on your computer

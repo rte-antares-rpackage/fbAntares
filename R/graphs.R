@@ -252,6 +252,7 @@ plotFB <- function(dayType, hour, country1, country2,
 #' summary of the volumetric errors (called inf and sup, representing real points 
 #' forgotten in the model and modelled pointsmissing from the real domain) and 
 #' plots for each hour of the real and modelled domains.
+#' The report can only be launched on data containing domains for each hour of the day
 #'
 #' @param fb_opts \code{list} of flowbased parameters (directory of the flow-based input) 
 #' returned by the function \link{setFlowbasedPath}. By default, the value is 
@@ -279,9 +280,9 @@ plotFB <- function(dayType, hour, country1, country2,
 #' generateReportFb(dayType = 7, fb_opts = fbAntares::fbOptions())
 #' 
 #' #Generate a report for the typical day 2 of a PTDF file
-#' computeFB(PTDF = "/input/ptdfraw.csv", dayType = 1)
-#' domainesFB <- readRDS("antaresInput/domainesFB.rds")
-#' generateReportFb(dayType = 7, allFB = domainesFB, 
+#' computeFB(PTDF = system.file("input/ptdf/ptdfraw.csv", package = "fbAntares"), dayType = 1)
+#' domainesFB <- readRDS(system.file("input/model/antaresInput/domainesFB.rds", package = "fbAntares"))
+#' generateReportFb(dayType = 1, allFB = domainesFB, 
 #'   countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")))
 #' }
 #' @export
@@ -289,6 +290,7 @@ generateReportFb <- function(
   dayType, output_file = NULL,
   countries = list(c("BE", "FR"), c("BE", "NL"), c("DE", "FR"), c("DE", "AT")),
   fb_opts = NULL, allFB = NULL, xlim = c(-12000, 12000), ylim = c(-12000, 12000)){
+
   Period <- idDayType <- VERTDetails <- VERTRawDetails <- NULL
   if(is.null(allFB)){
     allFB <- readRDS(paste0(fb_opts$path, "/domainesFB.RDS"))
@@ -314,7 +316,7 @@ generateReportFb <- function(
                     output_file = output_file,
                     params = list(set_title = paste0(
                       "Typical Day ", dayType, " (generated on ", Sys.Date(), ")")),
-                    intermediates_dir = output_Dir, envir = e,
+                    output_dir = output_Dir, envir = e,
                     quiet = TRUE)
   
   print(paste("You can find your report here :", output_file))

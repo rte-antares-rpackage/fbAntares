@@ -35,7 +35,7 @@ data <- antaresRead::readAntares(areas = "all", links = "all", clusters = "all" 
 data <- addTypicalDayId(data)
 
 #' #### Example with the virtual area zz_flowbased
-## If you gave virtualFBarea = TRUE in the function \\link{computeFB},
+## If you gave virtualFBarea = TRUE in the function \link{computeFB},
 ## the areas and links are built with a virtual area on the center.
 
 # Change the study path for the path of a study you have on your computer

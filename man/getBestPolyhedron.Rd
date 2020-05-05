@@ -4,8 +4,18 @@
 \alias{getBestPolyhedron}
 \title{Adjust a polyhedron from a set of facets to approach a reference polyhedron}
 \usage{
-getBestPolyhedron(A, B, nbLines, maxiter, thresholdIndic, quad = F,
-  verbose = 2, seed = 123456, fixFaces, VERTRawDetails)
+getBestPolyhedron(
+  A,
+  B,
+  nbLines,
+  maxiter,
+  thresholdIndic,
+  quad = F,
+  verbose = 2,
+  seed = 123456,
+  fixFaces,
+  VERTRawDetails
+)
 }
 \arguments{
 \item{A}{\code{data.table}, fix polyhedron, data.table containing at least 

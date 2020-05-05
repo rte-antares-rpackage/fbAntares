@@ -4,8 +4,11 @@
 \alias{identifyFirstDay}
 \title{Identify the type of the first day of a study}
 \usage{
-identifyFirstDay(opts, firstArea = "fr", secondArea = c("fr", "de", "be",
-  "nl"))
+identifyFirstDay(
+  opts,
+  firstArea = "fr",
+  secondArea = c("fr", "de", "be", "nl")
+)
 }
 \arguments{
 \item{opts}{\code{list} of simulation parameters returned by the function 

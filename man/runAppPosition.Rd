@@ -6,8 +6,12 @@
 domains and the Net Positions reached within 
 in an Antares simulation}
 \usage{
-runAppPosition(dta, fb_opts = antaresRead::simOptions(),
-  country_list = c("fr", "be", "de", "nl", "at"), areaName = "cwe_at")
+runAppPosition(
+  dta,
+  fb_opts = antaresRead::simOptions(),
+  country_list = c("fr", "be", "de", "nl", "at"),
+  areaName = "cwe_at"
+)
 }
 \arguments{
 \item{dta}{\code{antaresDataList} Antares output data, imported with \link{readAntares}. 

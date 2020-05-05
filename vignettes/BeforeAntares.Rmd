@@ -17,7 +17,7 @@ library(pipeR)
 library(DT)
 ```
   
-fbAntares`` allows to model **flow-based** domains into adequacy studies using the software *Antares*, with the following main functionalities: 
+`fbAntares` allows to model **flow-based** domains into adequacy studies using the software *Antares*, with the following main functionalities: 
   
 **1. Preparation of the input of an Antares study to include a modelling a flow-based in the CWE-AT area**
   

@@ -4,13 +4,26 @@
 \alias{computeFB}
 \title{Conversion of flow-based domains into an Antares model with fixed PTDF}
 \usage{
-computeFB(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package =
-  "fbAntares"), outputName = paste0(getwd(), "/antaresInput"),
-  reports = TRUE, areaName = "cwe_at", dayType = "All", hour = "All",
-  clusteringDayType = "All", clusteringHours = "All", nbFaces = 75,
-  verbose = 1, nbLines = 1e+05, maxiter = 15, thresholdIndic = 95,
-  quad = F, hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
-  fixFaces = NULL, virtualFBarea = F, seed = 123456)
+computeFB(
+  PTDF = system.file("testdata/2019-07-18ptdfraw.csv", package = "fbAntares"),
+  outputName = paste0(getwd(), "/antaresInput"),
+  reports = TRUE,
+  areaName = "cwe_at",
+  dayType = "All",
+  hour = "All",
+  clusteringDayType = "All",
+  clusteringHours = "All",
+  nbFaces = 75,
+  verbose = 1,
+  nbLines = 1e+05,
+  maxiter = 15,
+  thresholdIndic = 95,
+  quad = F,
+  hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
+  fixFaces = NULL,
+  virtualFBarea = F,
+  seed = 123456
+)
 }
 \arguments{
 \item{PTDF}{\code{character}, path leading to the flow-based 
@@ -38,7 +51,10 @@ By default, the value is a created directory named
 "antaresInput" in the current directory}
 
 \item{reports}{\code{boolean}, if TRUE, the function will write html reports 
-(one per typical day). By default, the value is TRUE.}
+(one per typical day). By default, the value is TRUE.
+However, the report can only be launched on data containing domains for each 
+hour of the day. Therefore, the value is automatically set to false if the 
+parameter hour is different of "All" or 1:24.}
 
 \item{areaName}{\code{character} The name of the area of your study, possible values are
 cwe_at (default), cwe and other. If you choose other, you have to modify the csv file

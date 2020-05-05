@@ -38,6 +38,9 @@
 #' "antaresInput" in the current directory
 #' @param reports \code{boolean}, if TRUE, the function will write html reports 
 #' (one per typical day). By default, the value is TRUE.
+#' However, the report can only be launched on data containing domains for each 
+#' hour of the day. Therefore, the value is automatically set to false if the 
+#' parameter hour is different of "All" or 1:24.
 #' @param dayType \code{numeric}, by default, the value is All. 
 #' (optional) Vector of id_days to compute.
 #' @param hour \code{numeric}, by default, the value is All. 
@@ -114,7 +117,6 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       fixFaces = NULL, virtualFBarea = F,
                       seed = 123456)
 {
-  # browser()
   if (!is.null(seed)) {
     set.seed(seed)
   }
@@ -171,6 +173,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
       hour <- unique(PTDF$Period)
     }
   }
+  if (!(all(1:24 %in% hour))) reports <- FALSE
   ##From B to antares
   # if cwe, cwe-at or other area
   areaConf <- .getAreaName(areaName)
@@ -272,7 +275,6 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     outputNameReports <- paste0(outputName, "/reports")
     dir.create(outputNameReports)
     sapply(unique(flowbased$idDayType), function(X){
-      print(outputNameReports)
       generateReportFb(allFB = flowbased, dayType = X, output_file = outputNameReports)
     })
   }
