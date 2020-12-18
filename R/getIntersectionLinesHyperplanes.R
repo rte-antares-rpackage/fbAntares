@@ -148,10 +148,11 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456){
   
   # Voir peut-être comment rendre ça plus propre
   PT <- data.table(Line_Coo_X1 = runif(nbPoints) * 30000 - 15000)
-  for (i in 2:(length(col_ptdf)-1)) {
-    PT[, paste0("Line_Coo_X", i) := runif(nbPoints) * 30000 - 15000]
+  if(length(col_ptdf) > 2){
+    for (i in 2:(length(col_ptdf)-1)) {
+      PT[, paste0("Line_Coo_X", i) := runif(nbPoints) * 30000 - 15000]
+    }
   }
-  
   
   clcPTin <- function(P, PT, col_ptdf){
     for (col in col_ptdf[1:(length(col_ptdf)-1)]) {
