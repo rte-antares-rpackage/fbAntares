@@ -37,8 +37,9 @@ Imports:
   antaresEditObject,
   shinyWidgets,
   shiny,
-  DT
-RoxygenNote: 7.1.0
+  DT,
+  stringr
+RoxygenNote: 7.1.1
 Suggests: 
     testthat,
     covr,
