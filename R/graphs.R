@@ -1023,3 +1023,72 @@ plotNetPositionFB <- function(data, dayType,
   
   foldPath
 }
+
+#' @title Draw a volume heatmap comparing the volumes of two polyhedrons
+#' 
+#' @description This function returns a heatmap comparing the volumes of two polyhedrons
+#' in different directions corresponding to the positive/negative net positions of
+#' each country
+#' 
+#' @param A \code{data.table}, polyhedron, data.table containing at least 
+#' two ptdf columns :
+#' \itemize{
+#'  \item ptdfAT : autrichian vertices
+#'  \item ptdfBE : belgium vertices
+#'  \item ptdfDE : german vertices
+#'  \item ptdfFR : french vertices
+#' }
+#' @param B \code{data.table}, polyhedron, data.table containing at least 
+#' two ptdf columns :
+#' \itemize{
+#'  \item ptdfAT : autrichian vertices
+#'  \item ptdfBE : belgium vertices
+#'  \item ptdfDE : german vertices
+#'  \item ptdfFR : french vertices
+#' }
+#' @param nbPoints \code{numeric}, number of points generated for volume comparison
+#' @param seed \code{numeric} fixed random seed, used for the weighted draw of the
+#' points for volume assessment. By default, the value is 123456
+#' @param assessment_range The range in which the points for the volume assessment should be drawn
+#' @examples
+#' \dontrun{
+#' library(data.table)
+#' polyhedra <- readRDS(system.file("testdata/polyhedra.rds", package = "fbAntares"))
+#' A <- polyhedra[Date == "2019-02-14"]
+#' B <- polyhedra[Date == "2019-02-15"]
+#' nbPoints <- 50000
+#' 
+#'  drawVolumeHeatmap(A = A, B = B, nbPoints = nbPoints)
+#' }
+#' 
+#' @import data.table
+#' @importFrom plotly plot_ly
+#' @import stringr
+#' 
+#' @export
+
+drawVolumeHeatmap <- function(A, B, nbPoints = 50000, seed = 123456, assessment_range = c(-15000, 15000)){
+  
+  col_ptdf <-  .crtlPtdf(A, B)
+
+  heatmap <- sapply(col_ptdf[-length(col_ptdf)], function(X){
+    
+    current_country <- str_remove(X, "ptdf")
+    volume_positive_A <- evalDomainVolume(A, nbPoints, seed, assessment_range, direction = data.table(country = current_country, direction = "positive"))
+    volume_positive_B <- evalDomainVolume(B, nbPoints, seed, assessment_range, direction = data.table(country = current_country, direction = "positive"))
+    volume_negative_A <- evalDomainVolume(A, nbPoints, seed, assessment_range, direction = data.table(country = current_country, direction = "negative"))
+    volume_negative_B <- evalDomainVolume(B, nbPoints, seed, assessment_range, direction = data.table(country = current_country, direction = "negative"))
+    diff_volume_positive <- (volume_positive_B - volume_positive_A) / volume_positive_A * 100
+    diff_volume_negative <- (volume_negative_B - volume_negative_A) / volume_negative_A * 100
+    
+    c(diff_volume_positive, diff_volume_negative)
+    
+  })
+  
+  colnames(heatmap) <- sapply(col_ptdf[-length(col_ptdf)], str_remove, "ptdf")
+  rownames(heatmap) <- c("positive", "negative")
+  
+  fig <- plot_ly(x = colnames(heatmap), y = rownames(heatmap), z = heatmap, colors = colorRamp(c("red", "green")), type = "heatmap")
+  fig
+  
+}

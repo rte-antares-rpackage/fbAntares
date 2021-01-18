@@ -195,7 +195,7 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456, draw_range = c(-150
 # Find the range within which points should be drawn
 .findCountryRange <- function(direction, country, draw_range) {
   current_country <- country
-  if(!is.null(direction) & country %in% direction$direction){
+  if(!is.null(direction) & country %in% direction$country){
     current_direction <- direction[country == current_country, direction]
     if(current_direction == "positive"){
       min_draw <- 0
