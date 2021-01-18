@@ -1092,3 +1092,86 @@ drawVolumeHeatmap <- function(A, B, nbPoints = 50000, seed = 123456, assessment_
   fig
   
 }
+
+#' @title Draw a volume heatmap comparing the volumes of two polyhedrons making combinations
+#' of possible net positions for the studied countries
+#' 
+#' @description This function returns a heatmap comparing the volumes of two polyhedrons
+#' in different directions corresponding to all the combinations of the positive/negative
+#' net positions of each country
+#' 
+#' @param A \code{data.table}, polyhedron, data.table containing at least 
+#' two ptdf columns :
+#' \itemize{
+#'  \item ptdfAT : autrichian vertices
+#'  \item ptdfBE : belgium vertices
+#'  \item ptdfDE : german vertices
+#'  \item ptdfFR : french vertices
+#' }
+#' @param B \code{data.table}, polyhedron, data.table containing at least 
+#' two ptdf columns :
+#' \itemize{
+#'  \item ptdfAT : autrichian vertices
+#'  \item ptdfBE : belgium vertices
+#'  \item ptdfDE : german vertices
+#'  \item ptdfFR : french vertices
+#' }
+#' @param nbPoints \code{numeric}, number of points generated for volume comparison
+#' @param seed \code{numeric} fixed random seed, used for the weighted draw of the
+#' points for volume assessment. By default, the value is 123456
+#' @param assessment_range The range in which the points for the volume assessment should be drawn
+#'
+#' @examples
+#' \dontrun{
+#' library(data.table)
+#' polyhedra <- readRDS(system.file("testdata/polyhedra.rds", package = "fbAntares"))
+#' A <- polyhedra[Date == "2019-02-14"]
+#' B <- polyhedra[Date == "2019-02-15"]
+#' nbPoints <- 50000
+#' 
+#'  drawVolumeHeatmapTwoDimensions(A = A, B = B, nbPoints = nbPoints)
+#' }
+#' 
+#' @import data.table
+#' @importFrom plotly plot_ly
+#' @import stringr
+#' 
+#' @export
+
+drawVolumeHeatmapTwoDimensions <- function(A, B, nbPoints = 50000, seed = 123456, assessment_range = c(-15000, 15000)){
+  
+  col_ptdf <-  .crtlPtdf(A, B)
+  
+  col_ptdf_signed <- as.vector(outer(col_ptdf[-length(col_ptdf)], c("positive", "negative"), paste, sep = "."))
+  
+  heatmap <- sapply(col_ptdf_signed, function(X){
+    
+    combns <- sapply(col_ptdf_signed, function(elt){paste0(X, "-", elt)})
+    combns_split <- strsplit(combns, "-")
+    combns_split <- lapply(combns_split, str_remove, "ptdf")
+    
+    result <- sapply(combns_split, function(Y){
+      
+      Y_split <- strsplit(Y, "[.]")
+      countries <- sapply(Y_split, function(vec){vec[1]})
+      if(countries[1] == countries[2]) return(NA)
+      dirs <- sapply(Y_split, function(vec){vec[2]})
+      direction <- data.table(country = countries, direction = dirs)
+     
+      volume_A <- evalDomainVolume(A, nbPoints, seed, assessment_range, direction = direction)
+      volume_B <- evalDomainVolume(B, nbPoints, seed, assessment_range, direction = direction)
+      
+      diff_volume <- (volume_B - volume_A) / volume_A * 100
+      
+    })
+    names(result) <- sapply(combns_split, function(vec){vec[2]})
+    unlist(result)
+
+  })
+  
+  colnames(heatmap) <- str_remove(colnames(heatmap), "ptdf")
+  
+  fig <- plot_ly(x = colnames(heatmap), y = rownames(heatmap), z = heatmap, colors = colorRamp(c("red", "green")) , type = "heatmap")
+  fig
+  
+}
