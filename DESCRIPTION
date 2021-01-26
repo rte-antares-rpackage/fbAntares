@@ -39,7 +39,8 @@ Imports:
   shiny,
   DT,
   stringr,
-  plotly
+  plotly,
+  scales
 RoxygenNote: 7.1.1
 Suggests: 
     testthat,
