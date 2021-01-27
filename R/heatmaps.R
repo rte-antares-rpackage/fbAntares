@@ -321,8 +321,8 @@ drawVolumeHeatmapThreeDimensions <- function(A, B = NULL, nbPoints = 50000, seed
                                  j = j,
                                  k = k,
                                  facecolor = rep(colors[1,]$color, 12),
-                                 hoverinfo = "none"
-  )
+                                 hoverinfo = "text",
+                                 hovertext = vals[1])
   
   for(index in 1:7){
     combination <- combinations[, index + 1]
@@ -334,8 +334,8 @@ drawVolumeHeatmapThreeDimensions <- function(A, B = NULL, nbPoints = 50000, seed
                              j = j,
                              k = k,
                              facecolor = rep(colors[index + 1,]$color, 12),
-                             hoverinfo = "none"
-    )
+                             hoverinfo = "text",
+                             hovertext = vals[index + 1])
   }
   
   
