@@ -313,6 +313,9 @@ drawVolumeHeatmapThreeDimensions <- function(A, B = NULL, nbPoints = 50000, seed
     colors_raw[vals == X, color]
   })]
   
+  
+  vals[vals > 1000] <- unlist(sapply(vals[vals>1000], formatC, format = "e", digits = 2))
+  
   fig <- plot_ly() %>% add_trace(type = 'mesh3d',
                                  x = x,
                                  y = y,

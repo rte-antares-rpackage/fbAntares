@@ -217,13 +217,14 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456, draw_range = c(-150
 #' \code{evalInter} in order to find the shared volume between this polyhedron and a standard
 #' polyhedron which dimension is known.
 #' 
-#' @param A \code{data.table}, polyhedron which volume is to be evaluated, data.table containing at least 
-#' two ptdf columns :
+#' @param A \code{data.table}, polyhedron which volume is to be evaluated, data.table
+#' containing at least two ptdf columns :
 #' \itemize{
 #'  \item ptdfAT : autrichian vertices
 #'  \item ptdfBE : belgium vertices
 #'  \item ptdfDE : german vertices
-#'  \item ptdfFR : french vertices 
+#'  \item ptdfFR : french vertices
+#'  }
 #' @param nbPoints \code{numeric}, number of points generated
 #' @param seed \code{numeric} fixed random seed, used for the weighted draw of the 
 #' points. By default, the value is 123456

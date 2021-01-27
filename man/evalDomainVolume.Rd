@@ -13,6 +13,15 @@ evalDomainVolume(
 )
 }
 \arguments{
+\item{A}{\code{data.table}, polyhedron which volume is to be evaluated, data.table
+containing at least two ptdf columns :
+\itemize{
+ \item ptdfAT : autrichian vertices
+ \item ptdfBE : belgium vertices
+ \item ptdfDE : german vertices
+ \item ptdfFR : french vertices
+ }}
+
 \item{nbPoints}{\code{numeric}, number of points generated}
 
 \item{seed}{\code{numeric} fixed random seed, used for the weighted draw of the 
