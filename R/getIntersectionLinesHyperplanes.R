@@ -30,7 +30,7 @@
   ##  PLAN : data.table containing ptdf and ram of a polyhedron
   ## Output : data.table containing the intersections of the lines and the polyhedron
   
-
+  
   Face <- NULL
   .crtldtFormat(dtLines)
   .crtldtFormat(PLAN)
@@ -146,7 +146,7 @@
 #' 
 #' @export
 
-evalInter <- function(A, B, nbPoints = 50000, seed = 123456, draw_range = c(-15000, 15000), direction = NULL) {
+evalInter <- function(A, B, nbPoints = 50000, seed = 123456, draw_range = c(-15000, 15000), direction = NULL, remove_last_ptdf = T) {
   if (!is.null(seed)) {
     set.seed(seed)
   }
@@ -164,25 +164,37 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456, draw_range = c(-150
   country_range <- .findCountryRange(direction, country_1, draw_range)
   
   PT <- data.table(Line_Coo_X1 = runif(nbPoints, min = min(country_range), max = max(country_range)))
+  
+  if(remove_last_ptdf){
+    total_length_pt <- length(col_ptdf)-1
+  } else {
+    total_length_pt <- length(col_ptdf)
+  }
+  
   if(length(col_ptdf) > 2){
-    for (i in 2:(length(col_ptdf)-1)) {
+    for (i in 2:total_length_pt) {
       current_country <- str_remove(col_ptdf[i], "ptdf")
       country_range <- .findCountryRange(direction, current_country, draw_range)
       PT[, paste0("Line_Coo_X", i) := runif(nbPoints, min = min(country_range), max = max(country_range))]
     }
   }
   
-  clcPTin <- function(P, PT, col_ptdf){
-    for (col in col_ptdf[1:(length(col_ptdf)-1)]) {
-      P[[col]] <- P[[col]] - P[[last_ptdfcol]]
+  clcPTin <- function(P, PT, col_ptdf, remove_last_ptdf){
+    
+    if(remove_last_ptdf){
+      for (col in col_ptdf[1:(length(col_ptdf)-1)]) {
+        P[[col]] <- P[[col]] - P[[last_ptdfcol]]
+      }
+      re <- as.matrix(P[, .SD, .SDcols = col_ptdf[1:(length(col_ptdf)-1)]])%*%t(PT)
+    } else {
+      re <- as.matrix(P[, .SD, .SDcols = col_ptdf[1:(length(col_ptdf))]])%*%t(PT)
     }
     
-    re <- as.matrix(P[, .SD, .SDcols = col_ptdf[1:(length(col_ptdf)-1)]])%*%t(PT)
     which(apply(re, 2, function(X, Y){all(X<Y)}, Y = P$ram))
   }
   
-  indomaine1 <- clcPTin(A, PT, col_ptdf)
-  indomaine2 <- clcPTin(B, PT, col_ptdf)
+  indomaine1 <- clcPTin(A, PT, col_ptdf, remove_last_ptdf)
+  indomaine2 <- clcPTin(B, PT, col_ptdf, remove_last_ptdf)
   
   volIntraInter <- (length(intersect(indomaine1, indomaine2))/length(union(indomaine1, indomaine2)))*100
   error1 <- (1-length(intersect(indomaine1, indomaine2))/length(indomaine1))*100

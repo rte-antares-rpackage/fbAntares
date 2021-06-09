@@ -33,7 +33,11 @@ giveBClassif <- function(PTDF, nbClust = 75, fixFaces, col_ptdf,
   # normalize the values in order to make the clustering
   PTDFKmCare <- PTDFKm^2
   PTDFKmCare <- rowSums(PTDFKmCare)
+  
   PTDFKm <- PTDFKm / sqrt(PTDFKmCare)
+ 
+  PTDFKm[is.na(PTDFKm)] <- 0
+  
   # in order not to overload the ram
   # if not too much lines -> CAH, else -> kmeans + CAH
   if (nrow(PTDFKm)^2 < 2^28) {

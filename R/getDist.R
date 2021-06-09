@@ -79,7 +79,7 @@
 #' @export
 
 getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F, 
-                              verbose = 2, seed = 123456, fixFaces, VERTRawDetails) {
+                              verbose = 2, seed = 123456, fixFaces, VERTRawDetails, draw_range = c(-15000, 15000), remove_last_ptdf = T) {
   if (!is.null(seed)) {
     set.seed(seed)
   }
@@ -98,34 +98,36 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
   # Generation of the lines for the optimization
   dtLines <- .getNormalizedLines(nbLines = nbLines, dim = length(col_ptdf))
   
-  ###########
-  ## Saving of the extremas of A, i.e max import and export
-  ## of the real model in order to approach it in a better way with the
-  ## modelized one
-  maxRow <- unname(unlist(VERTRawDetails[, lapply(
-    .SD, which.max), .SDcols = colnames(
-      VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
-  minRow <- unname(unlist(VERTRawDetails[, lapply(
-    .SD, which.min), .SDcols = colnames(
-      VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
+  if(!is.null(VERTRawDetails)){
+    ###########
+    ## Saving of the extremas of A, i.e max import and export
+    ## of the real model in order to approach it in a better way with the
+    ## modelized one
+    maxRow <- unname(unlist(VERTRawDetails[, lapply(
+      .SD, which.max), .SDcols = colnames(
+        VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
+    minRow <- unname(unlist(VERTRawDetails[, lapply(
+      .SD, which.min), .SDcols = colnames(
+        VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]))
+    
+    # On écrit les droites qui passent par ces extremas
+    normvec <- sqrt(rowSums(VERTRawDetails[
+      c(minRow, maxRow), .SD, .SDcols = colnames(
+        VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]^2))
+    
+    Linesmerge <- VERTRawDetails[c(minRow, maxRow), .SD, .SDcols = colnames(
+      VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]/normvec
+    setnames(Linesmerge, colnames(dtLines)[grep("Line", colnames(dtLines))])
+    
   
-  # On écrit les droites qui passent par ces extremas
-  normvec <- sqrt(rowSums(VERTRawDetails[
-    c(minRow, maxRow), .SD, .SDcols = colnames(
-      VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]^2))
-  
-  Linesmerge <- VERTRawDetails[c(minRow, maxRow), .SD, .SDcols = colnames(
-    VERTRawDetails)[!grepl("idDayType|Date|Period", colnames(VERTRawDetails))]]/normvec
-  setnames(Linesmerge, colnames(dtLines)[grep("Line", colnames(dtLines))])
-  
-
-  # Adding of new lines (10% of the generated lines)
-  # noising of them to not have only equal lines
-  Linesmerge <- rbindlist(lapply(1:(nbLines/(10*nrow(Linesmerge))), function(X) {
-    Linesmerge + runif(nrow(Linesmerge))/100000
-  }))
-  
-  dtLines <- merge(dtLines, Linesmerge, by = colnames(Linesmerge), all = T)
+    # Adding of new lines (10% of the generated lines)
+    # noising of them to not have only equal lines
+    Linesmerge <- rbindlist(lapply(1:(nbLines/(10*nrow(Linesmerge))), function(X) {
+      Linesmerge + runif(nrow(Linesmerge))/100000
+    }))
+    
+    dtLines <- merge(dtLines, Linesmerge, by = colnames(Linesmerge), all = T)
+  }
   
   # Computation of the intersectionss between lines and real domain
   fixPlan <- .getIntersecPoints(dtLines, A)
@@ -146,7 +148,7 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
       }
     }
     # Value of volume intra inter
-    indic <- evalInter(PLANOUT, A)[1, 1]
+    indic <- evalInter(PLANOUT, A, nbPoints = 1e+6, remove_last_ptdf = remove_last_ptdf, draw_range = draw_range)[1, 1]
     
     if (verbose > 1) {
       print(paste("Iteration", k, "indic :", indic))
