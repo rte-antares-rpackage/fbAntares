@@ -240,7 +240,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
       draw_range = draw_range, remove_last_ptdf = remove_last_ptdf)
     
     res[, Face := NULL]
-    error <- evalInter(A, res, draw_range = draw_range, remove_last_ptdf = remove_last_ptdf)
+    error <- evalInter(A, res, nbPoints = 1e+6, draw_range = draw_range, remove_last_ptdf = remove_last_ptdf)
     if(verbose >= 2) {
       print(error)
     }
