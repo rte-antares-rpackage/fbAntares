@@ -146,7 +146,9 @@
 #' 
 #' @export
 
-evalInter <- function(A, B, nbPoints = 50000, seed = 123456, draw_range = c(-15000, 15000), direction = NULL, remove_last_ptdf = T) {
+evalInter <- function(A, B, nbPoints = 50000, seed = 123456,
+                      draw_range = c(-15000, 15000), other_ranges = NULL,
+                      direction = NULL, remove_last_ptdf = T) {
   if (!is.null(seed)) {
     set.seed(seed)
   }
@@ -161,7 +163,7 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456, draw_range = c(-150
   
   country_1 <- str_remove(col_ptdf[1], "ptdf")
   
-  country_range <- .findCountryRange(direction, country_1, draw_range)
+  country_range <- .findCountryRange(direction, country_1, draw_range, other_ranges)
   
   PT <- data.table(Line_Coo_X1 = runif(nbPoints, min = min(country_range), max = max(country_range)))
   
@@ -174,7 +176,7 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456, draw_range = c(-150
   if(length(col_ptdf) > 2){
     for (i in 2:total_length_pt) {
       current_country <- str_remove(col_ptdf[i], "ptdf")
-      country_range <- .findCountryRange(direction, current_country, draw_range)
+      country_range <- .findCountryRange(direction, current_country, draw_range, other_ranges)
       PT[, paste0("Line_Coo_X", i) := runif(nbPoints, min = min(country_range), max = max(country_range))]
     }
   }
@@ -205,20 +207,27 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456, draw_range = c(-150
 }
 
 # Find the range within which points should be drawn
-.findCountryRange <- function(direction, country, draw_range) {
+.findCountryRange <- function(direction, country, draw_range, other_ranges = NULL) {
   current_country <- country
+  
+  if(!is.null(other_ranges) & country %in% names(other_ranges)){
+    initial_range <- other_ranges[[country]]
+  } else {
+    initial_range <- draw_range
+  }
+  
   if(!is.null(direction) & country %in% direction$country){
     current_direction <- direction[country == current_country, direction]
     if(current_direction == "positive"){
       min_draw <- 0
-      max_draw <- max(draw_range)
+      max_draw <- max(initial_range)
     } else if (current_direction == "negative"){
-      min_draw <- min(draw_range)
+      min_draw <- min(initial_range)
       max_draw <- 0
     }
   } else {
-    min_draw <- min(draw_range)
-    max_draw <- max(draw_range)
+    min_draw <- min(initial_range)
+    max_draw <- max(initial_range)
   }
   c(min_draw, max_draw)
 }

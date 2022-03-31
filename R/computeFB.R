@@ -82,6 +82,13 @@
 #'  \item 0 : No log
 #'  \item 1 : Short log
 #'  \item 2 : Medium log
+#' @param useVertices \code{boolean}, states whether vertices should be
+#' computed to increase the accuracy of projection
+#' @param draw_range \code{numeric} Range within which volume assessment
+#' is performed to check the quality of projection
+#' @param other_ranges \code{list} Optional named list of specific draw_ranges
+#' for some dimensions. The names of the elements are the name of the dimensions,
+#' and each element contains a two-element vectors specifying the range.
 #' }
 #' @examples
 #' \dontrun{
@@ -115,7 +122,8 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       nbLines = 100000, maxiter = 15, thresholdIndic = 95, quad = F,
                       hubDrop = list(NL = c("BE", "DE", "FR", "AT")), 
                       fixFaces = NULL, virtualFBarea = F, useVertices = T,
-                      seed = 123456, draw_range = c(-15000, 15000))
+                      seed = 123456, draw_range = c(-15000, 15000),
+                      other_ranges = NULL)
 {
   if (!is.null(seed)) {
     set.seed(seed)
@@ -237,10 +245,13 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
       A = A, B = B, nbLines = nbLines, maxiter = maxiter, 
       thresholdIndic = thresholdIndic, quad = quad, verbose = verbose, 
       fixFaces = fixFaces, VERTRawDetails = VERTRawDetails,
-      draw_range = draw_range, remove_last_ptdf = remove_last_ptdf)
+      draw_range = draw_range, other_ranges = other_ranges,
+      remove_last_ptdf = remove_last_ptdf)
     
     res[, Face := NULL]
-    error <- evalInter(A, res, nbPoints = 1e+6, draw_range = draw_range, remove_last_ptdf = remove_last_ptdf)
+    error <- evalInter(A, res, nbPoints = 1e+6, draw_range = draw_range,
+                       other_ranges = other_ranges,
+                       remove_last_ptdf = remove_last_ptdf)
     if(verbose >= 2) {
       print(error)
     }
