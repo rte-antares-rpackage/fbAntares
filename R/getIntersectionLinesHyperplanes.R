@@ -171,7 +171,16 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456,
   
   country_range <- .findCountryRange(direction, country_1, draw_range, other_ranges)
   
-  PT <- data.table(Line_Coo_X1 = runif(nbPoints, min = min(country_range), max = max(country_range)))
+  if(uniform_volume_draw){
+    PT <- data.table(Line_Coo_X1 = rep(
+      seq(from = min(country_range),
+          to = max(country_range),
+          length.out = round(nbPoints) / length(col_ptdf)),
+      each  = 1,
+      length.out = nbPoints))
+  } else {
+    PT <- data.table(Line_Coo_X1 = runif(nbPoints, min = min(country_range), max = max(country_range)))
+  }
   
   if(remove_last_ptdf){
     total_length_pt <- length(col_ptdf)-1
@@ -184,7 +193,12 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456,
       current_country <- str_remove(col_ptdf[i], "ptdf")
       country_range <- .findCountryRange(direction, current_country, draw_range, other_ranges)
       if(uniform_volume_draw){
-        PT[, paste0("Line_Coo_X", i) := seq(from = min(country_range), to = max(country_range), length.out = nbPoints)]
+        PT[, paste0("Line_Coo_X", i) := rep(
+          seq(from = min(country_range),
+              to = max(country_range),
+              length.out = round(nbPoints) / length(col_ptdf)),
+          each  = i,
+          length.out = nbPoints)]
       } else {
         PT[, paste0("Line_Coo_X", i) := runif(nbPoints, min = min(country_range), max = max(country_range))]
       }
