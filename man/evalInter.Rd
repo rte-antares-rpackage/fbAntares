@@ -10,7 +10,10 @@ evalInter(
   nbPoints = 50000,
   seed = 123456,
   draw_range = c(-15000, 15000),
-  direction = NULL
+  other_ranges = NULL,
+  direction = NULL,
+  remove_last_ptdf = T,
+  uniform_volume_draw = FALSE
 )
 }
 \arguments{
@@ -39,6 +42,9 @@ typical days. By default, the value is 123456}
 
 \item{draw_range}{The range in which the points for the volume assessment should be drawn}
 
+\item{other_ranges}{\code{list} Specify a named list of areas with a specific draw range.
+Each element of the list contains a vector indicating the draw range for the corresponding area.}
+
 \item{direction}{\code{data.table} used to provide specific directions in which
 the comparison should be performed. The data table must contain two columns:
 \itemize{
@@ -47,6 +53,11 @@ the comparison should be performed. The data table must contain two columns:
  positive net positions must be considered for this country, or "negative" if only negative net
  positions must be considered
 }}
+
+\item{remove_last_ptdf}{\code{boolean} Should the last PTDF be used as a hubdrop for the others?}
+
+\item{uniform_volume_draw}{\code{boolean} Should the volume evaluation be 
+performed based on a uniform point draw?}
 }
 \description{
 This function returns and indicator between 0 and 1 where 0 means

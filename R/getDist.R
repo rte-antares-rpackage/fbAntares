@@ -81,7 +81,8 @@
 getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F, 
                               verbose = 2, seed = 123456, fixFaces,
                               VERTRawDetails, draw_range = c(-15000, 15000),
-                              other_ranges = NULL, remove_last_ptdf = T) {
+                              other_ranges = NULL, remove_last_ptdf = T,
+                              uniform_volume_draw = FALSE) {
   if (!is.null(seed)) {
     set.seed(seed)
   }
@@ -153,7 +154,8 @@ getBestPolyhedron <- function(A, B, nbLines, maxiter, thresholdIndic, quad = F,
     indic <- evalInter(PLANOUT, A, nbPoints = 1e+6,
                        remove_last_ptdf = remove_last_ptdf,
                        draw_range = draw_range,
-                       other_ranges = other_ranges)[1, 1]
+                       other_ranges = other_ranges,
+                       uniform_volume_draw = uniform_volume_draw)[1, 1]
     
     if (verbose > 1) {
       print(paste("Iteration", k, "indic :", indic))

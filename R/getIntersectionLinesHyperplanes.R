@@ -128,6 +128,11 @@
 #'  positive net positions must be considered for this country, or "negative" if only negative net
 #'  positions must be considered
 #' }
+#' @param other_ranges \code{list} Specify a named list of areas with a specific draw range.
+#' Each element of the list contains a vector indicating the draw range for the corresponding area.
+#' @param remove_last_ptdf \code{boolean} Should the last PTDF be used as a hubdrop for the others?
+#' @param uniform_volume_draw \code{boolean} Should the volume evaluation be 
+#' performed based on a uniform point draw?
 #' 
 #' @examples
 #' \dontrun{
@@ -148,7 +153,8 @@
 
 evalInter <- function(A, B, nbPoints = 50000, seed = 123456,
                       draw_range = c(-15000, 15000), other_ranges = NULL,
-                      direction = NULL, remove_last_ptdf = T) {
+                      direction = NULL, remove_last_ptdf = T,
+                      uniform_volume_draw = FALSE) {
   if (!is.null(seed)) {
     set.seed(seed)
   }
@@ -177,7 +183,11 @@ evalInter <- function(A, B, nbPoints = 50000, seed = 123456,
     for (i in 2:total_length_pt) {
       current_country <- str_remove(col_ptdf[i], "ptdf")
       country_range <- .findCountryRange(direction, current_country, draw_range, other_ranges)
-      PT[, paste0("Line_Coo_X", i) := runif(nbPoints, min = min(country_range), max = max(country_range))]
+      if(uniform_volume_draw){
+        PT[, paste0("Line_Coo_X", i) := seq(from = min(country_range), to = max(country_range), length.out = nbPoints)]
+      } else {
+        PT[, paste0("Line_Coo_X", i) := runif(nbPoints, min = min(country_range), max = max(country_range))]
+      }
     }
   }
   

@@ -22,7 +22,11 @@ computeFB(
   hubDrop = list(NL = c("BE", "DE", "FR", "AT")),
   fixFaces = NULL,
   virtualFBarea = F,
-  seed = 123456
+  useVertices = T,
+  seed = 123456,
+  draw_range = c(-15000, 15000),
+  other_ranges = NULL,
+  uniform_volume_draw = FALSE
 )
 }
 \arguments{
@@ -111,7 +115,20 @@ value of Germany.}
 \item{virtualFBarea}{\code{logical} If you want to use the new area format or not
 default is FALSE}
 
+\item{useVertices}{\code{boolean}, states whether vertices should be
+computed to increase the accuracy of projection}
+
 \item{seed}{\code{numeric}, value of the seed, default 123456}
+
+\item{draw_range}{\code{numeric} Range within which volume assessment
+is performed to check the quality of projection}
+
+\item{other_ranges}{\code{list} Optional named list of specific draw_ranges
+for some dimensions. The names of the elements are the name of the dimensions,
+and each element contains a two-element vectors specifying the range.}
+
+\item{uniform_volume_draw}{\code{boolean} Should the volume evaluation be 
+performed based on a uniform point draw?}
 }
 \description{
 This function follows two steps: based on the list of flow-based domains 

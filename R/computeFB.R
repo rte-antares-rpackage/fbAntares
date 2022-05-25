@@ -82,6 +82,7 @@
 #'  \item 0 : No log
 #'  \item 1 : Short log
 #'  \item 2 : Medium log
+#' }
 #' @param useVertices \code{boolean}, states whether vertices should be
 #' computed to increase the accuracy of projection
 #' @param draw_range \code{numeric} Range within which volume assessment
@@ -89,7 +90,8 @@
 #' @param other_ranges \code{list} Optional named list of specific draw_ranges
 #' for some dimensions. The names of the elements are the name of the dimensions,
 #' and each element contains a two-element vectors specifying the range.
-#' }
+#' @param uniform_volume_draw \code{boolean} Should the volume evaluation be 
+#' performed based on a uniform point draw?
 #' @examples
 #' \dontrun{
 #' # Compute models for all days and hours of a PTDF file, with no reports 
@@ -123,7 +125,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       hubDrop = list(NL = c("BE", "DE", "FR", "AT")), 
                       fixFaces = NULL, virtualFBarea = F, useVertices = T,
                       seed = 123456, draw_range = c(-15000, 15000),
-                      other_ranges = NULL)
+                      other_ranges = NULL, uniform_volume_draw = FALSE)
 {
   if (!is.null(seed)) {
     set.seed(seed)
@@ -234,7 +236,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     
     setcolorder(B, colnames(A))
     ## Finalization of modelized domain
-  
+    
     if(is.null(hubDrop)){
       remove_last_ptdf <- T
     } else {
@@ -246,7 +248,8 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
       thresholdIndic = thresholdIndic, quad = quad, verbose = verbose, 
       fixFaces = fixFaces, VERTRawDetails = VERTRawDetails,
       draw_range = draw_range, other_ranges = other_ranges,
-      remove_last_ptdf = remove_last_ptdf)
+      remove_last_ptdf = remove_last_ptdf,
+      uniform_volume_draw = uniform_volume_draw)
     
     res[, Face := NULL]
     error <- evalInter(A, res, nbPoints = 1e+6, draw_range = draw_range,
@@ -260,10 +263,10 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                               .SD, .SDcols = c("idDayType", "Period", col_ptdfraw, "ram")]
     
     if(useVertices){
-    VERTDetails <- getVertices(res)
-    VERTDetails[, c("Date", "Period") := NULL]
-    VERTDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
-    setcolorder(VERTDetails, c("idDayType", "Period"))
+      VERTDetails <- getVertices(res)
+      VERTDetails[, c("Date", "Period") := NULL]
+      VERTDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
+      setcolorder(VERTDetails, c("idDayType", "Period"))
     } else {
       VERTDetails <- NULL
     }

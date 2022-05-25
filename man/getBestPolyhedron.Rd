@@ -14,7 +14,11 @@ getBestPolyhedron(
   verbose = 2,
   seed = 123456,
   fixFaces,
-  VERTRawDetails
+  VERTRawDetails,
+  draw_range = c(-15000, 15000),
+  other_ranges = NULL,
+  remove_last_ptdf = T,
+  uniform_volume_draw = FALSE
 )
 }
 \arguments{
