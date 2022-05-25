@@ -82,6 +82,13 @@
 #'  \item 0 : No log
 #'  \item 1 : Short log
 #'  \item 2 : Medium log
+#' @param useVertices \code{boolean}, states whether vertices should be
+#' computed to increase the accuracy of projection
+#' @param draw_range \code{numeric} Range within which volume assessment
+#' is performed to check the quality of projection
+#' @param other_ranges \code{list} Optional named list of specific draw_ranges
+#' for some dimensions. The names of the elements are the name of the dimensions,
+#' and each element contains a two-element vectors specifying the range.
 #' }
 #' @examples
 #' \dontrun{
@@ -114,8 +121,9 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       nbFaces = 75, verbose = 1,
                       nbLines = 100000, maxiter = 15, thresholdIndic = 95, quad = F,
                       hubDrop = list(NL = c("BE", "DE", "FR", "AT")), 
-                      fixFaces = NULL, virtualFBarea = F,
-                      seed = 123456)
+                      fixFaces = NULL, virtualFBarea = F, useVertices = T,
+                      seed = 123456, draw_range = c(-15000, 15000),
+                      other_ranges = NULL)
 {
   if (!is.null(seed)) {
     set.seed(seed)
@@ -129,15 +137,16 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   
   # In order to keep the raw ptdf in the output
   PTDFRaw <- copy(PTDF)
-  .ctrlHubDrop(hubDrop = hubDrop, PTDF = PTDF)
-  # generate transformed ptf in order o get the vertices
-  PTDF <- setDiffNotWantedPtdf(PTDF = PTDF, hubDrop = hubDrop)
-  
+  if(!is.null(hubDrop)){
+    .ctrlHubDrop(hubDrop = hubDrop, PTDF = PTDF)
+    # generate transformed ptf in order o get the vertices
+    PTDF <- setDiffNotWantedPtdf(PTDF = PTDF, hubDrop = hubDrop)
+  }
   col_ptdf <- colnames(PTDF)[
     grep("ptdf", colnames(PTDF))]
   col_ptdfraw <- colnames(PTDFRaw)[
     grep("ptdf", colnames(PTDFRaw))]
-
+  
   
   if (!is.null(fixFaces)) { 
     if (nrow(fixFaces) > 0) {
@@ -150,7 +159,7 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   } else {
     nbCl <- nbFaces
   }
-
+  
   ## Clustering on the ptdf lines to obtain the faces of the 
   
   ###### changement
@@ -160,7 +169,9 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
   
   face <- round(face, 2)
   faceraw <- copy(face)
-  face <- setDiffNotWantedPtdf(PTDF = face, hubDrop = hubDrop)
+  if(!is.null(hubDrop)){
+    face <- setDiffNotWantedPtdf(PTDF = face, hubDrop = hubDrop)
+  }
   # keep only the hours and daytype you want to return
   if(length(dayType) == 1) {
     if(dayType == "All"){
@@ -197,17 +208,22 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                 idDayType == combi[X, dayType], .SD,
               .SDcols = c("idDayType", "Period", col_ptdf, "ram")]
     
-    VERTRawDetails <- getVertices(A)
-    VERTRawDetails[, c("Date", "Period") := NULL]
-    VERTRawDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
-    setcolorder(VERTRawDetails, c("idDayType", "Period"))
+    
+    if(useVertices){
+      VERTRawDetails <- getVertices(A)
+      VERTRawDetails[, c("Date", "Period") := NULL]
+      VERTRawDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
+      setcolorder(VERTRawDetails, c("idDayType", "Period"))
+    } else {
+      VERTRawDetails <- NULL
+    }
     
     # Creation of the modelized domain
     B <- copy(face)
-
+    
     ## Initialization of the rams to 1000 (arbitrary initialization)
     B[, c("ram", "idDayType", "Period") := list(1000, unique(A$idDayType), unique(A$Period))]
-
+    
     # Adding of fix faces if they exist
     if (!is.null(fixFaces)) {
       if (nrow(fixFaces) > 0) {
@@ -218,24 +234,39 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
     
     setcolorder(B, colnames(A))
     ## Finalization of modelized domain
+  
+    if(is.null(hubDrop)){
+      remove_last_ptdf <- T
+    } else {
+      remove_last_ptdf <- F
+    }
+    
     res <- getBestPolyhedron(
       A = A, B = B, nbLines = nbLines, maxiter = maxiter, 
       thresholdIndic = thresholdIndic, quad = quad, verbose = verbose, 
-      fixFaces = fixFaces, VERTRawDetails = VERTRawDetails)
+      fixFaces = fixFaces, VERTRawDetails = VERTRawDetails,
+      draw_range = draw_range, other_ranges = other_ranges,
+      remove_last_ptdf = remove_last_ptdf)
     
     res[, Face := NULL]
-    error <- evalInter(A, res)
+    error <- evalInter(A, res, nbPoints = 1e+6, draw_range = draw_range,
+                       other_ranges = other_ranges,
+                       remove_last_ptdf = remove_last_ptdf)
     if(verbose >= 2) {
       print(error)
     }
     ## Creation of the output, we use all objects we need
     PTDFRawDetails <- PTDFRaw[Period == combi[X, hour] & idDayType == combi[X, dayType],
                               .SD, .SDcols = c("idDayType", "Period", col_ptdfraw, "ram")]
+    
+    if(useVertices){
     VERTDetails <- getVertices(res)
     VERTDetails[, c("Date", "Period") := NULL]
     VERTDetails[, c("idDayType", "Period") := list(combi[X, dayType], combi[X, hour])]
     setcolorder(VERTDetails, c("idDayType", "Period"))
-    
+    } else {
+      VERTDetails <- NULL
+    }
     ## Final data.table
     out <- data.table(Period = combi[X, hour], idDayType = combi[X, dayType],
                       PTDFDetails = list(res), PTDFRawDetails = list(PTDFRawDetails),
@@ -244,9 +275,9 @@ computeFB <- function(PTDF = system.file("testdata/2019-07-18ptdfraw.csv", packa
                       error1 = error[1, 2], error2 = error[1, 3])
   }, simplify = F))
   
-
   
-
+  
+  
   ##Output
   # Writting of the second member
   allFaces <- rbindlist(sapply(1:nrow(combi), function(X){

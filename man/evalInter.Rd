@@ -4,7 +4,14 @@
 \alias{evalInter}
 \title{Evaluate the shared volume of two polyhedra A and B}
 \usage{
-evalInter(A, B, nbPoints = 50000, seed = 123456)
+evalInter(
+  A,
+  B,
+  nbPoints = 50000,
+  seed = 123456,
+  draw_range = c(-15000, 15000),
+  direction = NULL
+)
 }
 \arguments{
 \item{A}{\code{data.table}, fix polyhedron, data.table containing at least 
@@ -29,6 +36,17 @@ two ptdf columns :
 
 \item{seed}{\code{numeric} fixed random seed, used for the weighted draw of the 
 typical days. By default, the value is 123456}
+
+\item{draw_range}{The range in which the points for the volume assessment should be drawn}
+
+\item{direction}{\code{data.table} used to provide specific directions in which
+the comparison should be performed. The data table must contain two columns:
+\itemize{
+ \item a column "country" containing the names of the countries on which a direction is specified
+ \item a column "direction" containing a string which can be either "positive" to specify that only
+ positive net positions must be considered for this country, or "negative" if only negative net
+ positions must be considered
+}}
 }
 \description{
 This function returns and indicator between 0 and 1 where 0 means

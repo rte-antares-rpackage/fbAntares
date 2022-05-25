@@ -97,6 +97,7 @@
                 paste0(as.character(1:(ncol(daytype)-1)), collapse = ",")))
   }
   
+  daytype[, Date := as.character(Date)]
   dateControl <- strsplit(daytype$Date[1], "-")[[1]]
   if(length(dateControl)!=3){
     stop(paste0("Problem of date format in file ts.txt, must be AAAA-MM-DD, actual : ", 
